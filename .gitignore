@@ -158,6 +158,7 @@ cython_debug/
 allure-results/
 allure-report/
 allure-report-test/
+logs/
 
 # JetBrains IDEs
 .idea/

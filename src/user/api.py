@@ -4,10 +4,11 @@ import src.user.endpoints as url
 class UserAPI(CustomRequester):
 	def __init__(self, base_url: str):
 		super().__init__(base_url)
+		self.headers = {"Content-Type": "application/json"}
 
-	def create_user(self, data: dict):
+	def create_user(self, data):
 		"""Create user"""
-		return self.post(url.POST_CREATE_USER, json=data)
+		return self.post(url.POST_CREATE_USER, data=data, headers=self.headers)
 
 	def create_user_list(self, data: list):
 		"""Create user list"""
@@ -30,9 +31,9 @@ class UserAPI(CustomRequester):
 		"""Logout user"""
 		return self.get(url.GET_LOGOUT_USER)
 
-	def update_user(self, username: str, data: dict):
+	def update_user(self, username: str, data):
 		"""Update user"""
-		return self.put(url.PUT_UPDATE_USER.format(username=username), json=data)
+		return self.put(url.PUT_UPDATE_USER.format(username=username), data=data, headers=self.headers)
 
 	def delete_user(self, username: str):
 		"""Delete user"""

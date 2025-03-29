@@ -1,5 +1,9 @@
+from src.base_model import BaseRequestModel
 from src.pet.api import PetAPI
 from allure import step
+
+from src.pet.models import Pet
+
 
 class PetHelper:
 	def __init__(self, base_url: str):
@@ -7,16 +11,16 @@ class PetHelper:
 		self.api = PetAPI(base_url)
 
 	@step("Создание питомца")
-	def create_pet(self, data, expected_status_code=200):
-		response = self.api.post_pet(data)
+	def create_pet(self, data: BaseRequestModel, expected_status_code=200):
+		response = self.api.post_pet(data.serialize_payload_by_alias())
 		assert response.status_code == expected_status_code, f"Unexpected status code {response.status_code}"
-		return response.json()
+		return Pet(**response.json())
 
 	@step("Получение информации о питомце по ID")
 	def get_pet(self, pet_id, expected_status_code=200):
 		response = self.api.get_find_pet_by_id(pet_id)
 		assert response.status_code == expected_status_code, f"Unexpected status code {response.status_code}"
-		return response.json()
+		return Pet(**response.json())
 
 	@step("Получение информации о питомцах по статусу")
 	def get_pet_by_status(self, pet_status, expected_status_code=200):
@@ -25,8 +29,8 @@ class PetHelper:
 		return response.json()
 
 	@step("Обновление информации о питомце")
-	def update_pet(self, data, expected_status_code=200):
-		response = self.api.put_pet(data)
+	def update_pet(self, data: BaseRequestModel, expected_status_code=200):
+		response = self.api.put_pet(data.serialize_payload_by_alias())
 		assert response.status_code == expected_status_code, f"Unexpected status code {response.status_code}"
 		return response.json()
 

@@ -1,5 +1,9 @@
+from src.base_model import BaseRequestModel
 from src.user.api import UserAPI
 from allure import step
+
+from src.user.models import User, ApiResponse
+
 
 class UserHelper:
 	def __init__(self, base_url: str):
@@ -7,20 +11,20 @@ class UserHelper:
 		self.api = UserAPI(base_url)
 
 	@step("Создание пользователя")
-	def create_user(self, data: dict):
-		response = self.api.create_user(data)
+	def create_user(self, data: BaseRequestModel):
+		response = self.api.create_user(data.serialize_payload_by_alias())
 		assert response.status_code == 200
-		return response.json()
+		return ApiResponse(**response.json())
 
 	@step("Получение информации о пользователе")
 	def get_user(self, username: str):
 		response = self.api.get_user_by_username(username)
 		assert response.status_code == 200
-		return response.json()
+		return User(**response.json())
 
 	@step("Обновление информации о пользователе")
-	def update_user(self, username: str, data: dict):
-		response = self.api.update_user(username, data)
+	def update_user(self, username: str, data: BaseRequestModel):
+		response = self.api.update_user(username, data.serialize_payload_by_alias())
 		assert response.status_code == 200
 		return response.json()
 
@@ -43,7 +47,7 @@ class UserHelper:
 		return response.json()
 
 	@step("Создание пользователя с массивом")
-	def create_user_with_array(self, data: list):
+	def create_user_with_array(self, data: list[User]):
 		response = self.api.create_user_with_array(data)
 		assert response.status_code == 200
 		return response.json()
