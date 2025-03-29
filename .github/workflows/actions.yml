@@ -1,11 +1,11 @@
-name: Run System Tests
+name: Tests with Allure History
 
 on:
   workflow_dispatch:
   push:
-    branches: [ "master", "feature/ci-actions" ]
+    branches: [ "main", "master" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main", "master" ]
 
 jobs:
   run-tests:
@@ -16,53 +16,60 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: pytest -n 4
+        continue-on-error: true
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Install Python Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3.12 python3-pip
-          pip install -r requirements.txt
-
-      - name: Run Tests
-        run: pytest
-        continue-on-error: true
-
       - name: Install Allure
         run: npm install -g allure-commandline
 
-      - name: Generate Allure Report
+      - name: Prepare history
         run: |
-          mkdir -p ./allure-results
-          allure generate ./allure-results --clean -o ./allure-report
+          mkdir -p allure-history
+          # Копируем предыдущие отчёты из gh-pages
+          cp -R gh-pages/history/. allure-history/ || true
 
-      - name: Upload Allure Report Artifact
+      - name: Generate report
+        run: |
+          # Генерируем новый отчёт с историей
+          allure generate allure-results --clean -o allure-report \
+            --report-dir allure-history/$(date +%s)
+
+      - name: Archive report
         uses: actions/upload-artifact@v4
-        if: always()
         with:
           name: allure-report
-          path: ./allure-report
+          path: allure-report
 
       - name: Checkout gh-pages
-        if: always()
         uses: actions/checkout@v4
         with:
           ref: gh-pages
           path: gh-pages
 
-      - name: Publish Report
-        if: always()
+      - name: Update history
+        run: |
+          mkdir -p gh-pages/history
+          # Обновляем историю с новым отчётом
+          cp -R allure-history/* gh-pages/history/
+
+      - name: Deploy reports
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./allure-report
-          destination_dir: ./latest-report
-          force_orphan: true
+          publish_dir: ./gh-pages/history
+          destination_dir: ./history
+          keep_files: true
