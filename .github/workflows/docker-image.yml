@@ -13,6 +13,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag petstore_tests_image:$(date +%s)
+      - uses: actions/checkout@v4
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag petstore_tests_image:$(date +%s)
+
+      - name: Запуск контейнера и тестов
+        run: docker run petstore_tests_image:$(date +%s)
