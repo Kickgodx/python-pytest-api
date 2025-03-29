@@ -14,8 +14,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag petstore_tests_image:$(date +%s)
+        run: docker build . --file Dockerfile --tag petstore_tests_image:latest
 
       - name: Запуск контейнера и тестов
-        run: docker run petstore_tests_image:$(date +%s)
+        run: docker run petstore_tests_image:latest
