@@ -2,7 +2,7 @@ from allure import step
 
 from src.func.base_model import BaseRequestModel
 from src.func.user.api import UserAPI
-from src.func.user.models import User, ApiResponse
+from src.func.models import User, ApiResponse
 
 
 class UserHelper:

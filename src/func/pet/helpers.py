@@ -3,8 +3,7 @@ from requests import HTTPError
 
 from src.func.base_model import BaseRequestModel
 from src.func.pet.api import PetAPI
-from src.func.pet.models import Pet
-from src.func.user.models import ApiResponse
+from src.func.models import Pet, ApiResponse
 
 
 class PetHelper:
