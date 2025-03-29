@@ -2,8 +2,13 @@ name: Tests with Allure
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ "master" ]
+    inputs:
+      branch:
+        description: 'Branch to run on'
+        required: true
+        default: 'master'
+#  push:
+#    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
 
