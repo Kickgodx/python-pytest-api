@@ -1,6 +1,9 @@
 import logging
 import os
 from logging import FileHandler
+import multiprocessing
+import atexit
+from logging.handlers import QueueHandler, QueueListener
 
 import config as cfg
 
@@ -23,14 +26,14 @@ file_log_handler.setFormatter(formatter)
 
 logger.addHandler(file_log_handler)
 # logger.addHandler(queue_handler)
-
-# Слушатель очереди
+#
+# # Слушатель очереди
 # queue_listener = QueueListener(queue, file_log_handler)
 #
 # # Запускаем слушатель очереди
 # queue_listener.start()
-
-# Функция для завершения логгера
+#
+# # Функция для завершения логгера
 # def shutdown_logger():
 #     """Завершает работу логгера и очищает ресурсы."""
 #     queue_listener.stop()  # Останавливаем слушатель очереди
