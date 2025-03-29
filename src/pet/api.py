@@ -10,8 +10,8 @@ class PetAPI(CustomRequester):
 	def get_find_pet_by_id(self, pet_id: str):
 		return self.get(url.GET_FIND_BY_ID.format(pet_id=pet_id))
 
-	def get_find_pet_by_status(self, pet_status):
-		params = pet_status
+	def get_find_pet_by_status(self, pet_status: list[str]):
+		params = [("status", status) for status in pet_status]
 		return self.get(url.GET_FIND_BY_STATUS, params=params)
 
 	def post_pet(self, data):

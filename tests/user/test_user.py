@@ -10,7 +10,7 @@ from src.user.models import User
 def user_data():
     """Фикстура для данных пользователя"""
     # Рандомный id
-    user_id = random.randint(1, 1000)
+    user_id = random.randint(1, 100000)
 
     return User(**{
         "id": user_id,

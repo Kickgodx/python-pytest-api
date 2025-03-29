@@ -1,15 +1,19 @@
+import time
+
 import allure
 import pytest
 
 from src.store.models import Order
-
+import random
 
 @pytest.fixture(scope="function")
 def order_data():
     """Фикстура для данных заказа"""
+    rand = random.randint(1, 10)
+    rand2 = random.randint(1, 100)
     return Order(**{
-        "id": 789,
-        "petId": 456,
+        "id": rand,
+        "petId": rand2,
         "quantity": 1,
         "shipDate": "2025-04-01T12:00:00.000Z",
         "status": "placed",
@@ -30,6 +34,9 @@ class TestStore:
         # Сначала создаём заказ
         response = store_helper.place_order(order_data)
         assert response.status == order_data.status
+
+        # Пауза 5 сек
+        time.sleep(5)
 
         # Теперь получаем информацию о заказе
         response = store_helper.get_order_by_id(order_data.id)
