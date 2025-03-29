@@ -1,4 +1,5 @@
 import pytest
+
 from config import BASE_URL
 from src.store.helpers import StoreHelper
 

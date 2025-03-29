@@ -1,11 +1,8 @@
 import logging
-import multiprocessing
 import os
 from logging import FileHandler
-from logging.handlers import QueueHandler, QueueListener
-import atexit
-import config as cfg
 
+import config as cfg
 
 os.makedirs(cfg.LOGS_PATH, exist_ok=True)
 

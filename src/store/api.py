@@ -1,5 +1,5 @@
-from utils.custom_requester import CustomRequester
 import src.store.endpoints as url
+from utils.custom_requester import CustomRequester
 
 
 class StoreAPI(CustomRequester):

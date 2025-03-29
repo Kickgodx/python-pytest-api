@@ -1,7 +1,7 @@
-from src.base_model import BaseRequestModel
-from src.user.api import UserAPI
 from allure import step
 
+from src.base_model import BaseRequestModel
+from src.user.api import UserAPI
 from src.user.models import User, ApiResponse
 
 
@@ -57,4 +57,3 @@ class UserHelper:
 		response = self.api.create_user_list(data)
 		assert response.status_code == 200
 		return response.json()
-

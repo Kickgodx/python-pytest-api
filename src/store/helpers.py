@@ -1,7 +1,7 @@
-from src.base_model import BaseRequestModel
-from src.store.api import StoreAPI
 from allure import step
 
+from src.base_model import BaseRequestModel
+from src.store.api import StoreAPI
 from src.store.models import Order
 
 

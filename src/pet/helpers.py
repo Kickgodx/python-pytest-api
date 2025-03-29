@@ -1,9 +1,8 @@
+from allure import step
 from requests import HTTPError
 
 from src.base_model import BaseRequestModel
 from src.pet.api import PetAPI
-from allure import step
-
 from src.pet.models import Pet
 from src.user.models import ApiResponse
 
@@ -14,7 +13,7 @@ class PetHelper:
 		self.api = PetAPI(base_url)
 
 	@step("Создание питомца")
-	def create_pet(self, data: BaseRequestModel, expected_status_code=200) 	-> Pet:
+	def create_pet(self, data: BaseRequestModel, expected_status_code=200) -> Pet:
 		response = self.api.post_pet(data.serialize_payload_by_alias())
 		assert response.status_code == expected_status_code, f"Unexpected status code {response.status_code}"
 		return Pet(**response.json())

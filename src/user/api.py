@@ -1,5 +1,6 @@
-from utils.custom_requester import CustomRequester
 import src.user.endpoints as url
+from utils.custom_requester import CustomRequester
+
 
 class UserAPI(CustomRequester):
 	def __init__(self, base_url: str):
