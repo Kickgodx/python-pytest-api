@@ -1,25 +1,17 @@
-import random
 import time
 
 import allure
 import pytest
 
 from src.func.store.models import Order
+from src.tech.custom_asserts import CustomAsserts
+from src.tech.data_generator import DataGenerator
 
 
 @pytest.fixture(scope="function")
 def order_data():
 	"""Фикстура для данных заказа"""
-	rand = random.randint(1, 10)
-	rand2 = random.randint(1, 100)
-	return Order(**{
-		"id": rand,
-		"petId": rand2,
-		"quantity": 1,
-		"shipDate": "2025-04-01T12:00:00.000Z",
-		"status": "placed",
-		"complete": True
-	})
+	return Order(**DataGenerator().generate_order_body())
 
 
 @pytest.mark.store
@@ -34,12 +26,13 @@ class TestStore:
 	@allure.title("Создание и получение информации о заказе")
 	def test_get_order(self, store_helper, order_data):
 		# Сначала создаём заказ
-		response = store_helper.place_order(order_data)
-		assert response.status == order_data.status
+		with allure.step("Создание заказа"):
+			response = store_helper.place_order(order_data)
+			CustomAsserts.assert_equal(response.status, order_data.status)
+			CustomAsserts.assert_equal(response.id, order_data.id)
 
-		# Пауза 5 сек
 		time.sleep(5)
 
-		# Теперь получаем информацию о заказе
-		response = store_helper.get_order_by_id(order_data.id)
-		assert response.status == order_data.status
+		with allure.step("Получение информации о заказе"):
+			response = store_helper.get_order_by_id(order_data.id)
+			CustomAsserts.assert_equal(response.status, order_data.status)

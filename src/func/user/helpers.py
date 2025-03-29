@@ -1,4 +1,5 @@
 from allure import step
+from requests import HTTPError
 
 from src.func.base_model import BaseRequestModel
 from src.func.user.api import UserAPI
@@ -11,16 +12,22 @@ class UserHelper:
 		self.api = UserAPI(base_url)
 
 	@step("Создание пользователя")
-	def create_user(self, data: BaseRequestModel):
+	def create_user(self, data: BaseRequestModel, expected_status_code=200):
 		response = self.api.create_user(data.serialize_payload_by_alias())
-		assert response.status_code == 200
+		assert response.status_code == expected_status_code
 		return ApiResponse(**response.json())
 
 	@step("Получение информации о пользователе")
-	def get_user(self, username: str):
-		response = self.api.get_user_by_username(username)
-		assert response.status_code == 200
-		return User(**response.json())
+	def get_user(self, username: str, expected_status_code=200) -> ApiResponse | User:
+		try:
+			response = self.api.get_user_by_username(username)
+			assert response.status_code == expected_status_code
+		except HTTPError as e:
+			assert e.response.status_code == expected_status_code, f"Unexpected status code {e.response.status_code}"
+			return ApiResponse(**e.response.json())
+		else:
+			assert response.status_code == expected_status_code
+			return User(**response.json())
 
 	@step("Обновление информации о пользователе")
 	def update_user(self, username: str, data: BaseRequestModel):

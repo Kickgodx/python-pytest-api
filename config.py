@@ -1,8 +1,6 @@
 import logging
 import os
 
-BASE_URL = "https://petstore.swagger.io/v2"
-
 # region logging
 FILE_LOG_LEVEL = logging.ERROR
 LOG_FORMAT = "%(asctime)s.%(msecs)03d [%(levelname)s] - %(message)s"
@@ -14,3 +12,8 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 LOGS_PATH = os.path.join(ROOT_DIR, 'logs')
 ALLURE_RESULTS_PATH = os.path.join(ROOT_DIR, 'allure-results')
+# endregion
+
+# region hosts
+BASE_URL = "https://petstore.swagger.io/v2"
+# endregion
