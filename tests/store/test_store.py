@@ -4,7 +4,7 @@ import time
 import allure
 import pytest
 
-from src.store.models import Order
+from src.func.store.models import Order
 
 
 @pytest.fixture(scope="function")

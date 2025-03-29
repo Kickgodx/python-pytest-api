@@ -14,7 +14,7 @@ formatter = logging.Formatter(f"{worker_id}: " + cfg.LOG_FORMAT)
 formatter.datefmt = '%H:%M:%S'
 
 log_file = os.path.join(cfg.LOGS_PATH, cfg.LOG_FILE_NAME)
-file_log_handler = FileHandler(log_file, "w")
+file_log_handler = FileHandler(log_file, "w", "utf-8")
 file_log_handler.setLevel(cfg.FILE_LOG_LEVEL)
 file_log_handler.setFormatter(formatter)
 

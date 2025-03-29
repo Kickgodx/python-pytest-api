@@ -4,15 +4,15 @@ import time
 import allure
 import pytest
 
-from src.pet.models import Pet, PetStatus, Category, Tag
-from utils.custom_asserts import CustomAsserts
+from src.func.pet.models import Pet, PetStatus, Category, Tag
+from src.tech.custom_asserts import CustomAsserts
 
 
 @pytest.fixture(scope="function")
 def pet_data():
 	"""Фикстура для данных питомца"""
 	rand = random.randint(1, 1000)
-	generate_name = f"TsumTsum{rand}"
+	generate_name = f"TsumTsum {rand}"
 	return Pet(
 		id=rand,
 		name=generate_name,

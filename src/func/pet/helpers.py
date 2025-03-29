@@ -1,10 +1,10 @@
 from allure import step
 from requests import HTTPError
 
-from src.base_model import BaseRequestModel
-from src.pet.api import PetAPI
-from src.pet.models import Pet
-from src.user.models import ApiResponse
+from src.func.base_model import BaseRequestModel
+from src.func.pet.api import PetAPI
+from src.func.pet.models import Pet
+from src.func.user.models import ApiResponse
 
 
 class PetHelper:

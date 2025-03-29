@@ -1,8 +1,8 @@
 from allure import step
 
-from src.base_model import BaseRequestModel
-from src.store.api import StoreAPI
-from src.store.models import Order
+from src.func.base_model import BaseRequestModel
+from src.func.store.api import StoreAPI
+from src.func.store.models import Order
 
 
 class StoreHelper:

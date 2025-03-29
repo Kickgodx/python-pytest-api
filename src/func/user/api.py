@@ -1,5 +1,5 @@
-import src.user.endpoints as url
-from utils.custom_requester import CustomRequester
+import src.func.user.endpoints as url
+from src.tech.custom_requester import CustomRequester
 
 
 class UserAPI(CustomRequester):

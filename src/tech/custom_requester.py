@@ -10,7 +10,7 @@ import urllib3
 from requests import Response, HTTPError
 from urllib3.exceptions import InsecureRequestWarning  # Правильный импорт
 
-from utils.custom_logger import logger
+from src.tech.custom_logger import logger
 
 HTTP_METHODS = ("GET", "POST", "PUT", "DELETE", "PATCH")
 DEFAULT_TIMEOUT = 30

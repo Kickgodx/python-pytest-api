@@ -1,6 +1,6 @@
 from enum import Enum
 
-from src.base_model import BaseRequestModel
+from src.func.base_model import BaseRequestModel
 
 
 class OrderStatus(Enum):

@@ -1,7 +1,7 @@
 import pytest
 
 from config import BASE_URL
-from src.pet.helpers import PetHelper
+from src.func.pet.helpers import PetHelper
 
 
 @pytest.fixture(scope="session")

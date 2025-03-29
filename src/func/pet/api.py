@@ -1,5 +1,5 @@
-import src.pet.endpoints as url
-from utils.custom_requester import CustomRequester
+import src.func.pet.endpoints as url
+from src.tech.custom_requester import CustomRequester
 
 
 class PetAPI(CustomRequester):

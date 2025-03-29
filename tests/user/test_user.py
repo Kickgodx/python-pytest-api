@@ -3,7 +3,7 @@ import random
 import allure
 import pytest
 
-from src.user.models import User
+from src.func.user.models import User
 
 
 @pytest.fixture(scope="function")
