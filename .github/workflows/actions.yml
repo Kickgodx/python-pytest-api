@@ -1,11 +1,11 @@
-name: Tests with Allure History
+name: Tests with Allure
 
 on:
   workflow_dispatch:
   push:
-    branches: [ "main", "master" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: [ "master" ]
 
 jobs:
   run-tests:
@@ -13,80 +13,56 @@ jobs:
     env:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt pytest allure-pytest
-
-      - name: Run tests
-        run: pytest --alluredir=allure-results
-        continue-on-error: true
-
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
+      - name: Install Python Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3.12 python3-pip
+          pip install -r requirements.txt
+
+      - name: Run Tests
+        run: pytest -n 4
+        continue-on-error: true
+
       - name: Install Allure
         run: npm install -g allure-commandline
 
-      - name: Prepare history
+      - name: Generate Allure Report
         run: |
-          mkdir -p allure-history
-          # Копируем предыдущие отчёты только если они существуют
-          if [ -d "gh-pages/history" ]; then
-            cp -R gh-pages/history/. allure-history/ || true
-          fi
+          mkdir -p ./allure-results
+          allure generate ./allure-results --clean -o ./allure-report
 
-      - name: Generate report
-        run: |
-          # Создаём директорию с timestamp
-          REPORT_DIR="allure-history/$(date +%s)"
-          mkdir -p $REPORT_DIR
-          
-          # Генерируем отчёт
-          allure generate allure-results --clean -o $REPORT_DIR
-          
-          # Создаём симлинк на последний отчёт
-          ln -sfn $REPORT_DIR allure-history/latest
-          
-          # Для GitHub Pages создаём index.html
-          echo "<html><body><h1>Allure Reports</h1><ul>" > allure-history/index.html
-          find allure-history -maxdepth 1 -type d -name '[0-9]*' | sort -nr | while read dir; do
-            ts=$(basename $dir)
-            date_str=$(date -d @$ts +"%Y-%m-%d %H:%M:%S")
-            echo "<li><a href='$ts/index.html'>$date_str</a></li>" >> allure-history/index.html
-          done
-          echo "</ul></body></html>" >> allure-history/index.html
-
-      - name: Archive report
+      - name: Upload Allure Report Artifact
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: allure-report
-          path: allure-history
+          path: ./allure-report
 
       - name: Checkout gh-pages
+        if: always()
         uses: actions/checkout@v4
         with:
           ref: gh-pages
           path: gh-pages
 
-      - name: Update history
-        run: |
-          mkdir -p gh-pages/history
-          rsync -av --delete allure-history/ gh-pages/history/
-
-      - name: Deploy reports
+      - name: Publish Report
+        if: always()
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./gh-pages/history
-          destination_dir: ./history
-          keep_files: true
+          publish_dir: ./allure-report
+          destination_dir: ./latest-report
+          force_orphan: true
