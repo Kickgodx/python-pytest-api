@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Docker Image CI with Allure Report
 
 on:
   push:
@@ -7,9 +7,7 @@ on:
     branches: [ "master" ]
 
 jobs:
-
-  build:
-
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,5 +16,38 @@ jobs:
       - name: Build the Docker image
         run: docker build . --file Dockerfile --tag petstore_tests_image:latest
 
-      - name: Запуск контейнера и тестов
-        run: docker run petstore_tests_image:latest
+      - name: Run tests and copy results
+        run: |
+          # Запускаем контейнер и монтируем volume для сохранения результатов
+          docker run --name petstore_tests -v $(pwd)/allure-results:/app/allure-results petstore_tests_image:latest
+          # Убедимся, что контейнер завершил работу
+          docker wait petstore_tests
+          # Копируем результаты из контейнера (на всякий случай)
+          docker cp petstore_tests:/app/allure-results ./allure-results/
+
+      - name: Generate Allure report
+        run: |
+          # Устанавливаем Allure CLI
+          sudo apt-get install -y allure
+          # Генерируем отчёт
+          allure generate --clean ./allure-results -o ./allure-report
+
+      - name: Upload artifact for deployment
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./allure-report
+
+  deploy:
+    needs: build-and-test
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
