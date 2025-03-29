@@ -1,23 +1,24 @@
-from utils.custom_requester import CustomRequester
-import src.pet.endpoints as url
+import src.func.pet.endpoints as url
+from src.tech.custom_requester import CustomRequester
 
 
 class PetAPI(CustomRequester):
 	def __init__(self, base_url: str):
 		super().__init__(base_url)
+		self.headers = {"Content-Type": "application/json"}
 
 	def get_find_pet_by_id(self, pet_id: str):
 		return self.get(url.GET_FIND_BY_ID.format(pet_id=pet_id))
 
-	def get_find_pet_by_status(self, pet_status):
-		params = pet_status
+	def get_find_pet_by_status(self, pet_status: list[str]):
+		params = [("status", status) for status in pet_status]
 		return self.get(url.GET_FIND_BY_STATUS, params=params)
 
 	def post_pet(self, data):
-		return self.post(url.POST_PET, json=data)
+		return self.post(url.POST_PET, data=data)
 
 	def put_pet(self, data):
-		return self.put(url.PUT_PET, json=data)
+		return self.put(url.PUT_PET, data=data)
 
 	def delete_pet(self, pet_id):
 		return self.delete(url.DELETE_PET.format(pet_id=pet_id))

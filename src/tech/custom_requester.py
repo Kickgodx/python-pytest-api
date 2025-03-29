@@ -10,7 +10,7 @@ import urllib3
 from requests import Response, HTTPError
 from urllib3.exceptions import InsecureRequestWarning  # Правильный импорт
 
-from utils.custom_logger import logger
+from src.tech.custom_logger import logger
 
 HTTP_METHODS = ("GET", "POST", "PUT", "DELETE", "PATCH")
 DEFAULT_TIMEOUT = 30
@@ -171,6 +171,10 @@ class CustomRequester:
         self._log_response(request_id, response)
         try:
             handled_response = self._handle_response(request_id, response, method=method, url=url, headers=response.request.headers, data=data)
+        except HTTPError as e:
+            self._add_request_attachments(method, url, headers, data, params)
+            self._add_response_attachments(response)
+            raise e
         except Exception:
             self._add_request_attachments(method, url, headers, data, params)
             self._add_response_attachments(response)

@@ -1,0 +1,19 @@
+.common_collect_external:
+  image: # image на образ с питоном (например, python:3.12.4-alpine)
+  before_script:
+    - python -m venv venv
+    - source venv/bin/activate
+    - pip install -r requirements.txt
+  extends:
+    - .linux-docker-runners
+
+collect tests external:
+  stage: collect
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: always
+    - when: manual
+  script:
+    - pytest --collect-only
+  extends:
+    - .common_collect_external

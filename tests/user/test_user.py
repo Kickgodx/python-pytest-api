@@ -1,25 +1,15 @@
-import random
-
 import allure
 import pytest
+
+from src.func.user.models import User
+from src.tech.custom_asserts import CustomAsserts
+from src.tech.data_generator import DataGenerator
 
 
 @pytest.fixture(scope="function")
 def user_data():
 	"""Фикстура для данных пользователя"""
-	# Рандомный id
-	user_id = random.randint(1, 1000)
-
-	return {
-		"id": user_id,
-		"username": "test_user",
-		"firstName": "Test",
-		"lastName": "User",
-		"email": "test@example.com",
-		"password": "123456",
-		"phone": "1234567890",
-		"userStatus": 1
-	}
+	return User(**DataGenerator().generate_user_body())
 
 
 @allure.epic("Petstore API")
@@ -30,10 +20,13 @@ class TestUser:
 	@allure.title("Создание пользователя")
 	def test_create_user(self, user_helper, user_data):
 		response = user_helper.create_user(user_data)
+		CustomAsserts.assert_equal(response.message, user_data.id)
 
 	@allure.title("Получение информации о пользователе")
 	def test_get_user(self, user_helper, user_data):
-		response = user_helper.create_user(user_data)
+		with allure.step("Создание пользователя"):
+			response = user_helper.create_user(user_data)
 
-		response = user_helper.get_user(user_data["username"])
-		assert response["username"] == user_data["username"]
+		with allure.step("Получение информации о пользователе"):
+			response = user_helper.get_user(user_data.username)
+			CustomAsserts.assert_equal(response.username, user_data.username)

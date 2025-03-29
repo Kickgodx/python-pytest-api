@@ -1,0 +1,68 @@
+.common_telegram:
+  stage: notify
+  script:
+    - |
+      if [ -z ${ENV_FLAG} ]; then
+      ENVIRONMENT=""
+      TEST=""
+      else
+      ENVIRONMENT="<b>Окружение:</b> "${TEST_ENVIRONMENT}""
+      TEST="<b>Тест:</b> "${TEST_NAME}""
+      fi
+
+      if [ "${TEST_STATUS}" == "success" ]; then
+      export NOTIFICATION_TEXT="
+      ✅🌵🎄   Тесты пройдены успешно   🌳🌴♻️
+
+      <b>Проект:</b> "${CI_PROJECT_NAME}"
+      <b>Ветка тестов:</b> "${CI_COMMIT_BRANCH}"
+      <b>Джоба:</b> "${TEST_JOB_NAME}"
+      ${ENVIRONMENT}
+      ${TEST}
+      <b>Commit:</b> "${CI_COMMIT_MESSAGE}"
+      
+      "
+      else
+      export NOTIFICATION_TEXT="
+      🧲❤️🚩   Тесты провалились   ❌💯📍
+
+      <b>Проект:</b> "${CI_PROJECT_NAME}"
+      <b>Ветка тестов:</b> "${CI_COMMIT_BRANCH}"
+      <b>Джоба:</b> "${TEST_JOB_NAME}"
+      ${ENVIRONMENT}
+      ${TEST}
+      <b>Commit:</b> "${CI_COMMIT_MESSAGE}"
+      
+      "
+      fi
+      message='
+      {
+      "chat_id":"'${CHAT_ID_AUTOTESTS}'",
+      "message_thread_id": "'${TG_CHAT_THREAD_ID}'",
+      "parse_mode": "HTML",
+      "disable_notification": "true",
+      "text": "
+      '"${NOTIFICATION_TEXT}"'
+      ",
+      "reply_markup": { "inline_keyboard": [ [ { "text": "Перейти к allure-report","callback_data": "1","url": "'${REPORT_LINK}'" } ],[ { "text": "Перейти в пайплайн","callback_data": "2","url": "'${PIPELINE_LINK}'" } ], [ { "text": "Лог ошибок запросов","callback_data": "3","url": "'${LOG_LINK}'" } ] ] }
+      }'
+      curl -s -X POST ${TELEGRAM_API_URL}/bot${TG_DEVOPS_BOT_TOKEN}/sendMessage \
+        --header "Content-Type: application/json" \
+        --data "$message"
+  extends:
+    - .notifications-common
+
+all_notification_with_env:
+  variables:
+    ENV_FLAG: "TRUE"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULED_ALL == "TRUE"
+      when: on_success
+    - if: $CI_COMMIT_BRANCH == "dev" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULED_ALL == "TRUE"
+      when: on_success
+    - when: manual
+  needs:
+    - run_tests
+    - make_allure_report
+  extends:
+    - .common_telegram
