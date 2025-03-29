@@ -16,23 +16,27 @@ jobs:
       - name: Build the Docker image
         run: docker build . --file Dockerfile --tag petstore_tests_image:latest
 
-      - name: Run tests and copy results
+      - name: Run tests and get results
+        continue-on-error: true  # Продолжаем даже если тесты упали
         run: |
-          # Запускаем контейнер и монтируем volume для сохранения результатов
-          docker run --name petstore_tests -v $(pwd)/allure-results:/app/allure-results petstore_tests_image:latest
-          # Убедимся, что контейнер завершил работу
-          docker wait petstore_tests
-          # Копируем результаты из контейнера (на всякий случай)
-          docker cp petstore_tests:/app/allure-results ./allure-results/
+          # Создаём директорию для результатов
+          mkdir -p ./allure-results
+          # Запускаем контейнер с автоматическим удалением после выполнения
+          docker run --rm \
+            -v $(pwd)/allure-results:/app/allure-results \
+            petstore_tests_image:latest
 
       - name: Generate Allure report
+        if: always()  # Выполняем всегда, даже если тесты упали
         run: |
           # Устанавливаем Allure CLI
+          sudo apt-get update
           sudo apt-get install -y allure
           # Генерируем отчёт
           allure generate --clean ./allure-results -o ./allure-report
 
       - name: Upload artifact for deployment
+        if: always()
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./allure-report
@@ -50,4 +54,5 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
+        if: always()
         uses: actions/deploy-pages@v4
