@@ -16,26 +16,26 @@ jobs:
       - name: Build the Docker image
         run: docker build . --file Dockerfile --tag petstore_tests_image:latest
 
-      - name: Run tests and get results
-        continue-on-error: true  # Продолжаем даже если тесты упали
+      - name: Prepare results directory
         run: |
-          # Создаём директорию для результатов
           mkdir -p ./allure-results
-          # Запускаем контейнер с автоматическим удалением после выполнения
+          chmod 777 ./allure-results  # Даём полные права на директорию
+
+      - name: Run tests
+        continue-on-error: true
+        run: |
           docker run --rm \
             -v $(pwd)/allure-results:/app/allure-results \
             petstore_tests_image:latest
 
       - name: Generate Allure report
-        if: always()  # Выполняем всегда, даже если тесты упали
+        if: always()
         run: |
-          # Устанавливаем Allure CLI
           sudo apt-get update
           sudo apt-get install -y allure
-          # Генерируем отчёт
           allure generate --clean ./allure-results -o ./allure-report
 
-      - name: Upload artifact for deployment
+      - name: Upload artifact
         if: always()
         uses: actions/upload-pages-artifact@v3
         with:
