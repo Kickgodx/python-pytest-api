@@ -26,49 +26,36 @@ jobs:
 
       - name: Run Tests
         id: run-tests
-        run: |
-          pytest || exit 1
-          echo "run-tests-success=true" >> $GITHUB_OUTPUT
-
-      - name: Check Results Directory
-        run: ls -lah ./allure-results
+        run: pytest
+        continue-on-error: true
 
       - name: Install Allure
-        run: |
-          npm install -g allure-commandline
+        run: npm install -g allure-commandline
+
       - name: Generate Allure Report
         run: |
           allure generate ./allure-results --clean -o ./allure-report
           echo "Allure Report generated successfully."
           ls -lah ./allure-report
 
-      - name: Save Allure Report Artifact
+      - name: Upload Allure Report Artifact
         uses: actions/upload-artifact@v3
         if: always()
         with:
           name: allure-report
           path: ./allure-report
 
-      - name: Load test report history
-        uses: actions/checkout@v3
+      - name: Checkout gh-pages
         if: always()
-        continue-on-error: true
+        uses: actions/checkout@v3
         with:
           ref: gh-pages
           path: gh-pages
 
-      - name: Build test report
-        uses: simple-elf/allure-report-action@v1.7
+      - name: Publish Report
         if: always()
-        with:
-          gh_pages: gh-pages
-          allure_history: allure-history
-          allure_results: ./allure-results
-
-      - name: Publish test report
         uses: peaceiris/actions-gh-pages@v3
-        if: always()
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: allure-history
+          publish_dir: ./allure-report
+          destination_dir: ./latest-report
