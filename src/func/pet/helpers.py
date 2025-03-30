@@ -43,7 +43,7 @@ class PetHelper:
 		return Pet(**response.json())
 
 	@step("Удаление питомца")
-	def delete_pet(self, pet_id, expected_status_code=200):
+	def delete_pet(self, pet_id, expected_status_code=200) -> dict:
 		try:
 			response = self.api.delete_pet(pet_id)
 		except HTTPError as e:
@@ -53,13 +53,13 @@ class PetHelper:
 		return response.json()
 
 	@step("Загрузка изображения питомца")
-	def upload_image(self, pet_id, additional_metadata, file, expected_status_code=200):
+	def upload_image(self, pet_id, additional_metadata, file, expected_status_code=200) -> dict:
 		response = self.api.post_upload_image(pet_id, additional_metadata, file)
 		assert response.status_code == expected_status_code, f"Unexpected status code {response.status_code}"
 		return response.json()
 
 	@step("Обновление статуса и имени питомца")
-	def update_status_and_name(self, pet_id, name, status, expected_status_code=200):
+	def update_status_and_name(self, pet_id, name, status, expected_status_code=200) -> dict:
 		response = self.api.post_update_status_and_name(pet_id, name, status)
 		assert response.status_code == expected_status_code, f"Unexpected status code {response.status_code}"
 		return response.json()

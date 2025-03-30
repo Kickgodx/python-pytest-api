@@ -71,3 +71,13 @@ class BaseRequestModel(BaseModel):
 		"""
 		data = json.loads(json_str)
 		return cls(**data)
+
+	# Сериализовать в JSON строку массив с объектами
+	@staticmethod
+	def serialize_array_by_alias(data: list):
+		"""
+		Сериализует массив объектов в JSON-строку.
+		:param data: Массив объектов.
+		:return: JSON-строка.
+		"""
+		return json.dumps([item.model_dump(exclude_none=True, by_alias=True) for item in data], ensure_ascii=False)

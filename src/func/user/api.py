@@ -17,7 +17,7 @@ class UserAPI(CustomRequester):
 
 	def create_user_with_array(self, data: list):
 		"""Create user with array"""
-		return self.post(url.POST_CREATE_USER_WITH_ARRAY, json=data)
+		return self.post(url.POST_CREATE_USER_WITH_ARRAY, data=data, headers=self.headers)
 
 	def get_user_by_username(self, username: str):
 		"""Get user by username"""

@@ -12,7 +12,7 @@ class UserHelper:
 		self.api = UserAPI(base_url)
 
 	@step("Создание пользователя")
-	def create_user(self, data: BaseRequestModel, expected_status_code=200):
+	def create_user(self, data: BaseRequestModel, expected_status_code=200) -> ApiResponse:
 		response = self.api.create_user(data.serialize_payload_by_alias())
 		assert response.status_code == expected_status_code
 		return ApiResponse(**response.json())
@@ -30,37 +30,44 @@ class UserHelper:
 			return User(**response.json())
 
 	@step("Обновление информации о пользователе")
-	def update_user(self, username: str, data: BaseRequestModel):
+	def update_user(self, username: str, data: BaseRequestModel) -> ApiResponse:
 		response = self.api.update_user(username, data.serialize_payload_by_alias())
 		assert response.status_code == 200
-		return response.json()
+		return ApiResponse(**response.json())
 
 	@step("Удаление пользователя")
-	def delete_user(self, username: str):
-		response = self.api.delete_user(username)
-		assert response.status_code == 200
-		return response.json()
+	def delete_user(self, username: str) -> ApiResponse:
+		try:
+			response = self.api.delete_user(username)
+			assert response.status_code == 200
+		except HTTPError as e:
+			assert e.response.status_code == 200, f"Unexpected status code {e.response.status_code}"
+			return ApiResponse(**e.response.json())
+		else:
+			assert response.status_code == 200
+			return ApiResponse(**response.json())
 
 	@step("Авторизация пользователя")
-	def login_user(self, username: str, password: str):
+	def login_user(self, username: str, password: str) -> ApiResponse:
 		response = self.api.login_user(username, password)
 		assert response.status_code == 200
-		return response.json()
+		return ApiResponse(**response.json())
 
 	@step("Выход из аккаунта")
-	def logout_user(self):
+	def logout_user(self) -> ApiResponse:
 		response = self.api.logout_user()
 		assert response.status_code == 200
-		return response.json()
+		return ApiResponse(**response.json())
 
 	@step("Создание пользователя с массивом")
-	def create_user_with_array(self, data: list[User]):
-		response = self.api.create_user_with_array(data)
+	def create_user_with_array(self, data: list[User]) -> ApiResponse:
+		# list_users = [user.model_dump(exclude_none=True) for user in data]
+		response = self.api.create_user_with_array(BaseRequestModel.serialize_array_by_alias(data))
 		assert response.status_code == 200
-		return response.json()
+		return ApiResponse(**response.json())
 
 	@step("Создание списка пользователей")
-	def create_user_list(self, data: list):
+	def create_user_list(self, data: list) -> dict:
 		response = self.api.create_user_list(data)
 		assert response.status_code == 200
 		return response.json()
