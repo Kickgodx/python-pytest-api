@@ -7,8 +7,8 @@ on:
         description: 'Branch to run on'
         required: true
         default: 'master'
-#  push:
-#    branches: [ "master" ]
+  push:
+    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
 
