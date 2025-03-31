@@ -162,3 +162,5 @@ logs/
 
 # JetBrains IDEs
 .idea/
+*old*
+*debug*

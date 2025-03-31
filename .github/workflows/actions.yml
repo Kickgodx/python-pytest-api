@@ -9,8 +9,8 @@ on:
         default: 'master'
   push:
     branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+#  pull_request:
+#    branches: [ "master" ]
 
 jobs:
   run-tests:
