@@ -5,8 +5,6 @@ import os
 from logging import FileHandler
 from logging.handlers import QueueHandler, QueueListener
 
-from filelock import FileLock
-
 import config as cfg
 
 os.makedirs(cfg.LOGS_PATH, exist_ok=True)

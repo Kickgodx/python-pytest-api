@@ -1,5 +1,5 @@
 from allure import step
-from requests import HTTPError, Response
+from requests import Response
 
 from src.func.base_model import BaseRequestModel
 from src.func.pet.api import PetAPI

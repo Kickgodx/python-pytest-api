@@ -1,5 +1,4 @@
 from allure import step
-from requests import HTTPError
 
 from src.func.base_model import BaseRequestModel
 from src.func.user.api import UserAPI
