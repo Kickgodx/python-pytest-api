@@ -1,6 +1,12 @@
-# Petstore API pytest tests
+# Petstore API tests
 
-This repository contains a set of tests for the Petstore API using pytest.
+
+## 🔍 Latest Test Results
+- 📊 [View Allure Report](https://Kickgodx.github.io/python-pytest-api/latest-report/index.html)
+- 📝 [Download Log File](https://Kickgodx.github.io/python-pytest-api/latest-report/logs/log.log)
+
+_Updated: 2025-04-02 01:30:05 UTC_
+
 
 ## Installation
 

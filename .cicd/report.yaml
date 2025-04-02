@@ -1,8 +1,8 @@
 .common_report:
-  image: # image с установленным npm, например node:14.17.0-alpine
+  image: node:14.17.0-alpine
   stage: report
   variables:
-    REPORT_PATH: "https://ЗАПОЛНИТЬ_ХОСТОМ_ГИТЛАБА/-/autotests/${CI_PROJECT_NAME}/-/jobs/${CI_JOB_ID}/artifacts/allure-report/index.html"
+    REPORT_PATH: "https://${CI_SERVER_HOST}/-/autotests/${CI_PROJECT_NAME}/-/jobs/${CI_JOB_ID}/artifacts/allure-report/index.html"
   artifacts:
     name: "Allure-report"
     when: always
@@ -12,14 +12,14 @@
     reports:
       dotenv: report_path.env
   before_script:
-    - npm install allure-commandline
+    - npm install -g allure-commandline
     - npm install
   script:
     - npx allure generate --clean -o allure-report
-    - echo REPORT_LINK=$REPORT_PATH >> report_path.env
+    - echo "REPORT_LINK=$REPORT_PATH" >> report_path.env
   after_script:
-    - echo $REPORT_PATH
-    - echo $LOG_PATH
+    - echo "Report available at: $REPORT_PATH"
+    - echo "Logs available at: $LOG_PATH"
     - echo "REPORT_JOB_STATUS=${CI_JOB_STATUS}" >> report_path.env
   extends:
     - .linux-docker-runners
@@ -32,6 +32,7 @@ make_allure_report:
       when: on_success
     - when: manual
   needs:
-    - run_tests
+    - job: run_tests
+      artifacts: true
   extends:
     - .common_report

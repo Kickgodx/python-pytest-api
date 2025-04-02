@@ -1,54 +1,60 @@
 .common_telegram:
   stage: notify
+  image: alpine/curl:latest
+  before_script:
+    - apk add --no-cache jq
   script:
     - |
-      if [ -z ${ENV_FLAG} ]; then
-      ENVIRONMENT=""
-      TEST=""
+      # Set default values
+      TEST_ENVIRONMENT="${TEST_ENVIRONMENT:-Not specified}"
+      TEST_NAME="${TEST_NAME:-Not specified}"
+      CI_COMMIT_MESSAGE="${CI_COMMIT_MESSAGE:-No commit message}"
+
+      # Prepare message text
+      if [ "${TEST_STATUS}" = "success" ]; then
+        MSG_HEADER="✅ Тесты пройдены успешно ✅"
       else
-      ENVIRONMENT="<b>Окружение:</b> "${TEST_ENVIRONMENT}""
-      TEST="<b>Тест:</b> "${TEST_NAME}""
+        MSG_HEADER="❌ Тесты провалились ❌"
       fi
 
-      if [ "${TEST_STATUS}" == "success" ]; then
-      export NOTIFICATION_TEXT="
-      ✅🌵🎄   Тесты пройдены успешно   🌳🌴♻️
+      COMMIT_MSG=$(echo "${CI_COMMIT_MESSAGE}" | head -n 1)
+      NOTIFICATION_TEXT="
+      ${MSG_HEADER}
 
-      <b>Проект:</b> "${CI_PROJECT_NAME}"
-      <b>Ветка тестов:</b> "${CI_COMMIT_BRANCH}"
-      <b>Джоба:</b> "${TEST_JOB_NAME}"
-      ${ENVIRONMENT}
-      ${TEST}
-      <b>Commit:</b> "${CI_COMMIT_MESSAGE}"
-      
+      <b>Проект:</b> ${CI_PROJECT_NAME}
+      <b>Ветка:</b> ${CI_COMMIT_BRANCH}
+      <b>Джоба:</b> ${TEST_JOB_NAME}
+      <b>Тест:</b> ${TEST_NAME}"
+      <b>Коммит:</b> ${COMMIT_MSG}
       "
-      else
-      export NOTIFICATION_TEXT="
-      🧲❤️🚩   Тесты провалились   ❌💯📍
 
-      <b>Проект:</b> "${CI_PROJECT_NAME}"
-      <b>Ветка тестов:</b> "${CI_COMMIT_BRANCH}"
-      <b>Джоба:</b> "${TEST_JOB_NAME}"
-      ${ENVIRONMENT}
-      ${TEST}
-      <b>Commit:</b> "${CI_COMMIT_MESSAGE}"
-      
-      "
+      # Add environment info if flag is set
+      if [ -n "${ENV_FLAG}" ]; then
+        NOTIFICATION_TEXT="${NOTIFICATION_TEXT}
+        <b>Окружение:</b> ${TEST_ENVIRONMENT}
       fi
-      message='
-      {
-      "chat_id":"'${CHAT_ID_AUTOTESTS}'",
-      "message_thread_id": "'${TG_CHAT_THREAD_ID}'",
-      "parse_mode": "HTML",
-      "disable_notification": "true",
-      "text": "
-      '"${NOTIFICATION_TEXT}"'
-      ",
-      "reply_markup": { "inline_keyboard": [ [ { "text": "Перейти к allure-report","callback_data": "1","url": "'${REPORT_LINK}'" } ],[ { "text": "Перейти в пайплайн","callback_data": "2","url": "'${PIPELINE_LINK}'" } ], [ { "text": "Лог ошибок запросов","callback_data": "3","url": "'${LOG_LINK}'" } ] ] }
-      }'
-      curl -s -X POST ${TELEGRAM_API_URL}/bot${TG_DEVOPS_BOT_TOKEN}/sendMessage \
-        --header "Content-Type: application/json" \
-        --data "$message"
+
+      # Send Telegram message
+      curl -s -X POST "${TELEGRAM_API_URL}/bot${TG_DEVOPS_BOT_TOKEN}/sendMessage" \
+        -H "Content-Type: application/json" \
+        -d "$(jq -n \
+          --arg chat_id "${CHAT_ID_AUTOTESTS}" \
+          --arg text "${NOTIFICATION_TEXT}" \
+          --arg report_link "${REPORT_LINK}" \
+          --arg pipeline_link "${PIPELINE_LINK}" \
+          --arg log_link "${LOG_LINK}" \
+          '{
+            "chat_id": $chat_id,
+            "parse_mode": "HTML",
+            "text": $text,
+            "reply_markup": {
+              "inline_keyboard": [
+                [{"text": "📊 Отчёт", "url": $report_link}],
+                [{"text": "🔧 Pipeline", "url": $pipeline_link}],
+                [{"text": "📝 Логи", "url": $log_link}]
+              ]
+            }
+          }')"
   extends:
     - .notifications-common
 
@@ -56,13 +62,13 @@ all_notification_with_env:
   variables:
     ENV_FLAG: "TRUE"
   rules:
-    - if: $CI_COMMIT_BRANCH == "master" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULED_ALL == "TRUE"
+    - if: '$CI_COMMIT_BRANCH == "master" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULED_ALL == "TRUE"'
       when: on_success
-    - if: $CI_COMMIT_BRANCH == "dev" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULED_ALL == "TRUE"
+    - if: '$CI_COMMIT_BRANCH == "dev" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULED_ALL == "TRUE"'
       when: on_success
     - when: manual
   needs:
-    - run_tests
-    - make_allure_report
+    - job: run_tests
+    - job: make_allure_report
   extends:
     - .common_telegram

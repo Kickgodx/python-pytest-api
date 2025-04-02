@@ -1,8 +1,8 @@
 .common_test:
-  image: # image с питоном, например python:3.12.4-alpine
+  image: python:3.12.4-alpine
   stage: test
   variables:
-    LOG_PATH: "https://ЗАПОЛНИТЬ_ХОСТОМ_ГИТЛАБА/-/autotests/${CI_PROJECT_NAME}/-/jobs/${CI_JOB_ID}/artifacts/logs/log.log"
+    LOG_PATH: "https://${CI_SERVER_HOST}/-/autotests/${CI_PROJECT_NAME}/-/jobs/${CI_JOB_ID}/artifacts/logs/log.log"
   allow_failure: true
   artifacts:
     when: always

@@ -55,6 +55,15 @@ jobs:
         with:
           name: allure-report
           path: ./allure-report
+          retention-days: 3
+
+      - name: Upload Log Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-logs
+          path: ./logs/log.log
+          retention-days: 3
 
       - name: Checkout gh-pages
         if: always()
@@ -63,12 +72,81 @@ jobs:
           ref: gh-pages
           path: gh-pages
 
-      - name: Publish Report
+      - name: Prepare artifacts for publishing
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p ./publish
+          cp -r ./allure-report/* ./publish/
+          mkdir -p ./publish/logs
+          cp ./logs/log.log ./publish/logs/
+
+      - name: Publish Report and Logs
         if: always()
         uses: peaceiris/actions-gh-pages@v3
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./allure-report
+          publish_dir: ./publish
           destination_dir: ./latest-report
-#          force_orphan: true
-          keep_files: true
+          force_orphan: true
+#          keep_files: true
+
+      - name: Display report URLs
+        run: |
+          echo "===================================================================="
+          echo "📊 Allure Report: https://${{ github.repository_owner }}.github.io/${GITHUB_REPOSITORY#*/}/latest-report/index.html"
+          echo "📝 Log File: https://${{ github.repository_owner }}.github.io/${GITHUB_REPOSITORY#*/}/latest-report/logs/log.log"
+          echo "===================================================================="
+
+      - name: Update README with report links
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+
+          UPDATED_DATE="_Updated: $(date '+%Y-%m-%d %H:%M:%S UTC')_"
+
+          # Обрабатываем README.md
+          if [ -f README.md ] && grep -q '## 🔍 Latest Test Results' README.md; then
+            # Обновляем только дату в существующем блоке
+            awk -v date="$UPDATED_DATE" '
+              /^_Updated:/ {print date; next}
+              {print}
+            ' README.md > tmp.md && mv tmp.md README.md
+
+            # Коммитим изменения только если дата изменилась
+            if ! git diff --quiet README.md; then
+              git config --global user.name "GitHub Actions"
+              git config --global user.email "actions@github.com"
+              git add README.md
+              git commit -m "Update test report timestamp [skip ci]"
+              git push
+            fi
+          else
+            # Создаем новый блок (если README или секция отсутствуют)
+            REPO_NAME=${GITHUB_REPOSITORY#*/}
+            REPORT_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io/${REPO_NAME}/latest-report/index.html"
+            LOG_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io/${REPO_NAME}/latest-report/logs/log.log"
+
+              LINKS_BLOCK="\n## 🔍 Latest Test Results
+            - [ 📊 View Allure Report ]($REPORT_URL)
+            - [📝 Download Log File]($LOG_URL)
+            $UPDATED_DATE\n"
+          
+            # Добавляем после первой строки
+            if [ -f README.md ]; then
+              head -n 1 README.md > tmp.md
+              echo -e "$LINKS_BLOCK$(tail -n +2 README.md)" >> tmp.md
+            else
+              echo -e "# Petstore API pytest tests\n$LINKS_BLOCK" > tmp.md
+            fi
+            mv tmp.md README.md
+          
+            git config --global user.name "GitHub Actions"
+            git config --global user.email "actions@github.com"
+            git add README.md
+            git commit -m "Add test report links [skip ci]"
+            git push
+          fi
