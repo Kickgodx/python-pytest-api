@@ -1,5 +1,5 @@
 from allure import step
-from requests import HTTPError
+from requests import HTTPError, Response
 
 from src.func.base_model import BaseRequestModel
 from src.func.pet.api import PetAPI
@@ -19,15 +19,12 @@ class PetHelper:
 
 	@step("Получение информации о питомце по ID")
 	def get_pet(self, pet_id, expected_status_code=200) -> Pet | ApiResponse:
-		try:
 			response = self.api.get_find_pet_by_id(pet_id)
 			assert response.status_code == expected_status_code, f"Unexpected status code {response.status_code}"
-		except HTTPError as e:
-			assert e.response.status_code == expected_status_code, f"Unexpected status code {e.response.status_code}"
-			return ApiResponse(**e.response.json())
-		else:
-			assert response.status_code == expected_status_code, f"Unexpected status code {response.status_code}"
-			return Pet(**response.json())
+			if response.status_code == 200:
+				return Pet(**response.json())
+			else:
+				return ApiResponse(**response.json())
 
 	@step("Получение информации о питомцах по статусу")
 	def get_pet_by_status(self, pet_status: list[str], expected_status_code: int = 200) -> list[Pet]:
@@ -43,12 +40,8 @@ class PetHelper:
 		return Pet(**response.json())
 
 	@step("Удаление питомца")
-	def delete_pet(self, pet_id, expected_status_code=200) -> dict:
-		try:
-			response = self.api.delete_pet(pet_id)
-		except HTTPError as e:
-			assert e.response.status_code == expected_status_code, f"Unexpected status code {e.response.status_code}"
-			return e.response
+	def delete_pet(self, pet_id, expected_status_code=200) -> dict | Response:
+		response = self.api.delete_pet(pet_id)
 		assert response.status_code == expected_status_code, f"Unexpected status code {response.status_code}"
 		return response.json()
 

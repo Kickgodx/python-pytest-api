@@ -146,7 +146,7 @@ class TestPet:
 
 		with allure.step("Проверка добавления тега питомцу"):
 			response = pet_helper.get_pet(pet_data.id)
-			assert tag in response.tags
+			CustomAsserts.check_item_in_list(tag, response.tags, "Тег не добавлен к питомцу или не найден")
 
 	@allure.story("Обновление информации о питомцах")
 	@allure.title("Создание и удаление тега у питомца")

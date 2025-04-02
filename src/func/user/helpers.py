@@ -19,15 +19,13 @@ class UserHelper:
 
 	@step("Получение информации о пользователе")
 	def get_user(self, username: str, expected_status_code=200) -> ApiResponse | User:
-		try:
-			response = self.api.get_user_by_username(username)
-			assert response.status_code == expected_status_code
-		except HTTPError as e:
-			assert e.response.status_code == expected_status_code, f"Unexpected status code {e.response.status_code}"
-			return ApiResponse(**e.response.json())
-		else:
-			assert response.status_code == expected_status_code
+		response = self.api.get_user_by_username(username)
+		assert response.status_code == expected_status_code, f"Unexpected status code {response.status_code}"
+		if response.status_code == 200:
 			return User(**response.json())
+		else:
+			return ApiResponse(**response.json())
+
 
 	@step("Обновление информации о пользователе")
 	def update_user(self, username: str, data: BaseRequestModel) -> ApiResponse:
@@ -37,15 +35,14 @@ class UserHelper:
 
 	@step("Удаление пользователя")
 	def delete_user(self, username: str) -> ApiResponse:
-		try:
-			response = self.api.delete_user(username)
-			assert response.status_code == 200
-		except HTTPError as e:
-			assert e.response.status_code == 200, f"Unexpected status code {e.response.status_code}"
-			return ApiResponse(**e.response.json())
-		else:
-			assert response.status_code == 200
+		response = self.api.delete_user(username)
+		assert response.status_code == 200, f"Unexpected status code {response.status_code}"
+
+		if response.status_code == 200:
 			return ApiResponse(**response.json())
+		else:
+			return response.json()
+
 
 	@step("Авторизация пользователя")
 	def login_user(self, username: str, password: str) -> ApiResponse:
