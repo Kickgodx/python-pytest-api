@@ -8,7 +8,7 @@ import allure
 import requests
 import urllib3
 from requests import Response, HTTPError
-from urllib3.exceptions import InsecureRequestWarning  # Правильный импорт
+from urllib3.exceptions import InsecureRequestWarning
 
 from src.tech.custom_logger import logger
 
@@ -16,7 +16,6 @@ HTTP_METHODS = ("GET", "POST", "PUT", "DELETE", "PATCH")
 DEFAULT_TIMEOUT = 30
 
 
-# Класс-обертка для работы с HTTP-запросами и логированием
 class CustomRequester:
     """
     Класс-обёртка для работы с HTTP-запросами и логированием
@@ -94,52 +93,33 @@ class CustomRequester:
         :param funcname: имя функции, из которой был вызван запрос
         :return: None
         """
+        if filename is None or lineno is None or funcname is None:
+            filename, lineno, funcname = self._get_caller_info()
+
         test_name = os.environ.get('PYTEST_CURRENT_TEST', 'Unknown test')
 
+        log_lines = []
+
         if test_name != 'Unknown test':
-            logger.error(f"Test: {test_name}")
+            log_lines.append(f"Test: {test_name}")
             self.last_test_name = test_name
 
-        logger.error(f"[{request_id}] - Error occurred: {err}")
-        logger.error(f"[{request_id}] - Error in: {filename}:{lineno} - {funcname}")
-        logger.error(f"[{request_id}] - Request URL: {method} {url}")
+        log_lines.append(f"[{request_id}] - Error in: {filename}:{lineno} - {funcname}")
+        log_lines.append(f"[{request_id}] - {err}")
+        log_lines.append(f"[{request_id}] - Request URL: {method} {url}")
+
         headers_to_log = self._mask_bearer_tokens(headers)
-        logger.error(f"[{request_id}] - Request headers: {headers_to_log}")
-        logger.error(f"[{request_id}] - Request body: {data}")
+        log_lines.append(f"[{request_id}] - Request headers: {headers_to_log}")
+        log_lines.append(f"[{request_id}] - Request body: {data}")
+
         if response is not None:
-            logger.error(f"[{request_id}] - Response headers: {response.headers}")
-            logger.error(f"[{request_id}] - Response body: {response.text}\n")
+            log_lines.append(f"[{request_id}] - Response headers: {response.headers}")
+            log_lines.append(f"[{request_id}] - Response body: {response.text}\n")
         else:
-            logger.error(f"[{request_id}] - Response body: None\n")
+            log_lines.append(f"[{request_id}] - Response body: None\n")
 
-    def _handle_response(self, request_id: str, response: Response, data=None, headers: dict =None, url: str = None, method: str=None) -> Response:
-        """
-        Метод для обработки ответа на запрос
-        :param request_id: уникальный идентификатор запроса
-        :param response: объект ответа на запрос (requests.Response)
-        :param data: данные запроса
-        :param headers: заголовки запроса (dict)
-        :param url: URL-адрес запроса
-        :param method: HTTP-метод
-        :return: объект ответа на запрос (requests.Response)
-        """
-        filename, lineno, funcname = self._get_caller_info()
-        response_request_id = response.headers.get("Requestid", f"requestId {request_id}")
-
-        try:
-            response.raise_for_status()
-        except HTTPError as e:
-            exception_name = e.__class__.__name__
-            err_msg = f"исключение при {method.upper()} запросе {url}:\n {e}"
-            self._log_error(response_request_id, f"{exception_name} {err_msg}", response, data, headers, url, method, filename, lineno, funcname)
-            raise HTTPError(err_msg, response=e.response, request=e.response.request) from e
-        except Exception as e:
-            exception_name = e.__class__.__name__
-            err_msg = f"исключение при {method.upper()} запросе {url}:\n {e}"
-            self._log_error(response_request_id, f"{exception_name} {err_msg}", response, data, headers, url, method, filename, lineno, funcname)
-            raise e.__class__(err_msg) from e
-
-        return response
+        # Объединяем все строки с переносами
+        logger.error("\n".join(log_lines))
 
     def _send_request(self, method: str, endpoint: str, use_allure: bool, data=None, headers: dict = None, params=None, **kwargs) -> Response:
         """
@@ -169,22 +149,26 @@ class CustomRequester:
             raise e.__class__(err_msg) from e
 
         self._log_response(request_id, response)
-        try:
-            handled_response = self._handle_response(request_id, response, method=method, url=url, headers=response.request.headers, data=data)
-        except HTTPError as e:
-            self._add_request_attachments(method, url, headers, data, params)
-            self._add_response_attachments(response)
-            raise e
-        except Exception:
-            self._add_request_attachments(method, url, headers, data, params)
-            self._add_response_attachments(response)
-            raise
 
         if use_allure:
             self._add_request_attachments(method, url, headers, data, params)
-            self._add_response_attachments(handled_response)
+            self._add_response_attachments(response)
 
-        return handled_response
+        if 400 <= response.status_code < 500:
+            try:
+                response.raise_for_status()
+            except HTTPError as e:
+                exception_name = e.__class__.__name__
+                self._log_error(request_id, f"{exception_name}: {e}", response, data, combined_headers, url, method, None, None, None)
+
+        elif 500 <= response.status_code < 600:
+            try:
+                response.raise_for_status()
+            except HTTPError as e:
+                exception_name = e.__class__.__name__
+                self._log_error(request_id, f"{exception_name}: {e}", response, data, combined_headers, url, method, None, None, None)
+
+        return response
 
     def get(self, endpoint: str, headers: dict = None, params=None, use_allure = True, **kwargs) -> Response:
         return self._send_request("GET", endpoint, use_allure=use_allure, headers=headers, params=params, **kwargs)
@@ -253,23 +237,19 @@ class CustomRequester:
 
     @staticmethod
     def _add_response_attachments(response):
-        allure.attach(name='Response status code', body=f"{response.status_code}",
-                      attachment_type=allure.attachment_type.TEXT)
-        allure.attach(name="Response Headers", body=json.dumps(dict(response.headers), indent=2),
-                      attachment_type=allure.attachment_type.JSON)
+        allure.attach(name='Response status code', body=f"{response.status_code}", attachment_type=allure.attachment_type.TEXT)
+        allure.attach(name="Response Headers", body=json.dumps(dict(response.headers), indent=2), attachment_type=allure.attachment_type.JSON)
         if response.text:
             allure.attach(name='Response body', body=response.text, attachment_type=allure.attachment_type.TEXT)
 
     @staticmethod
     def _add_request_attachments(method, url, headers, data, params):
         allure.attach(name='Request', body=f"{method} {url}", attachment_type=allure.attachment_type.TEXT)
-        allure.attach(body=json.dumps(headers, indent=2), name='Request headers',
-                      attachment_type=allure.attachment_type.JSON)
+        allure.attach(body=json.dumps(headers, indent=2), name='Request headers', attachment_type=allure.attachment_type.JSON)
         if data:
             allure.attach(name='Request body', body=str(data), attachment_type=allure.attachment_type.TEXT)
         if params:
-            allure.attach(name='Request params', body=json.dumps(params, indent=2),
-                          attachment_type=allure.attachment_type.JSON)
+            allure.attach(name='Request params', body=json.dumps(params, indent=2), attachment_type=allure.attachment_type.JSON)
 
     @staticmethod
     def _mask_bearer_tokens(headers: dict) -> dict:
