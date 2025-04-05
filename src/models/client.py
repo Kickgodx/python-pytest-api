@@ -1,6 +1,6 @@
 class Client:
     def __init__(self):
-        self.client_id = None
+        self.id = None
         self.client_secret = None
         self.api_key = None
         self.base_content_type = "application/json"
@@ -12,8 +12,5 @@ class Client:
     def get_empty_headers() -> dict:
         return {}
 
-    def get_client_id(self) -> str:
-        return self.client_id
-
-    def get_client_secret(self) -> str:
-        return self.client_secret
+    def get_auth_headers(self) -> dict:
+        return {"Content-Type": self.base_content_type, "api_key": f"{self.api_key}"}
