@@ -242,7 +242,7 @@ class CustomRequester:
     @staticmethod
     def _add_request_attachments(method, url, headers, data, params):
         allure.attach(name='Request', body=f"{method} {url}", attachment_type=allure.attachment_type.TEXT)
-        allure.attach(body=json.dumps(headers, indent=2), name='Request headers', attachment_type=allure.attachment_type.JSON)
+        allure.attach(body=json.dumps(headers, indent=1), name='Request headers', attachment_type=allure.attachment_type.JSON)
         if data:
             try:
                 if isinstance(data, str):

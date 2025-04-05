@@ -1,7 +1,6 @@
 class Client:
     def __init__(self):
         self.id = None
-        self.client_secret = None
         self.api_key = None
         self.base_content_type = "application/json"
 
