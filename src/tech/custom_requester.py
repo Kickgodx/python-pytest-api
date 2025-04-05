@@ -231,11 +231,11 @@ class CustomRequester:
     @staticmethod
     def _add_response_attachments(response):
         allure.attach(name='Response status code', body=f"{response.status_code}", attachment_type=allure.attachment_type.TEXT)
-        allure.attach(name="Response Headers", body=json.dumps(dict(response.headers), indent=2), attachment_type=allure.attachment_type.JSON)
+        allure.attach(name="Response Headers", body=json.dumps(dict(response.headers), indent=1), attachment_type=allure.attachment_type.JSON)
         if response.text:
             try:
                 json_data = response.json()
-                allure.attach(name='Response body', body=json.dumps(json_data, indent=2), attachment_type=allure.attachment_type.JSON)
+                allure.attach(name='Response body', body=json.dumps(json_data, indent=1), attachment_type=allure.attachment_type.JSON)
             except ValueError:
                 allure.attach(name='Response body', body=response.text, attachment_type=allure.attachment_type.TEXT)
 
@@ -249,13 +249,13 @@ class CustomRequester:
                     data = json.loads(data)
 
                 # Пробуем преобразовать в JSON
-                json_data = json.dumps(data, indent=2)
+                json_data = json.dumps(data, indent=1)
                 allure.attach(name='Request body', body=json_data, attachment_type=allure.attachment_type.JSON)
             except TypeError:
                 allure.attach(name='Request body', body=str(data), attachment_type=allure.attachment_type.TEXT)
 
         if params:
-            allure.attach(name='Request params', body=json.dumps(params, indent=2), attachment_type=allure.attachment_type.JSON)
+            allure.attach(name='Request params', body=json.dumps(params, indent=1), attachment_type=allure.attachment_type.JSON)
 
     @staticmethod
     def _mask_bearer_tokens(headers: dict) -> dict:
