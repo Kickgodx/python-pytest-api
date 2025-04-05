@@ -1,6 +1,6 @@
 from enum import Enum
 
-from src.func.base_model import BaseRequestModel
+from src.models.base_model import BaseRequestModel
 
 
 class Category(BaseRequestModel):

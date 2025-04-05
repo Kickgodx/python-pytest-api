@@ -1,7 +1,7 @@
 from allure import step
 from requests import Response
 
-from src.func.base_model import BaseRequestModel
+from src.models.base_model import BaseRequestModel
 from src.func.pet.api import PetAPI
 from src.func.models import Pet, ApiResponse
 

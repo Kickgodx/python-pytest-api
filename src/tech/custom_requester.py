@@ -154,14 +154,7 @@ class CustomRequester:
             self._add_request_attachments(method, url, headers, data, params)
             self._add_response_attachments(response)
 
-        if 400 <= response.status_code < 500:
-            try:
-                response.raise_for_status()
-            except HTTPError as e:
-                exception_name = e.__class__.__name__
-                self._log_error(request_id, f"{exception_name}: {e}", response, data, combined_headers, url, method, None, None, None)
-
-        elif 500 <= response.status_code < 600:
+        if 400 <= response.status_code < 600:
             try:
                 response.raise_for_status()
             except HTTPError as e:
