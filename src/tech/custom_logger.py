@@ -5,8 +5,6 @@ import os
 from logging import FileHandler
 from logging.handlers import QueueHandler, QueueListener
 
-from filelock import FileLock
-
 import config as cfg
 
 os.makedirs(cfg.LOGS_PATH, exist_ok=True)
@@ -23,18 +21,7 @@ worker_id = os.environ.get("PYTEST_XDIST_WORKER", default="master")
 formatter = logging.Formatter(f"[{worker_id.replace('gw', 'worker_')}]" + cfg.LOG_FORMAT)
 formatter.datefmt = '[%H:%M:%S]'
 
-# Блокировка для безопасной записи
-file_lock = FileLock(f"{log_file}.lock")
-
-
-# Кастомный FileHandler с блокировкой
-class LockedFileHandler(FileHandler):
-    def emit(self, record):
-        with file_lock:
-            super().emit(record)
-
-
-file_log_handler = LockedFileHandler(str(log_file), "a", encoding="utf-8")
+file_log_handler = FileHandler(str(log_file), "a", encoding="utf-8")
 file_log_handler.setLevel(cfg.FILE_LOG_LEVEL)
 file_log_handler.setFormatter(formatter)
 
@@ -53,8 +40,6 @@ def shutdown_logger():
     queue.close()
     queue.join_thread()
     file_log_handler.close()
-    if os.path.exists(f"{log_file}.lock"):
-        os.remove(f"{log_file}.lock")
 
 
 atexit.register(shutdown_logger)

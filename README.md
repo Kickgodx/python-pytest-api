@@ -1,12 +1,14 @@
 # Petstore API tests
 
+![Python](https://img.shields.io/badge/python-3.12-yellow)
+![pytest](https://img.shields.io/badge/pytest-8.3.5-brightgreen)
+![pytest-xdist](https://img.shields.io/badge/pytest--xdist-3.6.1-blue)
+![Allure-pytest](https://img.shields.io/badge/Allure-pytest_2.13.5-orange)
 
 ## 🔍 Latest Test Results
+
 - 📊 [View Allure Report](https://Kickgodx.github.io/python-pytest-api/latest-report/index.html)
 - 📝 [Download Log File](https://Kickgodx.github.io/python-pytest-api/latest-report/logs/log.log)
-
-_Updated: 2025-04-02 01:45:30 UTC_
-
 
 ## Installation
 

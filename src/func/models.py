@@ -5,7 +5,7 @@ from typing import Optional
 
 from pydantic import Field, StrictBool, StrictInt, StrictStr
 
-from src.func.base_model import BaseRequestModel
+from src.models.base_model import BaseRequestModel
 
 
 class ApiResponse(BaseRequestModel):

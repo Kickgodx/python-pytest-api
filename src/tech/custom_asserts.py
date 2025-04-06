@@ -37,3 +37,17 @@ class CustomAsserts:
 			assert itm in lst, f"Элемент {item} не найден в списке"
 
 		_check_item_in_list(item, item_list)
+
+
+	@staticmethod
+	def check_status_code(response, expected_status_code):
+		"""
+		Проверка, что статус код ответа соответствует ожидаемому
+		:param response: объект ответа
+		:param expected_status_code: ожидаемый статус код
+		"""
+		@step(f"Статус код = {expected_status_code}")
+		def _check_status_code(resp, expected_code):
+			assert resp.status_code == expected_code, f"Статус код {resp.status_code} не равен ожидаемому {expected_code}"
+
+		_check_status_code(response, expected_status_code)
