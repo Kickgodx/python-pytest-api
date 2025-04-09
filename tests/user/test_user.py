@@ -3,7 +3,7 @@ import time
 import allure
 import pytest
 
-from src.func.user.models import User
+from src.models.petstore import User
 from src.tech.custom_asserts import CustomAsserts
 from src.tech.data_generator import DataGenerator
 

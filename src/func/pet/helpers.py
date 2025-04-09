@@ -3,7 +3,7 @@ from requests import Response
 
 from src.models.base_model import BaseRequestModel
 from src.func.pet.api import PetAPI
-from src.func.models import Pet, ApiResponse
+from src.models.petstore import Pet, ApiResponse
 from src.models.client import Client
 from src.tech.custom_asserts import CustomAsserts
 

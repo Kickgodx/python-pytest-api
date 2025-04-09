@@ -6,8 +6,8 @@
 
 from __future__ import annotations
 
-from pydantic import AnyUrl, ConfigDict, Field, StrictFloat, StrictInt, StrictStr
-from src.func.models import BaseRequestModel
+from pydantic import AnyUrl, Field, StrictFloat, StrictInt, StrictStr
+from src.models.petstore import BaseRequestModel
 
 
 class Product(BaseRequestModel):

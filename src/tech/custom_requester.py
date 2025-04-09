@@ -12,7 +12,7 @@ from urllib3.exceptions import InsecureRequestWarning
 
 from src.tech.custom_logger import logger
 
-HTTP_METHODS = ("GET", "POST", "PUT", "DELETE", "PATCH")
+HTTP_METHODS = ("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
 DEFAULT_TIMEOUT = 30
 
 
@@ -22,11 +22,8 @@ class CustomRequester:
     """
     def __init__(self, base_url: str, headers=None, timeout=DEFAULT_TIMEOUT):
         self.base_url = base_url
-        self.headers = headers or {}
         self.timeout = timeout
         self.session = requests.Session()
-        self.session.headers.update(self.headers)
-        self.last_test_name = None  # Атрибут для хранения имени текущего теста
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning) # Для интернал вылетает ошибка про сертификат
         warnings.filterwarnings("ignore", category=InsecureRequestWarning)
 
@@ -102,7 +99,8 @@ class CustomRequester:
 
         if test_name != 'Unknown test':
             log_lines.append(f"Test: {test_name}")
-            self.last_test_name = test_name
+        else:
+            log_lines.append(f"Unknown test")
 
         log_lines.append(f"[{request_id}] - Error in: {filename}:{lineno} - {funcname}")
         log_lines.append(f"[{request_id}] - {err}")
@@ -131,7 +129,7 @@ class CustomRequester:
         request_id = str(uuid.uuid4())
         filename, lineno, funcname = self._get_caller_info()
         url = f"{self.base_url}{endpoint}"
-        combined_headers = {**self.headers, **(headers or {})}
+        combined_headers = {**headers}
 
         self._log_request(request_id, method, url, headers=combined_headers, params=params, data=data, **kwargs)
 
@@ -151,7 +149,7 @@ class CustomRequester:
         self._log_response(request_id, response)
 
         if use_allure:
-            self._add_request_attachments(method, url, headers, data, params)
+            self._add_request_attachments(method, url, response.request.headers, data, params)
             self._add_response_attachments(response)
 
         if 400 <= response.status_code < 600:
@@ -178,84 +176,37 @@ class CustomRequester:
     def delete(self, endpoint: str, headers: dict = None, use_allure = True, **kwargs) -> Response:
         return self._send_request("DELETE", endpoint, use_allure=use_allure, headers=headers, **kwargs)
 
-    # Методы для управления заголовками
-    def set_header(self, key: str, value: str) -> None:
-        """
-        Метод для добавления заголовка
-        :param key: ключ заголовка
-        :param value: значение заголовка
-        """
-        self.headers[key] = value
-        self.session.headers.update(self.headers)
-
-    def remove_header(self, key: str) -> None:
-        """
-        Метод для удаления заголовка
-        :param key: ключ заголовка
-        """
-        if key in self.headers:
-            del self.headers[key]
-            self.session.headers.pop(key, None)
-
-    def get_header(self, key: str) -> str | None:
-        """
-        Метод для получения значения заголовка по ключу
-        :param key: ключ заголовка
-        :return: значение заголовка или None, если заголовок не найден
-        """
-        return self.headers.get(key)
-
-    def get_all_headers(self) -> dict | None:
-        """
-        Метод для получения всех заголовков
-        :return: все заголовки или None, если заголовки отсутствуют
-        """
-        return self.headers
-
-    def update_headers(self, headers: dict) -> None:
-        """
-        Метод для обновления заголовков
-        :param headers: новые заголовки
-        """
-        self.headers.update(headers)
-        self.session.headers.update(self.headers)
-
-    @property
-    def all_headers(self) -> dict | None:
-        """
-        Свойство для получения всех заголовков
-        :return: все заголовки или None, если заголовки отсутствуют
-        """
-        return self.headers
+    def options(self, endpoint: str, headers: dict = None, use_allure = True, **kwargs) -> Response:
+        return self._send_request("OPTIONS", endpoint, use_allure=use_allure, headers=headers, **kwargs)
 
     @staticmethod
     def _add_response_attachments(response):
         allure.attach(name='Response status code', body=f"{response.status_code}", attachment_type=allure.attachment_type.TEXT)
-        allure.attach(name="Response Headers", body=json.dumps(dict(response.headers), indent=1), attachment_type=allure.attachment_type.JSON)
+        allure.attach(name="Response Headers", body=json.dumps(dict(response.headers), indent=2), attachment_type=allure.attachment_type.JSON)
         if response.text:
             try:
                 json_data = response.json()
-                allure.attach(name='Response body', body=json.dumps(json_data, indent=1), attachment_type=allure.attachment_type.JSON)
+                allure.attach(name='Response body', body=json.dumps(json_data, indent=2), attachment_type=allure.attachment_type.JSON)
             except ValueError:
                 allure.attach(name='Response body', body=response.text, attachment_type=allure.attachment_type.TEXT)
 
     @staticmethod
     def _add_request_attachments(method, url, headers, data, params):
         allure.attach(name='Request', body=f"{method} {url}", attachment_type=allure.attachment_type.TEXT)
-        allure.attach(body=json.dumps(headers, indent=1), name='Request headers', attachment_type=allure.attachment_type.JSON)
+        allure.attach(body=json.dumps(dict(headers), indent=2), name='Request headers', attachment_type=allure.attachment_type.JSON)
         if data:
             try:
                 if isinstance(data, str):
                     data = json.loads(data)
 
                 # Пробуем преобразовать в JSON
-                json_data = json.dumps(data, indent=1)
+                json_data = json.dumps(data, indent=2)
                 allure.attach(name='Request body', body=json_data, attachment_type=allure.attachment_type.JSON)
             except TypeError:
                 allure.attach(name='Request body', body=str(data), attachment_type=allure.attachment_type.TEXT)
 
         if params:
-            allure.attach(name='Request params', body=json.dumps(params, indent=1), attachment_type=allure.attachment_type.JSON)
+            allure.attach(name='Request params', body=json.dumps(params, indent=2), attachment_type=allure.attachment_type.JSON)
 
     @staticmethod
     def _mask_bearer_tokens(headers: dict) -> dict:

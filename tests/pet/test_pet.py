@@ -3,14 +3,13 @@ import time
 import allure
 import pytest
 
-from src.func.pet.models import Pet, PetStatus, Category, Tag
+from src.models.petstore import Pet, PetStatus, Category, Tag
 from src.tech.custom_asserts import CustomAsserts
 from src.tech.data_generator import DataGenerator
 
 
 @pytest.fixture(scope="function")
 def pet_data():
-	"""Фикстура для данных питомца"""
 	return Pet(**DataGenerator().generate_pet_body())
 
 # список питомцев для параметризации 5 штук
@@ -228,7 +227,7 @@ class TestPet:
 	@allure.title("Создание питомца без обязательного поля photoUrls")
 	def test_create_pet_without_photo_urls(self, client, pet_helper, pet_data):
 		"""Добавление питомца без обязательного поля photoUrls"""
-		pet_data.photoUrls = None
+		pet_data.photo_urls = None
 		response = pet_helper.create_pet(client, pet_data, 400)
 		CustomAsserts.assert_equal(response.message, "Bad input")
 		assert response.message == "Bad input"

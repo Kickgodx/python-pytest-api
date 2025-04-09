@@ -2,7 +2,7 @@ from allure import step
 
 from src.models.base_model import BaseRequestModel
 from src.func.store.api import StoreAPI
-from src.func.models import Order, ApiResponse
+from src.models.petstore import Order, ApiResponse
 from src.models.client import Client
 from src.tech.custom_asserts import CustomAsserts
 

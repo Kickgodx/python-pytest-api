@@ -2,8 +2,9 @@ import time
 
 import allure
 import pytest
+from faker.generator import random
 
-from src.func.store.models import Order
+from src.models.petstore import Order
 from src.tech.custom_asserts import CustomAsserts
 from src.tech.data_generator import DataGenerator
 
@@ -21,7 +22,7 @@ class TestStore:
 
 	@allure.title("Создание заказа")
 	def test_create_order(self, store_helper, order_data, client):
-		response = store_helper.place_order(client, order_data)
+		store_helper.place_order(client, order_data)
 
 	@allure.title("Создание и получение информации о заказе")
 	def test_get_order(self, store_helper, order_data, client):
@@ -45,7 +46,7 @@ class TestStore:
 
 		time.sleep(5)
 
-		response = store_helper.delete_order_by_id(client, order_data.id)
+		store_helper.delete_order_by_id(client, order_data.id)
 
 	@allure.title("Получение информации о складе")
 	def test_get_inventory(self, client, store_helper):
@@ -71,3 +72,31 @@ class TestStore:
 		response = store_helper.place_order(client, order_data, expected_status_code=400)
 		assert response.code == 400, "Unexpected error code"
 		assert response.message == "Invalid Order", "Unexpected error message"
+
+	@allure.title("Создание заказа с невалидным статусом")
+	def test_create_order_with_invalid_status(self, client, store_helper, order_data):
+		order_data.status = "invalid_status"
+		response = store_helper.place_order(client, order_data, expected_status_code=500)
+		assert response.code == 500, "Unexpected error code"
+		assert response.message == "Internal Server Error", "Unexpected error message"
+
+	@allure.title("Создание заказа с невалидным ID")
+	def test_create_order_with_invalid_id(self, client, store_helper, order_data):
+		order_data.id = random.randint(-100000000, -1)
+		response = store_helper.place_order(client, order_data, expected_status_code=500)
+		assert response.code == 500, "Unexpected error code"
+		assert response.message == "Internal Server Error", "Unexpected error message"
+
+	@allure.title("Создание заказа с невалидным количеством")
+	def test_create_order_with_invalid_quantity(self, client, store_helper, order_data):
+		order_data.quantity = random.randint(-100000000, -1)
+		response = store_helper.place_order(client, order_data, expected_status_code=500)
+		assert response.code == 500, "Unexpected error code"
+		assert response.message == "Internal Server Error", "Unexpected error message"
+
+	@allure.title("Создание заказа с невалидным ID питомца")
+	def test_create_order_with_invalid_pet_id(self, client, store_helper, order_data):
+		order_data.pet_id = random.randint(-100000000, -1)
+		response = store_helper.place_order(client, order_data, expected_status_code=500)
+		assert response.code == 500, "Unexpected error code"
+		assert response.message == "Internal Server Error", "Unexpected error message"

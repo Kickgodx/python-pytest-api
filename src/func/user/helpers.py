@@ -1,6 +1,6 @@
 from allure import step
 
-from src.func.models import User, ApiResponse
+from src.models.petstore import User, ApiResponse
 from src.func.user.api import UserAPI
 from src.models.base_model import BaseRequestModel
 from src.models.client import Client
