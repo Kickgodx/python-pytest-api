@@ -6,7 +6,7 @@ from logging import FileHandler
 from logging.handlers import QueueHandler, QueueListener
 
 import config as cfg
-from src.tech.utc3_log_formatter import UTC3Formatter
+from src.tech.utc_log_formatter import UtcFormatter
 
 os.makedirs(cfg.LOGS_PATH, exist_ok=True)
 
@@ -19,9 +19,10 @@ logger = logging.getLogger(__name__)
 logger.setLevel(cfg.FILE_LOG_LEVEL)
 
 worker_id = os.environ.get("PYTEST_XDIST_WORKER", default="master")
-formatter = UTC3Formatter(
+formatter = UtcFormatter(
     f"[{worker_id.replace('gw', 'worker_')}]" + cfg.LOG_FORMAT,
-    datefmt="[%H:%M:%S]"
+    datefmt="[%H:%M:%S]",
+    tz_hours_gap=3
 )
 
 file_log_handler = FileHandler(str(log_file), "a", encoding="utf-8")
