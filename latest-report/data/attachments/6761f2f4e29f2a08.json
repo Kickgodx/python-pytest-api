@@ -1,0 +1,18 @@
+{
+  "id": 36,
+  "category": {
+    "id": 58,
+    "name": "Lisa Martinez"
+  },
+  "name": "Rebekah May",
+  "photoUrls": [
+    "https://placekitten.com/583/187"
+  ],
+  "tags": [
+    {
+      "id": 384,
+      "name": "Snow"
+    }
+  ],
+  "status": "available"
+}

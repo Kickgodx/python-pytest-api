@@ -1,0 +1,18 @@
+{
+  "id": 561,
+  "category": {
+    "id": 151,
+    "name": "Jason Watts"
+  },
+  "name": "Billy Vasquez",
+  "photoUrls": [
+    "https://picsum.photos/707/804"
+  ],
+  "tags": [
+    {
+      "id": 787,
+      "name": "CadetBlue"
+    }
+  ],
+  "status": "available"
+}

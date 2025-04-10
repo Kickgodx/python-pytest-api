@@ -1,0 +1,18 @@
+{
+  "id": 68,
+  "category": {
+    "id": 441,
+    "name": "Kim Little MD"
+  },
+  "name": "Alexandra Haas",
+  "photoUrls": [
+    "https://placekitten.com/909/698"
+  ],
+  "tags": [
+    {
+      "id": 2,
+      "name": "fluffy"
+    }
+  ],
+  "status": "pending"
+}

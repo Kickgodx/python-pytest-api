@@ -1,0 +1,17 @@
+{
+  "id": 599,
+  "category": {
+    "id": 88,
+    "name": "Eric Warner"
+  },
+  "photoUrls": [
+    "https://picsum.photos/900/182"
+  ],
+  "tags": [
+    {
+      "id": 541,
+      "name": "Azure"
+    }
+  ],
+  "status": "pending"
+}

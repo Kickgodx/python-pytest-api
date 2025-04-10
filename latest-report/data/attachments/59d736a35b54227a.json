@@ -1,0 +1,14 @@
+{
+  "id": 87,
+  "name": "Michael Peterson",
+  "photoUrls": [
+    "https://picsum.photos/282/157"
+  ],
+  "tags": [
+    {
+      "id": 515,
+      "name": "DodgerBlue"
+    }
+  ],
+  "status": "pending"
+}

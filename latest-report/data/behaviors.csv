@@ -1,0 +1,7 @@
+"BROKEN","EPIC","FAILED","FEATURE","PASSED","SKIPPED","STORY","UNKNOWN"
+"0","Petstore API","5","Store","6","0","","0"
+"0","Petstore API","4","Pet","2","1","Обновление информации о питомцах","0"
+"0","Petstore API","2","User","5","0","","0"
+"0","Petstore API","2","Pet","10","0","Создание питомцев","0"
+"0","Petstore API","2","Pet","0","0","Поиск питомцев","0"
+"0","Petstore API","1","Pet","0","0","Удаление питомцев","0"

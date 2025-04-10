@@ -1,0 +1,18 @@
+{
+  "id": 349,
+  "category": {
+    "id": 19,
+    "name": "Logan Smith"
+  },
+  "name": "Destiny Garcia",
+  "photoUrls": [
+    "https://placekitten.com/898/725"
+  ],
+  "tags": [
+    {
+      "id": 396,
+      "name": "MediumSeaGreen"
+    }
+  ],
+  "status": "available"
+}

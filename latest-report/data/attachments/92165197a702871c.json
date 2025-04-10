@@ -1,0 +1,18 @@
+{
+  "id": 365,
+  "category": {
+    "id": 60,
+    "name": "Glenda Fleming"
+  },
+  "name": "Mr. Aaron Warren Jr.",
+  "photoUrls": [
+    "https://picsum.photos/718/487"
+  ],
+  "tags": [
+    {
+      "id": 242,
+      "name": "SlateGray"
+    }
+  ],
+  "status": "available"
+}

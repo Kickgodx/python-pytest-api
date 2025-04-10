@@ -1,0 +1,18 @@
+{
+  "id": 377,
+  "category": {
+    "id": 459,
+    "name": "Deborah Mason"
+  },
+  "name": "Jessica Curry",
+  "photoUrls": [
+    "https://picsum.photos/199/922"
+  ],
+  "tags": [
+    {
+      "id": 105,
+      "name": "GhostWhite"
+    }
+  ],
+  "status": "pending"
+}

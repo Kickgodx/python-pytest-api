@@ -1,0 +1,18 @@
+{
+  "id": 806,
+  "category": {
+    "id": 261,
+    "name": "Jessica Ford"
+  },
+  "name": "Christopher Ramsey",
+  "photoUrls": [
+    "https://picsum.photos/462/776"
+  ],
+  "tags": [
+    {
+      "id": 179,
+      "name": "Cornsilk"
+    }
+  ],
+  "status": "sold"
+}

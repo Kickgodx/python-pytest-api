@@ -1,0 +1,18 @@
+{
+  "id": 624,
+  "category": {
+    "id": 949,
+    "name": "Cynthia Taylor"
+  },
+  "name": "Sarah Medina",
+  "photoUrls": [
+    "https://picsum.photos/886/213"
+  ],
+  "tags": [
+    {
+      "id": 477,
+      "name": "LavenderBlush"
+    }
+  ],
+  "status": "pending"
+}

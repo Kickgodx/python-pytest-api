@@ -1,0 +1,18 @@
+{
+  "id": 123,
+  "category": {
+    "id": 723,
+    "name": "Samantha French"
+  },
+  "name": "Hector Payne",
+  "photoUrls": [
+    "https://dummyimage.com/351x897"
+  ],
+  "tags": [
+    {
+      "id": 564,
+      "name": "DimGray"
+    }
+  ],
+  "status": "sold"
+}

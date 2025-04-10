@@ -1,0 +1,18 @@
+{
+  "id": 325,
+  "category": {
+    "id": 600,
+    "name": "Jamie Young"
+  },
+  "name": "Shannon Hickman",
+  "photoUrls": [
+    "https://dummyimage.com/578x1006"
+  ],
+  "tags": [
+    {
+      "id": 693,
+      "name": "Linen"
+    }
+  ],
+  "status": "available"
+}

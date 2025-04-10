@@ -1,0 +1,102 @@
+[
+  {
+    "id": 9040,
+    "username": "heatherbest",
+    "firstName": "Benjamin",
+    "lastName": "Bradshaw",
+    "email": "goodwinjohn@example.com",
+    "password": "*3o#R7etCT",
+    "phone": "(378)259-6729",
+    "userStatus": 0
+  },
+  {
+    "id": 9175,
+    "username": "aprilmontgomery",
+    "firstName": "Sarah",
+    "lastName": "Owens",
+    "email": "sotoshannon@example.com",
+    "password": "^9Uw@KfC$K",
+    "phone": "(574)374-6155x923",
+    "userStatus": 2
+  },
+  {
+    "id": 7065,
+    "username": "lawrenceeric",
+    "firstName": "Joshua",
+    "lastName": "Oneill",
+    "email": "vyoung@example.net",
+    "password": "$Px3LActb7",
+    "phone": "412.396.2746x65043",
+    "userStatus": 1
+  },
+  {
+    "id": 3555,
+    "username": "mwilliams",
+    "firstName": "Emma",
+    "lastName": "Winters",
+    "email": "melanie96@example.net",
+    "password": "#51PZrh61W",
+    "phone": "466.485.8645x46376",
+    "userStatus": 0
+  },
+  {
+    "id": 6497,
+    "username": "jesusgordon",
+    "firstName": "Micheal",
+    "lastName": "Stevens",
+    "email": "nicholas41@example.com",
+    "password": "qL1M!Bjv_K",
+    "phone": "+1-583-611-7693x098",
+    "userStatus": 0
+  },
+  {
+    "id": 7743,
+    "username": "jbeard",
+    "firstName": "Todd",
+    "lastName": "Jones",
+    "email": "cpatrick@example.com",
+    "password": "0o5wPWB%@B",
+    "phone": "701.607.0421x86917",
+    "userStatus": 0
+  },
+  {
+    "id": 2627,
+    "username": "imendoza",
+    "firstName": "Justin",
+    "lastName": "Ryan",
+    "email": "sarah25@example.com",
+    "password": "uuqL@TAc&9",
+    "phone": "(948)694-2892",
+    "userStatus": 1
+  },
+  {
+    "id": 5534,
+    "username": "hdixon",
+    "firstName": "Mary",
+    "lastName": "Nelson",
+    "email": "zpittman@example.com",
+    "password": "*C46^Mbn$M",
+    "phone": "306.225.9107",
+    "userStatus": 0
+  },
+  {
+    "id": 3301,
+    "username": "owenscourtney",
+    "firstName": "Russell",
+    "lastName": "Tyler",
+    "email": "kyle93@example.org",
+    "password": ")p2GKfhP*z",
+    "phone": "001-623-205-7223",
+    "userStatus": 2
+  },
+  {
+    "id": 8248,
+    "username": "jesseclark",
+    "firstName": "Derek",
+    "lastName": "Luna",
+    "email": "meganwilliamson@example.org",
+    "password": "+6Cva1PyBG",
+    "phone": "001-503-602-0972",
+    "userStatus": 2
+  }
+]

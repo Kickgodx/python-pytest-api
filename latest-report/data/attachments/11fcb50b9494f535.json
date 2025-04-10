@@ -1,0 +1,18 @@
+{
+  "id": 87,
+  "category": {
+    "id": 2,
+    "name": "Cat"
+  },
+  "name": "Michael Peterson",
+  "photoUrls": [
+    "https://picsum.photos/282/157"
+  ],
+  "tags": [
+    {
+      "id": 515,
+      "name": "DodgerBlue"
+    }
+  ],
+  "status": "pending"
+}

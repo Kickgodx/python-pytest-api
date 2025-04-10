@@ -1,0 +1,18 @@
+{
+  "id": 530,
+  "category": {
+    "id": 577,
+    "name": "Jared Brooks"
+  },
+  "name": "Jessica Jones",
+  "photoUrls": [
+    "https://dummyimage.com/247x507"
+  ],
+  "tags": [
+    {
+      "id": 29,
+      "name": "DarkOrchid"
+    }
+  ],
+  "status": "sold"
+}

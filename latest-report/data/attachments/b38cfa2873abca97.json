@@ -1,0 +1,18 @@
+{
+  "id": 615,
+  "category": {
+    "id": 2,
+    "name": "Cat"
+  },
+  "name": "Angela Gutierrez",
+  "photoUrls": [
+    "https://dummyimage.com/885x929"
+  ],
+  "tags": [
+    {
+      "id": 922,
+      "name": "LightSteelBlue"
+    }
+  ],
+  "status": "sold"
+}
