@@ -1,3 +1,4 @@
+import allure
 import pytest
 
 import config as cfg
@@ -15,3 +16,10 @@ def pytest_configure(config):
 @pytest.fixture(scope="session")
 def client():
     return Client()
+
+
+def pytest_runtest_call(item):
+    doc = item.function.__doc__
+    test_name = item.name.replace("_", " ").title()
+    description = f"{doc.strip()}" if doc else test_name
+    allure.dynamic.description(description)
