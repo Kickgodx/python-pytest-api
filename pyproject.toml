@@ -4,7 +4,7 @@ version = "1.0.0"
 
 [tool.ruff]
 line-length = 140
-select = [
+lint.select = [
     "E", # Pycodestyle (PEP 8)
     "F", # Pyflakes (ошибки)
     "B", # flake8-bugbear (потенциальные баги)
@@ -12,7 +12,7 @@ select = [
     "UP", # pyupgrade (современный Python)
     "PL", # Pylint-совместимые правила
 ]
-ignore = [
+lint.ignore = [
     "E203", # Пробел перед ':' (конфликт с Black)
     "E501", # Длина строки (уже контролируется Black)
 ]
@@ -29,7 +29,7 @@ exclude = [
 [tool.black]
 line-length = 140
 target-version = ["py312"]
-skip-string-normalization = false
+#skip-string-normalization = false
 exclude = '''
 /(
   \.git
