@@ -20,7 +20,7 @@ repos:
         args: [--pytest-test-first]
       - id: pretty-format-json
         args: [--autofix, --indent 2, --no-ensure-ascii, --no-sort-keys]
-# исключаем папки окружения и тд
+
 exclude: |
     - venv
     - .venv
