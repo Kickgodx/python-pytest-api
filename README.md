@@ -75,3 +75,10 @@ or
 docker build -t petstore-api-tests .
 docker run petstore-api-tests
 ```
+
+## Pre-commit
+To run pre-commit hooks from **.pre-commit-config.yaml**, use the following command:
+
+```bash
+pre-commit run --all-files
+```
