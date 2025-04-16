@@ -82,3 +82,12 @@ To run pre-commit hooks from **.pre-commit-config.yaml**, use the following comm
 ```bash
 pre-commit run --all-files
 ```
+
+## Linters
+ruff, black, isort with pyproject.toml config
+- ruff: `ruff check .`
+- black: `black .`
+- isort: `isort .`
+
+automatically fix with `--fix` flag
+- ruff: `ruff --fix .`

@@ -38,8 +38,7 @@ def replace_regex(file_path):
     content = content.replace("const=", "Literal=")
     content = content.replace("update_forward_refs", "model_rebuild")
     content = content.replace("    extra = Extra.forbid\n", "")
-    content = content.replace("class Config:",
-                              'model_config=ConfigDict(**BaseRequestModel.model_config, extra="forbid")')
+    content = content.replace("class Config:", 'model_config=ConfigDict(**BaseRequestModel.model_config, extra="forbid")')
     content = content.replace("UUID", "StrictStr")
     content = content.replace("from uuid import StrictStr", "")
 
@@ -51,10 +50,7 @@ def replace_reserved_names(file_path):
     """
     Заменяет зарезервированные имена полей на альтернативные.
     """
-    reserved_names_mapping = {
-        "date": "date_",  # Заменяем "date" на "date_"
-        "__root__": "root_non_filled"
-    }
+    reserved_names_mapping = {"date": "date_", "__root__": "root_non_filled"}  # Заменяем "date" на "date_"
 
     with open(file_path, encoding="utf-8") as file:
         content = file.read()

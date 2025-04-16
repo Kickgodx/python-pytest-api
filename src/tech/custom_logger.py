@@ -19,11 +19,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(cfg.FILE_LOG_LEVEL)
 
 worker_id = os.environ.get("PYTEST_XDIST_WORKER", default="master")
-formatter = UtcFormatter(
-    f"[{worker_id.replace('gw', 'worker_')}]" + cfg.LOG_FORMAT,
-    datefmt="[%H:%M:%S]",
-    tz_hours_gap=3
-)
+formatter = UtcFormatter(f"[{worker_id.replace('gw', 'worker_')}]" + cfg.LOG_FORMAT, datefmt="[%H:%M:%S]", tz_hours_gap=3)
 
 file_log_handler = FileHandler(str(log_file), "a", encoding="utf-8")
 file_log_handler.setLevel(cfg.FILE_LOG_LEVEL)

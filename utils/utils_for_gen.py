@@ -5,6 +5,7 @@ import yaml
 
 CONFIDENCE_THRESHOLD = 0.7
 
+
 def detect_encoding(file_path: str) -> str:
     """
     Detects the encoding of a file with a fallback to utf-8.

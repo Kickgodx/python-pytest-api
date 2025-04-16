@@ -10,8 +10,8 @@ LOG_FILE_NAME = "log.log"
 # region paths
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-LOGS_PATH = os.path.join(ROOT_DIR, 'logs')
-ALLURE_RESULTS_PATH = os.path.join(ROOT_DIR, 'allure-results')
+LOGS_PATH = os.path.join(ROOT_DIR, "logs")
+ALLURE_RESULTS_PATH = os.path.join(ROOT_DIR, "allure-results")
 # endregion
 
 # region hosts

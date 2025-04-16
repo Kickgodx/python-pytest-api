@@ -10,7 +10,7 @@ class BaseRequestModel(BaseModel):
         use_enum_values=True,
         # Позволяет использовать значения перечислений вместо их индексов. Пример: "type": "INTERNAL"
         populate_by_name=True,  # Позволяет использовать ключи, отличающиеся от Python-имён. Пример: "from_": "from"
-        arbitrary_types_allowed=True  # Позволяет использовать любые типы данных
+        arbitrary_types_allowed=True,  # Позволяет использовать любые типы данных
     )
 
     def serialize_payload(self) -> str:
@@ -25,8 +25,7 @@ class BaseRequestModel(BaseModel):
         Сериализует модель в JSON-строку, исключая поля с None.
         :return: JSON-строка.
         """
-        return json.dumps(self.model_dump(exclude_none=True, by_alias=True), ensure_ascii=False,
-                          default=self.custom_serializer)
+        return json.dumps(self.model_dump(exclude_none=True, by_alias=True), ensure_ascii=False, default=self.custom_serializer)
 
     @staticmethod
     def custom_serializer(obj):
