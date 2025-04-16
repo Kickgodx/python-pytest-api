@@ -1,0 +1,50 @@
+[project]
+name = "petstore"
+version = "1.0.0"
+
+[tool.ruff]
+line-length = 140
+select = [
+    "E", # Pycodestyle (PEP 8)
+    "F", # Pyflakes (ошибки)
+    "B", # flake8-bugbear (потенциальные баги)
+    "I", # isort (сортировка импортов)
+    "UP", # pyupgrade (современный Python)
+    "PL", # Pylint-совместимые правила
+]
+ignore = [
+    "E203", # Пробел перед ':' (конфликт с Black)
+    "E501", # Длина строки (уже контролируется Black)
+]
+exclude = [
+    ".git",
+    "__pycache__",
+    "venv",
+    "migrations",
+    "*.sqlite3",
+    "allure-results",
+    "allure-report"
+]
+
+[tool.black]
+line-length = 140
+target-version = ["py312"]
+skip-string-normalization = false
+exclude = '''
+/(
+  \.git
+  | \.venv
+  | migrations
+  | __pycache__
+  | allure-results
+  | allure-report
+  | venv
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 140
+known_first_party = ["petstore"]  # Замените на имя вашего пакета
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+default_section = "THIRDPARTY"

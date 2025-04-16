@@ -3,7 +3,7 @@ import subprocess
 from pathlib import Path
 
 from postprocessing import replace_regex, replace_reserved_names
-from utils_for_gen import convert_to_utf8, get_description_from_yaml, add_description_to_file
+from utils_for_gen import add_description_to_file, convert_to_utf8, get_description_from_yaml
 
 # Пути к папкам
 SPECS_DIR = "./src/resources/"  # Папка с файлами схем
@@ -41,7 +41,7 @@ def generate_models():
     Path(MODELS_DIR).mkdir(parents=True, exist_ok=True)
 
     # Рекурсивно обходим папку specs
-    for root, dirs, files in os.walk(SPECS_DIR):
+    for root, _, files in os.walk(SPECS_DIR):
         for file in files:
             if "OpenAPI.yml" in file:
                 # Полный путь к файлу схемы

@@ -7,13 +7,15 @@ import warnings
 import allure
 import requests
 import urllib3
-from requests import Response, HTTPError
+from requests import HTTPError, Response
 from urllib3.exceptions import InsecureRequestWarning
 
 from src.tech.custom_logger import logger
 
 HTTP_METHODS = ("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
 DEFAULT_TIMEOUT = 30
+MIN_CLIENT_ERROR_CODE = 400  # 4xx errors start at 400
+MAX_SERVER_ERROR_CODE = 599  # 5xx errors end at 599
 
 
 class CustomRequester:
@@ -100,7 +102,7 @@ class CustomRequester:
         if test_name != 'Unknown test':
             log_lines.append(f"Test: {test_name}")
         else:
-            log_lines.append(f"Unknown test")
+            log_lines.append("Unknown test")
 
         log_lines.append(f"[{request_id}] - Error in: {filename}:{lineno} - {funcname}")
         log_lines.append(f"[{request_id}] - {err}")
@@ -119,7 +121,7 @@ class CustomRequester:
         # Объединяем все строки с переносами
         logger.error("\n".join(log_lines))
 
-    def _send_request(self, method: str, endpoint: str, use_allure: bool, data=None, headers: dict = None, params=None, **kwargs) -> Response:
+    def _send_request(self, method: str, endpoint: str, data=None, headers: dict = None, params=None, use_allure: bool = True, **kwargs) -> Response:
         """
         Универсальный метод для отправки HTTP-запросов.
         """
@@ -152,7 +154,7 @@ class CustomRequester:
             self._add_request_attachments(method, url, response.request.headers, data, params)
             self._add_response_attachments(response)
 
-        if 400 <= response.status_code < 600:
+        if MIN_CLIENT_ERROR_CODE <= response.status_code < MAX_SERVER_ERROR_CODE:
             try:
                 response.raise_for_status()
             except HTTPError as e:

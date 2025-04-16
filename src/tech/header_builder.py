@@ -11,7 +11,9 @@ class HeaderBuilder:
         if headers is not None:
             self._headers = headers.copy()
 
-    def add_request_id(self, request_id=str(uuid.uuid4())):
+    def add_request_id(self, request_id=None):
+        if request_id is None:
+            request_id = str(uuid.uuid4())
         return self.add_header("requestId", request_id)
 
     def add_header(self, name, value):

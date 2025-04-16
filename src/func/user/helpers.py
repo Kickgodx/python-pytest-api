@@ -1,9 +1,11 @@
+from http import HTTPStatus
+
 from allure import step
 
-from src.models.petstore import User, ApiResponse
 from src.func.user.api import UserAPI
 from src.models.base_model import BaseRequestModel
 from src.models.client import Client
+from src.models.petstore import ApiResponse, User
 from src.tech.custom_asserts import CustomAsserts
 
 
@@ -22,7 +24,7 @@ class UserHelper:
     def get_user(self, client: Client, username: str, expected_status_code=200) -> ApiResponse | User:
         response = self.api.get_user_by_username(client, username)
         CustomAsserts.check_status_code(response, expected_status_code)
-        if response.status_code == 200:
+        if response.status_code == HTTPStatus.OK.value:
             return User(**response.json())
         else:
             return ApiResponse(**response.json())
@@ -38,7 +40,7 @@ class UserHelper:
         response = self.api.delete_user(client, username)
         CustomAsserts.check_status_code(response, expected_status_code)
 
-        if response.status_code == 200:
+        if response.status_code == HTTPStatus.OK.value:
             return ApiResponse(**response.json())
         else:
             return response.json()

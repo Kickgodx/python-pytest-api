@@ -3,7 +3,7 @@ import time
 import allure
 import pytest
 
-from src.models.petstore import Pet, PetStatus, Category, Tag
+from src.models.petstore import Category, Pet, PetStatus, Tag
 from src.tech.custom_asserts import CustomAsserts
 from src.tech.data_generator import DataGenerator
 

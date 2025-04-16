@@ -3,18 +3,19 @@ def replace_base_model(file_path):
     Добавляет импорт BaseRequestModel и заменяет BaseModel на BaseRequestModel
     только в тех случаях, где BaseModel используется как базовый класс.
     """
-    with open(file_path, "r", encoding="utf-8") as file:
+    with open(file_path, encoding="utf-8") as file:
         content = file.read()
 
     lines = content.splitlines()
     new_lines = []
     for line in lines:
+        modified_line = line
         if "class " in line and "BaseModel" in line:
-            line = line.replace("BaseModel", "BaseRequestModel")
+            modified_line = line.replace("BaseModel", "BaseRequestModel")
         if "from pydantic import" in line and "BaseModel" in line:
-            line = line.replace(" BaseModel,", "")
-            line = line + "\nfrom models.base_model import BaseRequestModel"
-        new_lines.append(line)
+            modified_line = line.replace(" BaseModel,", "")
+            modified_line = modified_line + "\nfrom models.base_model import BaseRequestModel"
+        new_lines.append(modified_line)
 
     content = "\n".join(new_lines)
 
@@ -26,7 +27,7 @@ def replace_regex(file_path):
     """
     Заменяет regex на pattern и удаляет unique_items.
     """
-    with open(file_path, "r", encoding="utf-8") as file:
+    with open(file_path, encoding="utf-8") as file:
         content = file.read()
 
     content = content.replace("regex", "pattern")
@@ -55,7 +56,7 @@ def replace_reserved_names(file_path):
         "__root__": "root_non_filled"
     }
 
-    with open(file_path, "r", encoding="utf-8") as file:
+    with open(file_path, encoding="utf-8") as file:
         content = file.read()
 
     for old_name, new_name in reserved_names_mapping.items():

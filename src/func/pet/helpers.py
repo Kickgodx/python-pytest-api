@@ -1,10 +1,12 @@
+from http import HTTPStatus
+
 from allure import step
 from requests import Response
 
-from src.models.base_model import BaseRequestModel
 from src.func.pet.api import PetAPI
-from src.models.petstore import Pet, ApiResponse
+from src.models.base_model import BaseRequestModel
 from src.models.client import Client
+from src.models.petstore import ApiResponse, Pet
 from src.tech.custom_asserts import CustomAsserts
 
 
@@ -23,7 +25,7 @@ class PetHelper:
 	def get_pet(self, client: Client, pet_id, expected_status_code=200) -> Pet | ApiResponse:
 			response = self.api.get_find_pet_by_id(client, pet_id)
 			CustomAsserts.check_status_code(response, expected_status_code)
-			if response.status_code == 200:
+			if response.status_code == HTTPStatus.OK.value:
 				return Pet(**response.json())
 			else:
 				return ApiResponse(**response.json())

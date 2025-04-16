@@ -1,9 +1,11 @@
+from http import HTTPStatus
+
 from allure import step
 
-from src.models.base_model import BaseRequestModel
 from src.func.store.api import StoreAPI
-from src.models.petstore import Order, ApiResponse
+from src.models.base_model import BaseRequestModel
 from src.models.client import Client
+from src.models.petstore import ApiResponse, Order
 from src.tech.custom_asserts import CustomAsserts
 
 
@@ -23,7 +25,7 @@ class StoreHelper:
 		response = self.api.get_order_by_id(client, order_id)
 		CustomAsserts.check_status_code(response, expected_status_code)
 
-		if response.status_code == 200:
+		if response.status_code == HTTPStatus.OK.value:
 			return Order(**response.json())
 		else:
 			return ApiResponse(**response.json())
@@ -38,7 +40,7 @@ class StoreHelper:
 	def delete_order_by_id(self, client: Client, order_id, expected_status_code=200) -> ApiResponse | dict:
 		response = self.api.delete_order_by_id(client, order_id)
 		CustomAsserts.check_status_code(response, expected_status_code)
-		if response.status_code == 200:
+		if response.status_code == HTTPStatus.OK.value:
 			return response.json()
 		else:
 			return ApiResponse(**response.json())

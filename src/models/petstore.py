@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional
 
 from pydantic import Field, StrictBool, StrictInt, StrictStr
 
@@ -9,14 +8,14 @@ from src.models.base_model import BaseRequestModel
 
 
 class ApiResponse(BaseRequestModel):
-    code: Optional[StrictInt] = None
-    type: Optional[StrictStr] = None
-    message: Optional[StrictStr] = None
+    code: StrictInt | None = None
+    type: StrictStr | None = None
+    message: StrictStr | None = None
 
 
 class Category(BaseRequestModel):
-    id: Optional[StrictInt] = None
-    name: Optional[StrictStr] = None
+    id: StrictInt | None = None
+    name: StrictStr | None = None
 
 
 class PetStatus(Enum):
@@ -44,29 +43,29 @@ class OrderStatus(Enum):
 
 
 class Order(BaseRequestModel):
-    id: Optional[StrictInt] = None
-    pet_id: Optional[StrictInt] = Field(None, alias="petId")
-    quantity: Optional[StrictInt] = None
-    ship_date: Optional[str] = Field(None, alias="shipDate")
-    status: Optional[OrderStatus] = Field(None, description="Order Status")
-    complete: Optional[StrictBool] = None
+    id: StrictInt | None = None
+    pet_id: StrictInt | None = Field(None, alias="petId")
+    quantity: StrictInt | None = None
+    ship_date: str | None = Field(None, alias="shipDate")
+    status: OrderStatus | None = Field(None, description="Order Status")
+    complete: StrictBool | None = Field(None, description="Status of the order, default: false")
 
 
 class User(BaseRequestModel):
-    id: Optional[StrictInt] = None
-    username: Optional[StrictStr] = None
-    first_name: Optional[StrictStr] = Field(None, alias="firstName")
-    last_name: Optional[StrictStr] = Field(None, alias="lastName")
-    email: Optional[StrictStr] = None
-    password: Optional[StrictStr] = None
-    phone: Optional[StrictStr] = None
-    user_status: Optional[StrictInt] = Field(None, alias="userStatus", description="User Status")
+    id: StrictInt | None = None
+    username: StrictStr | None = None
+    first_name: StrictStr | None = Field(None, alias="firstName")
+    last_name: StrictStr | None = Field(None, alias="lastName")
+    email: StrictStr | None = None
+    password: StrictStr | None = None
+    phone: StrictStr | None = None
+    user_status: StrictInt | None = Field(None, alias="userStatus", description="User Status")
 
 
 class Pet(BaseRequestModel):
-    id: Optional[StrictInt] = None
-    category: Optional[Category] = None
+    id: StrictInt | None = None
+    category: Category | None = None
     name: StrictStr = Field(..., examples=["doggie"])
     photo_urls: list[StrictStr] = Field(..., alias="photoUrls")
-    tags: Optional[list[Tag]] = None
-    status: Optional[PetStatus] = Field(None, description="pet status in the store")
+    tags: list[Tag] | None = None
+    status: PetStatus | None = Field(None, description="pet status in the store")

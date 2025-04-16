@@ -1,6 +1,6 @@
 from faker import Faker
 
-from src.models.petstore import PetStatus, OrderStatus
+from src.models.petstore import OrderStatus, PetStatus
 
 
 class DataGenerator:

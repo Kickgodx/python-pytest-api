@@ -1,4 +1,5 @@
 import time
+from http import HTTPStatus
 
 import allure
 import pytest
@@ -70,7 +71,7 @@ class TestStore:
     def test_delete_order_by_nonexistent_id(self, client, store_helper):
         """Удаление заказа по несуществующему ID"""
         response = store_helper.delete_order_by_id(client, 0, expected_status_code=404)
-        assert response.code == 404, "Unexpected error code"
+        assert response.code == HTTPStatus.NOT_FOUND.value, "Unexpected error code"
         assert response.message == "Order Not Found", "Unexpected error message"
 
     @allure.title("Создание заказа с невалидными данными")
@@ -78,7 +79,7 @@ class TestStore:
         """Создание заказа с невалидными данными"""
         order_data.id = 2025008213453549843908439809804398034593454536556445
         response = store_helper.place_order(client, order_data, expected_status_code=400)
-        assert response.code == 400, "Unexpected error code"
+        assert response.code == HTTPStatus.BAD_REQUEST.value, "Unexpected error code"
         assert response.message == "Invalid Order", "Unexpected error message"
 
     @allure.title("Создание заказа с невалидным статусом")
@@ -86,7 +87,7 @@ class TestStore:
         """Создание заказа с невалидным статусом"""
         order_data.status = "invalid_status"
         response = store_helper.place_order(client, order_data, expected_status_code=500)
-        assert response.code == 500, "Unexpected error code"
+        assert response.code == HTTPStatus.INTERNAL_SERVER_ERROR.value, "Unexpected error code"
         assert response.message == "Internal Server Error", "Unexpected error message"
 
     @allure.title("Создание заказа с невалидным ID")
@@ -94,7 +95,7 @@ class TestStore:
         """Создание заказа с невалидным ID"""
         order_data.id = random.randint(-100000000, -1)
         response = store_helper.place_order(client, order_data, expected_status_code=500)
-        assert response.code == 500, "Unexpected error code"
+        assert response.code == HTTPStatus.INTERNAL_SERVER_ERROR.value, "Unexpected error code"
         assert response.message == "Internal Server Error", "Unexpected error message"
 
     @allure.title("Создание заказа с невалидным количеством")
@@ -102,7 +103,7 @@ class TestStore:
         """Создание заказа с невалидным количеством"""
         order_data.quantity = random.randint(-100000000, -1)
         response = store_helper.place_order(client, order_data, expected_status_code=500)
-        assert response.code == 500, "Unexpected error code"
+        assert response.code == HTTPStatus.INTERNAL_SERVER_ERROR.value, "Unexpected error code"
         assert response.message == "Internal Server Error", "Unexpected error message"
 
     @allure.title("Создание заказа с невалидным ID питомца")
@@ -110,5 +111,5 @@ class TestStore:
         """Создание заказа с невалидным ID питомца"""
         order_data.pet_id = random.randint(-100000000, -1)
         response = store_helper.place_order(client, order_data, expected_status_code=500)
-        assert response.code == 500, "Unexpected error code"
+        assert response.code == HTTPStatus.INTERNAL_SERVER_ERROR.value, "Unexpected error code"
         assert response.message == "Internal Server Error", "Unexpected error message"
