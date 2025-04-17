@@ -1,7 +1,8 @@
 def replace_base_model(file_path):
-    """
-    Добавляет импорт BaseRequestModel и заменяет BaseModel на BaseRequestModel
+    """Добавляет импорт BaseRequestModel и заменяет BaseModel на BaseRequestModel
     только в тех случаях, где BaseModel используется как базовый класс.
+
+    @param file_path: Путь к файлу, в котором нужно произвести замену.
     """
     with open(file_path, encoding="utf-8") as file:
         content = file.read()
@@ -24,8 +25,9 @@ def replace_base_model(file_path):
 
 
 def replace_regex(file_path):
-    """
-    Заменяет regex на pattern и удаляет unique_items.
+    """Заменяет regex на pattern и удаляет unique_items.
+
+    @param file_path: Путь к файлу, в котором нужно произвести замену.
     """
     with open(file_path, encoding="utf-8") as file:
         content = file.read()
@@ -47,8 +49,9 @@ def replace_regex(file_path):
 
 
 def replace_reserved_names(file_path):
-    """
-    Заменяет зарезервированные имена полей на альтернативные.
+    """Заменяет зарезервированные имена полей на альтернативные.
+
+    @param file_path: Путь к файлу, в котором нужно произвести замену.
     """
     reserved_names_mapping = {"date": "date_", "__root__": "root_non_filled"}  # Заменяем "date" на "date_"
 

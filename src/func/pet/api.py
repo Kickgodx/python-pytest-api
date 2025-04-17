@@ -28,7 +28,7 @@ class PetAPI(CustomRequester):
         return self.post(url.POST_UPLOAD_IMAGE.format(pet_id=pet_id), files=file, params=params, headers=client.get_base_headers())
 
     def post_update_status_and_name(self, client: Client, pet_id, name, status):
-        """
+        """Обновление статуса и имени питомца
         :param client: Клиент, который делает запрос
         :param pet_id: ID питомца
         :param name: Имя питомца (передается как formData)

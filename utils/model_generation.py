@@ -37,6 +37,7 @@ GENERATOR_CMD = (
 
 
 def generate_models():
+    """Генерация моделей из файлов OpenAPI схем с использованием datamodel-codegen."""
     # Создаем папку models, если она не существует
     Path(MODELS_DIR).mkdir(parents=True, exist_ok=True)
 

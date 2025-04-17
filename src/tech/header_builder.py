@@ -2,9 +2,7 @@ import uuid
 
 
 class HeaderBuilder:
-    """
-    Builder для создания заголовков запроса (device_id, device_type, content_type, auth_token)
-    """
+    """Builder для создания заголовков запроса (device_id, device_type, content_type, auth_token)"""
 
     def __init__(self, headers: dict = None, content_type: str = "application/json"):
         self._headers = {"Content-Type": content_type}

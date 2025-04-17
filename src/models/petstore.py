@@ -19,9 +19,7 @@ class Category(BaseRequestModel):
 
 
 class PetStatus(Enum):
-    """
-    pet status in the store
-    """
+    """Pet status in the store"""
 
     AVAILABLE = "available"
     PENDING = "pending"
@@ -33,9 +31,7 @@ class Tag(Category):
 
 
 class OrderStatus(Enum):
-    """
-    Order Status
-    """
+    """Order Status"""
 
     PLACED = "placed"
     APPROVED = "approved"

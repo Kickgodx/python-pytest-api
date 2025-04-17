@@ -19,9 +19,7 @@ MAX_SERVER_ERROR_CODE = 599  # 5xx errors end at 599
 
 
 class CustomRequester:
-    """
-    Класс-обёртка для работы с HTTP-запросами и логированием
-    """
+    """Класс-обёртка для работы с HTTP-запросами и логированием"""
 
     def __init__(self, base_url: str, timeout=DEFAULT_TIMEOUT):
         self.base_url = base_url
@@ -46,8 +44,7 @@ class CustomRequester:
         return "Unknown", 0, "Unknown"
 
     def _log_request(self, request_id: str, method: str, url: str, **kwargs) -> None:
-        """
-        Метод для логирования информации о запросе
+        """Метод для логирования информации о запросе
         :param request_id: уникальный идентификатор запроса
         :param method: HTTP-метод
         :param url: URL-адрес запроса
@@ -68,8 +65,7 @@ class CustomRequester:
 
     @staticmethod
     def _log_response(request_id: str, response: Response) -> None:
-        """
-        Метод для логирования информации об ответе
+        """Метод для логирования информации об ответе
         :param request_id: уникальный идентификатор запроса
         :param response: объект ответа на запрос (requests.Response)
         :return: None
@@ -81,8 +77,7 @@ class CustomRequester:
     def _log_error(
         self, request_id: str, err, response: Response | None, data, headers: dict, url: str, method: str, filename, lineno, funcname
     ) -> None:
-        """
-        Метод для логирования информации об ошибке
+        """Метод для логирования информации об ошибке
         :param request_id: уникальный идентификатор запроса
         :param err: объект ошибки (HTTPError или RequestException)
         :param response: объект ответа на запрос (requests.Response)
@@ -127,9 +122,7 @@ class CustomRequester:
     def _send_request(
         self, method: str, endpoint: str, data=None, headers: dict = None, params=None, use_allure: bool = True, **kwargs
     ) -> Response:
-        """
-        Универсальный метод для отправки HTTP-запросов.
-        """
+        """Универсальный метод для отправки HTTP-запросов."""
         if method.upper() not in HTTP_METHODS:
             err_msg = f"Недопустимый HTTP-метод: {method}. Допустимые значения: {HTTP_METHODS}"
             raise ValueError(err_msg)
@@ -220,8 +213,7 @@ class CustomRequester:
 
     @staticmethod
     def _mask_bearer_tokens(headers: dict) -> dict:
-        """
-        Маскирует Bearer-токены во всех значениях словаря headers.
+        """Маскирует Bearer-токены во всех значениях словаря headers.
         Возвращает новый словарь с замаскированными данными.
         """
         masked_headers = {}

@@ -5,8 +5,8 @@ class CustomAsserts:
 
     @classmethod
     def assert_equal(cls, value, expected_value, description=None):
-        """
-        Проверка, что значение равно ожидаемому
+        """Проверка, что значение равно ожидаемому.
+
         :param value: фактическое значение
         :param expected_value: ожидаемое значение
         :param description: описание проверки (необязательно)
@@ -24,8 +24,7 @@ class CustomAsserts:
 
     @classmethod
     def check_item_in_list(cls, item, item_list, description=None):
-        """
-        Проверка, что элемент присутствует в списке
+        """Проверка, что элемент присутствует в списке
         :param item: элемент для проверки
         :param item_list: список, в котором проверяется наличие элемента
         :param description: описание проверки (необязательно)
@@ -40,8 +39,7 @@ class CustomAsserts:
 
     @staticmethod
     def check_status_code(response, expected_status_code):
-        """
-        Проверка, что статус код ответа соответствует ожидаемому
+        """Проверка, что статус код ответа соответствует ожидаемому
         :param response: объект ответа
         :param expected_status_code: ожидаемый статус код
         """

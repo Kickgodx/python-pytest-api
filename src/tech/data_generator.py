@@ -4,9 +4,7 @@ from src.models.petstore import OrderStatus, PetStatus
 
 
 class DataGenerator:
-    """
-    Фейкер для генерации рандомных данных
-    """
+    """Фейкер для генерации рандомных данных"""
 
     def __init__(self):
         self.faker_instance = Faker()
