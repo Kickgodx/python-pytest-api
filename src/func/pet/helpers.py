@@ -27,15 +27,13 @@ class PetHelper:
         CustomAsserts.check_status_code(response, expected_status_code)
         if response.status_code == HTTPStatus.OK.value:
             return Pet(**response.json())
-        else:
-            return ApiResponse(**response.json())
+        return ApiResponse(**response.json())
 
     @step("Получение информации о питомцах по статусу")
     def get_pet_by_status(self, client: Client, pet_status: list[str], expected_status_code: int = 200) -> list[Pet]:
         response = self.api.get_find_pet_by_status(client, pet_status)
         CustomAsserts.check_status_code(response, expected_status_code)
-        res = [Pet.model_construct(**pet) for pet in response.json()]
-        return res
+        return [Pet.model_construct(**pet) for pet in response.json()]
 
     @step("Обновление информации о питомце")
     def update_pet(self, client: Client, data: BaseRequestModel, expected_status_code=200) -> Pet:

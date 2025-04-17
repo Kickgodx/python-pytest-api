@@ -8,7 +8,7 @@ from src.tech.custom_asserts import CustomAsserts
 from src.tech.data_generator import DataGenerator
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def pet_data():
     return Pet(**DataGenerator().generate_pet_body())
 

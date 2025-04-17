@@ -131,7 +131,8 @@ class CustomRequester:
         Универсальный метод для отправки HTTP-запросов.
         """
         if method.upper() not in HTTP_METHODS:
-            raise ValueError(f"Недопустимый HTTP-метод: {method}. Допустимые значения: {HTTP_METHODS}")
+            err_msg = f"Недопустимый HTTP-метод: {method}. Допустимые значения: {HTTP_METHODS}"
+            raise ValueError(err_msg)
 
         request_id = str(uuid.uuid4())
         filename, lineno, funcname = self._get_caller_info()
@@ -236,5 +237,4 @@ class CustomRequester:
                     masked_headers[key] = value
             else:
                 masked_headers[key] = value
-        headers_ref = {**headers, **masked_headers}
-        return headers_ref
+        return {**headers, **masked_headers}

@@ -10,7 +10,7 @@ from src.tech.custom_asserts import CustomAsserts
 from src.tech.data_generator import DataGenerator
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def order_data():
     """Фикстура для данных заказа"""
     return Order(**DataGenerator().generate_order_body())

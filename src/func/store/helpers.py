@@ -27,8 +27,7 @@ class StoreHelper:
 
         if response.status_code == HTTPStatus.OK.value:
             return Order(**response.json())
-        else:
-            return ApiResponse(**response.json())
+        return ApiResponse(**response.json())
 
     @step("Создание заказа")
     def place_order(self, client: Client, data: BaseRequestModel, expected_status_code=200) -> Order:
@@ -42,5 +41,4 @@ class StoreHelper:
         CustomAsserts.check_status_code(response, expected_status_code)
         if response.status_code == HTTPStatus.OK.value:
             return response.json()
-        else:
-            return ApiResponse(**response.json())
+        return ApiResponse(**response.json())

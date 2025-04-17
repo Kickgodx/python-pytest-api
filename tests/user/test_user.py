@@ -8,17 +8,16 @@ from src.tech.custom_asserts import CustomAsserts
 from src.tech.data_generator import DataGenerator
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def user_data():
     """Фикстура для данных пользователя"""
     return User(**DataGenerator().generate_user_body())
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def users_data():
     """Фикстура для массива данных пользователей"""
-    us_data = [User(**DataGenerator().generate_user_body()) for _ in range(10)]
-    return us_data
+    return [User(**DataGenerator().generate_user_body()) for _ in range(10)]
 
 
 users_datas = [User(**DataGenerator().generate_user_body()) for _ in range(10)]

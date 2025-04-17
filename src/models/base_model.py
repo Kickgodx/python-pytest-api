@@ -14,31 +14,28 @@ class BaseRequestModel(BaseModel):
     )
 
     def serialize_payload(self) -> str:
-        """
-        Сериализует модель в JSON-строку, исключая поля с None.
+        """Сериализует модель в JSON-строку, исключая поля с None.
         :return: JSON-строка.
         """
         return json.dumps(self.model_dump(exclude_none=True), ensure_ascii=False)
 
     def serialize_payload_by_alias(self) -> str:
-        """
-        Сериализует модель в JSON-строку, исключая поля с None.
+        """Сериализует модель в JSON-строку, исключая поля с None.
         :return: JSON-строка.
         """
         return json.dumps(self.model_dump(exclude_none=True, by_alias=True), ensure_ascii=False, default=self.custom_serializer)
 
     @staticmethod
     def custom_serializer(obj):
-        """
-        Кастомный сериализатор для объектов, которые не могут быть сериализованы стандартным json.dumps.
+        """Кастомный сериализатор для объектов, которые не могут быть сериализованы стандартным json.dumps.
         """
         if isinstance(obj, uuid.UUID):
             return str(obj)
-        raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
+        err_msg = f"Object of type {type(obj)} is not JSON serializable"
+        raise TypeError(err_msg)
 
     def to_xml(self, root_tag: str = None) -> str:
-        """
-        Преобразует модель в XML-строку.
+        """Преобразует модель в XML-строку.
         :param root_tag: Название корневого элемента XML.
         :return: Строка в формате XML.
         """
@@ -46,25 +43,20 @@ class BaseRequestModel(BaseModel):
         data_dict = self.model_dump(exclude_none=True)
 
         # Конвертируем словарь в XML
-        if root_tag:
-            xml_bytes = dicttoxml(data_dict, custom_root=root_tag, attr_type=False)
-        else:
-            xml_bytes = dicttoxml(data_dict, attr_type=False)
+        xml_bytes = dicttoxml(data_dict, custom_root=root_tag, attr_type=False) if root_tag else dicttoxml(data_dict, attr_type=False)
 
         # Декодируем из bytes в строку
         return xml_bytes.decode("utf-8")
 
     def to_dict(self) -> dict:
-        """
-        Преобразует модель в словарь.
+        """Преобразует модель в словарь.
         :return: Словарь.
         """
         return self.model_dump(exclude_none=True)
 
     @classmethod
     def from_json(cls, json_str: str):
-        """
-        Создаёт экземпляр модели из JSON-строки.
+        """Создаёт экземпляр модели из JSON-строки.
         :param json_str: JSON-строка.
         :return: Экземпляр модели.
         """
@@ -74,8 +66,7 @@ class BaseRequestModel(BaseModel):
     # Сериализовать в JSON строку массив с объектами
     @staticmethod
     def serialize_array_by_alias(data: list):
-        """
-        Сериализует массив объектов в JSON-строку.
+        """Сериализует массив объектов в JSON-строку.
         :param data: Массив объектов.
         :return: JSON-строка.
         """

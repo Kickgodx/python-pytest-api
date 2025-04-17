@@ -26,8 +26,7 @@ class UserHelper:
         CustomAsserts.check_status_code(response, expected_status_code)
         if response.status_code == HTTPStatus.OK.value:
             return User(**response.json())
-        else:
-            return ApiResponse(**response.json())
+        return ApiResponse(**response.json())
 
     @step("Обновление информации о пользователе")
     def update_user(self, client: Client, username: str, data: BaseRequestModel, expected_status_code: int = 200) -> ApiResponse:
@@ -42,8 +41,7 @@ class UserHelper:
 
         if response.status_code == HTTPStatus.OK.value:
             return ApiResponse(**response.json())
-        else:
-            return response.json()
+        return response.json()
 
     @step("Авторизация пользователя")
     def login_user(self, client: Client, username: str, password: str, expected_status_code: int = 200) -> ApiResponse:

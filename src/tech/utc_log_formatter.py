@@ -10,8 +10,4 @@ class UtcFormatter(logging.Formatter):
 
     def formatTime(self, record, datefmt=None):
         dt = datetime.fromtimestamp(record.created, tz=self.tz)
-        if datefmt:
-            s = dt.strftime(datefmt)
-        else:
-            s = dt.isoformat()
-        return s
+        return dt.strftime(datefmt) if datefmt else dt.isoformat()
