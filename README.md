@@ -91,3 +91,11 @@ ruff, black, isort with pyproject.toml config
 
 automatically fix with `--fix` flag
 - ruff: `ruff --fix .`
+
+## Docstrings check
+Interrogate can be added to the pre-commit hooks to check for docstrings in the code.
+
+To run Interrogate solo, use the following command:
+
+```bash
+- `interrogate -v -e .\tests\ .`
