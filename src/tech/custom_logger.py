@@ -13,7 +13,7 @@ import config as cfg
 from src.tech.utc_log_formatter import UtcFormatter
 
 
-class RequestLogger:
+class CustomLogger:
     """Класс для логирования HTTP-запросов и ответов с поддержкой многопроцессорности."""
 
     def __init__(self):
@@ -151,7 +151,7 @@ class RequestLogger:
 
 
 # Инициализация глобального экземпляра логгера
-logger = RequestLogger()
+logger = CustomLogger()
 
 # Алиасы для удобства использования
 log_request = logger.log_request
