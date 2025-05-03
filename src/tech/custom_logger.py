@@ -100,9 +100,7 @@ class CustomLogger:
         self.logger.info(f"[{request_id}] - Response headers: {response.headers}")
         self.logger.info(f"[{request_id}] - Response body: {response.text}\n")
 
-    def log_error(
-        self, request_id: str, err, response: Response | None, data, headers: dict, url: str, method: str, filename, lineno, funcname
-    ) -> None:
+    def log_error(self, request_id: str, err, response: Response | None, data, headers: dict, url: str, method: str) -> None:
         """Метод для логирования информации об ошибке
         :param request_id: уникальный идентификатор запроса
         :param err: объект ошибки (HTTPError или RequestException)
@@ -111,16 +109,9 @@ class CustomLogger:
         :param headers: заголовки запроса (dict)
         :param url: URL-адрес запроса
         :param method: HTTP-метод
-        :param filename: имя файла, из которого был вызван запрос
-        :param lineno: номер строки, из которой был вызван запрос
-        :param funcname: имя функции, из которой был вызван запрос
         :return: None
         """
-        if filename is None or lineno is None or funcname is None:
-            filename, lineno, funcname = get_caller_info()
-
         test_name = os.environ.get("PYTEST_CURRENT_TEST", "Unknown test")
-
         log_lines = []
 
         if test_name != "Unknown test":
@@ -128,7 +119,8 @@ class CustomLogger:
         else:
             log_lines.append("Unknown test")
 
-        log_lines.append(f"[{request_id}] - Error in: {filename}:{lineno} - {funcname}")
+        # filename, lineno, funcname = get_caller_info()
+        # log_lines.append(f"[{request_id}] - Error in: {filename}:{lineno} - {funcname}")
         log_lines.append(f"[{request_id}] - {err}")
         log_lines.append(f"[{request_id}] - Request URL: {method} {url}")
 

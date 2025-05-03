@@ -8,7 +8,7 @@ import urllib3
 from requests import HTTPError, Response
 from urllib3.exceptions import InsecureRequestWarning
 
-from src.tech.custom_logger import get_caller_info, log_request, log_error, log_response, log_info
+from src.tech.custom_logger import log_request, log_error, log_response, log_info
 
 HTTP_METHODS = ("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
 DEFAULT_TIMEOUT = 30
@@ -39,7 +39,6 @@ class CustomRequester:
             raise ValueError(err_msg)
 
         request_id = str(uuid.uuid4())
-        filename, lineno, funcname = get_caller_info()
         url = f"{self.base_url}{endpoint}"
         combined_headers = {**headers}
 
@@ -53,9 +52,7 @@ class CustomRequester:
             self._add_request_attachments(method, url, headers, data, params)
             exception_name = e.__class__.__name__
             err_msg = f"исключение при {method.upper()} запросе {endpoint}:\n{e}"
-            log_error(
-                request_id, f"{exception_name} {err_msg}", None, data, combined_headers, url, method, filename, lineno, funcname
-            )
+            log_error(request_id, f"{exception_name} {err_msg}", None, data, combined_headers, url, method)
             raise e.__class__(err_msg) from e
 
         log_response(request_id, response)
@@ -69,7 +66,7 @@ class CustomRequester:
                 response.raise_for_status()
             except HTTPError as e:
                 exception_name = e.__class__.__name__
-                log_error(request_id, f"{exception_name}: {e}", response, data, combined_headers, url, method, None, None, None)
+                log_error(request_id, f"{exception_name}: {e}", response, data, combined_headers, url, method)
 
         return response
 
