@@ -30,73 +30,73 @@ users_datas = [User(**DataGenerator().generate_user_body()) for _ in range(10)]
 class TestUser:
 
     @allure.title("Создание пользователя")
-    def test_create_user(self, user_helper, user_data, client):
+    def test_create_user(self, user_helper, user_data, admin):
         """Создание пользователя."""
-        response = user_helper.create_user(client, user_data)
+        response = user_helper.create_user(admin, user_data)
         CustomAsserts.assert_equal(response.message, user_data.id)
 
     @allure.title("Получение информации о пользователе")
-    def test_get_user(self, client, user_helper, user_data):
+    def test_get_user(self, admin, user_helper, user_data):
         """Получение информации о пользователе."""
-        user_helper.create_user(client, user_data)
+        user_helper.create_user(admin, user_data)
 
         time.sleep(5)
 
         with allure.step("Получение информации о пользователе"):
-            response = user_helper.get_user(client, user_data.username)
+            response = user_helper.get_user(admin, user_data.username)
             CustomAsserts.assert_equal(response.username, user_data.username)
 
     @allure.title("Обновление информации о пользователе")
-    def test_update_user(self, user_helper, user_data, client):
+    def test_update_user(self, user_helper, user_data, admin):
         """Обновление информации о пользователе."""
-        user_helper.create_user(client, user_data)
+        user_helper.create_user(admin, user_data)
 
         time.sleep(5)
 
         with allure.step("Обновление информации о пользователе"):
-            response = user_helper.update_user(client, user_data.username, user_data)
+            response = user_helper.update_user(admin, user_data.username, user_data)
             CustomAsserts.assert_equal(response.message, user_data.id)
 
     @allure.title("Удаление пользователя")
-    def test_delete_user(self, user_helper, user_data, client):
+    def test_delete_user(self, user_helper, user_data, admin):
         """Удаление пользователя."""
-        user_helper.create_user(client, user_data)
+        user_helper.create_user(admin, user_data)
 
         time.sleep(5)
 
         with allure.step("Удаление пользователя"):
-            response = user_helper.delete_user(client, user_data.username)
+            response = user_helper.delete_user(admin, user_data.username)
             CustomAsserts.assert_equal(response.message, user_data.username)
 
     @allure.title("Авторизация пользователя")
-    def test_login_user(self, client, user_helper, user_data):
+    def test_login_user(self, admin, user_helper, user_data):
         """Авторизация пользователя."""
-        user_helper.create_user(client, user_data)
+        user_helper.create_user(admin, user_data)
 
         time.sleep(5)
 
         with allure.step("Авторизация пользователя"):
-            response = user_helper.login_user(client, user_data.username, user_data.password)
+            response = user_helper.login_user(admin, user_data.username, user_data.password)
             CustomAsserts.assert_equal(response.code, 200)
 
     @allure.title("Выход из аккаунта")
-    def test_logout_user(self, client, user_helper, user_data):
+    def test_logout_user(self, admin, user_helper, user_data):
         """Выход из аккаунта."""
-        user_helper.create_user(client, user_data)
+        user_helper.create_user(admin, user_data)
 
         time.sleep(5)
 
-        user_helper.login_user(client, user_data.username, user_data.password)
+        user_helper.login_user(admin, user_data.username, user_data.password)
 
         time.sleep(5)
 
         with allure.step("Выход из аккаунта"):
-            response = user_helper.logout_user(client)
+            response = user_helper.logout_user(admin)
             CustomAsserts.assert_equal(response.message, "ok")
 
     @allure.title("Создание пользователя из массива")
-    def test_create_user_with_array(self, client, user_helper, users_data):
+    def test_create_user_with_array(self, admin, user_helper, users_data):
         """Создание пользователя из массива."""
-        response = user_helper.create_user_with_array(client, users_data)
+        response = user_helper.create_user_with_array(admin, users_data)
         CustomAsserts.assert_equal(response.code, 200)
         CustomAsserts.assert_equal(response.message, "ok")

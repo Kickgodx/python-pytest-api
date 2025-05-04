@@ -23,93 +23,93 @@ def order_data():
 class TestStore:
 
     @allure.title("Создание заказа")
-    def test_create_order(self, store_helper, order_data, client):
+    def test_create_order(self, store_helper, order_data, admin):
         """Создание заказа"""
-        store_helper.place_order(client, order_data)
+        store_helper.place_order(admin, order_data)
 
     @allure.title("Создание и получение информации о заказе")
-    def test_get_order(self, store_helper, order_data, client):
+    def test_get_order(self, store_helper, order_data, admin):
         """Создание и получение информации о заказе"""
         with allure.step("Создание заказа"):
-            response = store_helper.place_order(client, order_data)
+            response = store_helper.place_order(admin, order_data)
             CustomAsserts.assert_equal(response.status, order_data.status)
             CustomAsserts.assert_equal(response.id, order_data.id)
 
         time.sleep(5)
 
         with allure.step("Получение информации о заказе"):
-            response = store_helper.get_order_by_id(client, order_data.id)
+            response = store_helper.get_order_by_id(admin, order_data.id)
             CustomAsserts.assert_equal(response.status, order_data.status)
 
     @allure.title("Создание и удаление заказа")
-    def test_delete_order(self, client, store_helper, order_data):
+    def test_delete_order(self, admin, store_helper, order_data):
         """Создание и удаление заказа"""
         with allure.step("Создание заказа"):
-            response = store_helper.place_order(client, order_data)
+            response = store_helper.place_order(admin, order_data)
             CustomAsserts.assert_equal(response.status, order_data.status)
             CustomAsserts.assert_equal(response.id, order_data.id)
 
         time.sleep(5)
 
-        store_helper.delete_order_by_id(client, order_data.id)
+        store_helper.delete_order_by_id(admin, order_data.id)
 
     @allure.title("Получение информации о складе")
-    def test_get_inventory(self, client, store_helper):
+    def test_get_inventory(self, admin, store_helper):
         """Получение информации о складе"""
-        response = store_helper.get_inventory(client)
+        response = store_helper.get_inventory(admin)
         assert response, "Inventory is empty"
         assert isinstance(response, dict), "Unexpected response type (expected dict)"
 
     @allure.title("Получение информации о заказе по несуществующему ID")
-    def test_get_order_by_nonexistent_id(self, client, store_helper):
+    def test_get_order_by_nonexistent_id(self, admin, store_helper):
         """Получение информации о заказе по несуществующему ID"""
-        response = store_helper.get_order_by_id(client, 0, expected_status_code=404)
+        response = store_helper.get_order_by_id(admin, 0, expected_status_code=404)
         assert response.code == 1, "Unexpected error code"
         assert response.message == "Order not found", "Unexpected error message"
 
     @allure.title("Удаление заказа по несуществующему ID")
-    def test_delete_order_by_nonexistent_id(self, client, store_helper):
+    def test_delete_order_by_nonexistent_id(self, admin, store_helper):
         """Удаление заказа по несуществующему ID"""
-        response = store_helper.delete_order_by_id(client, 0, expected_status_code=404)
+        response = store_helper.delete_order_by_id(admin, 0, expected_status_code=404)
         assert response.code == HTTPStatus.NOT_FOUND.value, "Unexpected error code"
         assert response.message == "Order Not Found", "Unexpected error message"
 
     @allure.title("Создание заказа с невалидными данными")
-    def test_create_order_with_invalid_data(self, client, store_helper, order_data):
+    def test_create_order_with_invalid_data(self, admin, store_helper, order_data):
         """Создание заказа с невалидными данными"""
         order_data.id = 2025008213453549843908439809804398034593454536556445
-        response = store_helper.place_order(client, order_data, expected_status_code=400)
+        response = store_helper.place_order(admin, order_data, expected_status_code=400)
         assert response.code == HTTPStatus.BAD_REQUEST.value, "Unexpected error code"
         assert response.message == "Invalid Order", "Unexpected error message"
 
     @allure.title("Создание заказа с невалидным статусом")
-    def test_create_order_with_invalid_status(self, client, store_helper, order_data):
+    def test_create_order_with_invalid_status(self, admin, store_helper, order_data):
         """Создание заказа с невалидным статусом"""
         order_data.status = "invalid_status"
-        response = store_helper.place_order(client, order_data, expected_status_code=500)
+        response = store_helper.place_order(admin, order_data, expected_status_code=500)
         assert response.code == HTTPStatus.INTERNAL_SERVER_ERROR.value, "Unexpected error code"
         assert response.message == "Internal Server Error", "Unexpected error message"
 
     @allure.title("Создание заказа с невалидным ID")
-    def test_create_order_with_invalid_id(self, client, store_helper, order_data):
+    def test_create_order_with_invalid_id(self, admin, store_helper, order_data):
         """Создание заказа с невалидным ID"""
         order_data.id = random.randint(-100000000, -1)
-        response = store_helper.place_order(client, order_data, expected_status_code=500)
+        response = store_helper.place_order(admin, order_data, expected_status_code=500)
         assert response.code == HTTPStatus.INTERNAL_SERVER_ERROR.value, "Unexpected error code"
         assert response.message == "Internal Server Error", "Unexpected error message"
 
     @allure.title("Создание заказа с невалидным количеством")
-    def test_create_order_with_invalid_quantity(self, client, store_helper, order_data):
+    def test_create_order_with_invalid_quantity(self, admin, store_helper, order_data):
         """Создание заказа с невалидным количеством"""
         order_data.quantity = random.randint(-100000000, -1)
-        response = store_helper.place_order(client, order_data, expected_status_code=500)
+        response = store_helper.place_order(admin, order_data, expected_status_code=500)
         assert response.code == HTTPStatus.INTERNAL_SERVER_ERROR.value, "Unexpected error code"
         assert response.message == "Internal Server Error", "Unexpected error message"
 
     @allure.title("Создание заказа с невалидным ID питомца")
-    def test_create_order_with_invalid_pet_id(self, client, store_helper, order_data):
+    def test_create_order_with_invalid_pet_id(self, admin, store_helper, order_data):
         """Создание заказа с невалидным ID питомца"""
         order_data.pet_id = random.randint(-100000000, -1)
-        response = store_helper.place_order(client, order_data, expected_status_code=500)
+        response = store_helper.place_order(admin, order_data, expected_status_code=500)
         assert response.code == HTTPStatus.INTERNAL_SERVER_ERROR.value, "Unexpected error code"
         assert response.message == "Internal Server Error", "Unexpected error message"

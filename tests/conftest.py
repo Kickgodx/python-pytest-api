@@ -15,7 +15,7 @@ def pytest_configure(config):
 
 
 @pytest.fixture(scope="session")
-def client():
+def admin():
     return Client()
 
 
