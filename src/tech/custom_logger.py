@@ -96,7 +96,14 @@ class CustomLogger:
         """Логирует информацию об ответе."""
         self.logger.info(f"[{request_id}] - Response: {response.status_code} {response.url}")
         self.logger.info(f"[{request_id}] - Response headers: {response.headers}")
-        self.logger.info(f"[{request_id}] - Response body: {response.text}\n")
+        if response.text:
+            try:
+                json_data = response.json()
+                self.logger.info(f"[{request_id}] - Response body: {json_data}\n")
+            except ValueError:
+                self.logger.info(f"[{request_id}] - Response body: {response.text}\n")
+        else:
+            self.logger.info(f"[{request_id}] - Response body: None")
 
     def log_error(self, request_id: str, err, response: Response | None, data, headers: dict, url: str, method: str, **kwargs) -> None:
         """Метод для логирования информации об ошибке
@@ -110,7 +117,7 @@ class CustomLogger:
         :return: None
         """
         test_name = os.environ.get("PYTEST_CURRENT_TEST", "Unknown test")
-        log_lines = [f"Test: {test_name}" if test_name != "Unknown test" else "Unknown test"]
+        log_lines = [f"Test: {test_name.replace("(call)", "")}"]
 
         # filename, lineno, funcname = get_caller_info()
         # log_lines.append(f"[{request_id}] - Error in: {filename}:{lineno} - {funcname}")
