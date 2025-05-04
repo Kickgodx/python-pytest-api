@@ -166,7 +166,6 @@ class CustomLogger:
         self.logger.log(message)
 
 
-
 # Инициализация глобального экземпляра логгера
 logger = CustomLogger()
 
