@@ -1,7 +1,6 @@
 import json
 import uuid
 import warnings
-from http import HTTPMethod
 
 import allure
 import requests
@@ -9,12 +8,8 @@ import urllib3
 from requests import HTTPError, Response
 from urllib3.exceptions import InsecureRequestWarning
 
+from config import DEFAULT_TIMEOUT, HTTP_METHODS, MAX_SERVER_ERROR_CODE, MIN_CLIENT_ERROR_CODE
 from src.tech.custom_logger import log_request, log_error, log_response, log_info
-
-HTTP_METHODS = [method for method in HTTPMethod]
-DEFAULT_TIMEOUT = 30
-MIN_CLIENT_ERROR_CODE = 400  # 4xx errors start at 400
-MAX_SERVER_ERROR_CODE = 599  # 5xx errors end at 599
 
 
 class CustomRequester:
@@ -67,7 +62,7 @@ class CustomRequester:
                 response.raise_for_status()
             except HTTPError as e:
                 exception_name = e.__class__.__name__
-                log_error(request_id, f"{exception_name}: {e}", response, data, combined_headers, url, method)
+                log_error(request_id, f"{exception_name}: {e}", response, data, response.request.headers, url, method)
 
         return response
 

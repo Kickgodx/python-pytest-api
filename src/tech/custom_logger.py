@@ -80,18 +80,17 @@ class CustomLogger:
 
     def log_request(self, request_id: str, method: str, url: str, **kwargs) -> None:
         """Логирует информацию о запросе."""
-        filename, lineno, funcname = self.get_caller_info()
-        self.logger.info(f"RequestID: [{request_id}] - Request: {method} {url} - {filename}:{lineno} - {funcname}")
+        self.logger.info(f"[{request_id}] - Request URL: {method} {url}")
 
         if "headers" in kwargs:
             headers_to_log = self._mask_bearer_tokens(kwargs["headers"])
-            self.logger.info(f"RequestID: [{request_id}] - Headers: {headers_to_log}")
+            self.logger.info(f"[{request_id}] - Headers: {headers_to_log}")
         if "params" in kwargs:
-            self.logger.info(f"RequestID: [{request_id}] - Params: {kwargs['params']}")
+            self.logger.info(f"[{request_id}] - Params: {kwargs['params']}")
         if "json" in kwargs:
-            self.logger.info(f"RequestID: [{request_id}] - Payload (json): {kwargs['json']}")
+            self.logger.info(f"[{request_id}] - Payload (json): {kwargs['json']}")
         if "data" in kwargs:
-            self.logger.info(f"RequestID: [{request_id}] - Payload (data): {kwargs['data']}")
+            self.logger.info(f"[{request_id}] - Payload (data): {kwargs['data']}")
 
     def log_response(self, request_id: str, response: Response) -> None:
         """Логирует информацию об ответе."""
@@ -99,7 +98,7 @@ class CustomLogger:
         self.logger.info(f"[{request_id}] - Response headers: {response.headers}")
         self.logger.info(f"[{request_id}] - Response body: {response.text}\n")
 
-    def log_error(self, request_id: str, err, response: Response | None, data, headers: dict, url: str, method: str) -> None:
+    def log_error(self, request_id: str, err, response: Response | None, data, headers: dict, url: str, method: str, **kwargs) -> None:
         """Метод для логирования информации об ошибке
         :param request_id: уникальный идентификатор запроса
         :param err: объект ошибки (HTTPError или RequestException)
@@ -111,12 +110,7 @@ class CustomLogger:
         :return: None
         """
         test_name = os.environ.get("PYTEST_CURRENT_TEST", "Unknown test")
-        log_lines = []
-
-        if test_name != "Unknown test":
-            log_lines.append(f"Test: {test_name}")
-        else:
-            log_lines.append("Unknown test")
+        log_lines = [f"Test: {test_name}" if test_name != "Unknown test" else "Unknown test"]
 
         # filename, lineno, funcname = get_caller_info()
         # log_lines.append(f"[{request_id}] - Error in: {filename}:{lineno} - {funcname}")
@@ -125,6 +119,8 @@ class CustomLogger:
 
         headers_to_log = self._mask_bearer_tokens(headers)
         log_lines.append(f"[{request_id}] - Request headers: {headers_to_log}")
+        if "params" in kwargs:
+            log_lines.append(f"[{request_id}] - Request params: {kwargs['params']}")
         log_lines.append(f"[{request_id}] - Request body: {data}")
 
         if response is not None:
@@ -140,6 +136,12 @@ class CustomLogger:
         """Логирует информационное сообщение."""
         self.logger.info(message)
 
+    def log_debug(self, message: str) -> None:
+        self.logger.debug(message)
+
+    def log_warning(self, message: str) -> None:
+        self.logger.warning(message)
+
 
 # Инициализация глобального экземпляра логгера
 logger = CustomLogger()
@@ -149,4 +151,6 @@ log_request = logger.log_request
 log_response = logger.log_response
 log_error = logger.log_error
 log_info = logger.log_info
+log_debug = logger.log_debug
+log_warning = logger.log_warning
 get_caller_info = logger.get_caller_info
