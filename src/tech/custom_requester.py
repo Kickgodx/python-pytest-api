@@ -1,6 +1,7 @@
 import json
 import uuid
 import warnings
+from http import HTTPMethod
 
 import allure
 import requests
@@ -10,7 +11,7 @@ from urllib3.exceptions import InsecureRequestWarning
 
 from src.tech.custom_logger import log_request, log_error, log_response, log_info
 
-HTTP_METHODS = ("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
+HTTP_METHODS = [method for method in HTTPMethod]
 DEFAULT_TIMEOUT = 30
 MIN_CLIENT_ERROR_CODE = 400  # 4xx errors start at 400
 MAX_SERVER_ERROR_CODE = 599  # 5xx errors end at 599
@@ -23,7 +24,7 @@ class CustomRequester:
         self.base_url = base_url
         self.timeout = timeout
         self.session = requests.Session()
-        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)  # Для интернал вылетает ошибка про сертификат
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         warnings.filterwarnings("ignore", category=InsecureRequestWarning)
 
     def close(self):
@@ -87,6 +88,15 @@ class CustomRequester:
 
     def options(self, endpoint: str, headers: dict = None, use_allure=True, **kwargs) -> Response:
         return self._send_request("OPTIONS", endpoint, use_allure=use_allure, headers=headers, **kwargs)
+
+    def head(self, endpoint: str, headers: dict = None, use_allure=True, **kwargs) -> Response:
+        return self._send_request("HEAD", endpoint, use_allure=use_allure, headers=headers, **kwargs)
+
+    def trace(self, endpoint: str, headers: dict = None, use_allure=True, **kwargs) -> Response:
+        return self._send_request("TRACE", endpoint, use_allure=use_allure, headers=headers, **kwargs)
+
+    def connect(self, endpoint: str, headers: dict = None, use_allure=True, **kwargs) -> Response:
+        return self._send_request("CONNECT", endpoint, use_allure=use_allure, headers=headers, **kwargs)
 
     @staticmethod
     def _add_response_attachments(response):
