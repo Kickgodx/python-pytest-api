@@ -5,7 +5,6 @@ import multiprocessing
 import os
 from logging import FileHandler
 from logging.handlers import QueueHandler, QueueListener
-from typing import Tuple, Dict, Any
 
 from requests import Response
 
@@ -59,7 +58,7 @@ class CustomLogger:
         self.file_log_handler.close()
 
     @staticmethod
-    def get_caller_info() -> Tuple[str, int, str]:
+    def get_caller_info() -> tuple[str, int, str]:
         """Возвращает информацию о вызывающем коде."""
         for frame in inspect.stack():
             module = inspect.getmodule(frame[0])
@@ -69,7 +68,7 @@ class CustomLogger:
         return "Unknown", 0, "Unknown"
 
     @staticmethod
-    def _mask_bearer_tokens(headers: Dict[str, Any]) -> Dict[str, Any]:
+    def _mask_bearer_tokens(headers: dict[str, object]) -> dict[str, object]:
         """Маскирует Bearer-токены в заголовках."""
         masked_headers = headers.copy()
         for key, value in headers.items():
