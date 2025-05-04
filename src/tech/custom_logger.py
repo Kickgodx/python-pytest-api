@@ -149,6 +149,23 @@ class CustomLogger:
     def log_warning(self, message: str) -> None:
         self.logger.warning(message)
 
+    def log_exception(self, message: str) -> None:
+        """Логирует сообщение об исключении."""
+        self.logger.exception(message)
+
+    def log_critical(self, message: str) -> None:
+        """Логирует критическое сообщение."""
+        self.logger.critical(message)
+
+    def log_fatal(self, message: str) -> None:
+        """Логирует фатальное сообщение."""
+        self.logger.fatal(message)
+
+    def log_logging(self, message: str) -> None:
+        """Логирует сообщение."""
+        self.logger.log(message)
+
+
 
 # Инициализация глобального экземпляра логгера
 logger = CustomLogger()
@@ -160,4 +177,8 @@ log_error = logger.log_error
 log_info = logger.log_info
 log_debug = logger.log_debug
 log_warning = logger.log_warning
+log_exception = logger.log_exception
+log_critical = logger.log_critical
+log_fatal = logger.log_fatal
+log_logging = logger.log_logging
 get_caller_info = logger.get_caller_info
