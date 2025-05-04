@@ -27,8 +27,7 @@ class BaseRequestModel(BaseModel):
 
     @staticmethod
     def custom_serializer(obj):
-        """Кастомный сериализатор для объектов, которые не могут быть сериализованы стандартным json.dumps.
-        """
+        """Кастомный сериализатор для объектов, которые не могут быть сериализованы стандартным json.dumps."""
         if isinstance(obj, uuid.UUID):
             return str(obj)
         err_msg = f"Object of type {type(obj)} is not JSON serializable"
