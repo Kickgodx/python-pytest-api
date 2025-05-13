@@ -123,7 +123,7 @@ class CustomLogger:
         test_name = os.environ.get("PYTEST_CURRENT_TEST", "Unknown test")
         log_lines = [f"Test: {test_name.replace("(call)", "")}"]
 
-        log_lines.append(f"[{request_id}] - Error in: {filename}:{lineno} - {funcname}")
+        # log_lines.append(f"[{request_id}] - Error in: {filename}:{lineno} - {funcname}")
         log_lines.append(f"[{request_id}] - {err}")
         log_lines.append(f"[{request_id}] - Request URL: {method} {url}")
 
