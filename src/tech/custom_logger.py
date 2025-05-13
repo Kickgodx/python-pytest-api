@@ -105,7 +105,8 @@ class CustomLogger:
         else:
             self.logger.info(f"[{request_id}] - Response body: None")
 
-    def log_error(self, request_id: str, err, response: Response | None, data, headers: dict, url: str, method: str, **kwargs) -> None:
+    def log_error(self, request_id: str, err, response: Response | None, data, headers: dict, url: str, method: str,
+                  filename, lineno, funcname ,**kwargs) -> None:
         """Метод для логирования информации об ошибке
         :param request_id: уникальный идентификатор запроса
         :param err: объект ошибки (HTTPError или RequestException)
@@ -114,13 +115,15 @@ class CustomLogger:
         :param headers: заголовки запроса (dict)
         :param url: URL-адрес запроса
         :param method: HTTP-метод
+        :param filename: имя файла, где произошла ошибка
+        :param lineno: номер строки, где произошла ошибка
+        :param funcname: имя функции, где произошла ошибка
         :return: None
         """
         test_name = os.environ.get("PYTEST_CURRENT_TEST", "Unknown test")
         log_lines = [f"Test: {test_name.replace("(call)", "")}"]
 
-        # filename, lineno, funcname = get_caller_info()
-        # log_lines.append(f"[{request_id}] - Error in: {filename}:{lineno} - {funcname}")
+        log_lines.append(f"[{request_id}] - Error in: {filename}:{lineno} - {funcname}")
         log_lines.append(f"[{request_id}] - {err}")
         log_lines.append(f"[{request_id}] - Request URL: {method} {url}")
 
@@ -139,42 +142,6 @@ class CustomLogger:
         # Объединяем все строки с переносами
         self.logger.error("\n".join(log_lines))
 
-    def log_info(self, message: str) -> None:
-        """Логирует информационное сообщение."""
-        self.logger.info(message)
-
-    def log_debug(self, message: str) -> None:
-        """Логирует отладочное сообщение."""
-        self.logger.debug(message)
-
-    def log_warning(self, message: str) -> None:
-        """Логирует предупреждение."""
-        self.logger.warning(message)
-
-    def log_exception(self, message: str) -> None:
-        """Логирует сообщение об исключении."""
-        self.logger.exception(message)
-
-    def log_critical(self, message: str) -> None:
-        """Логирует критическое сообщение."""
-        self.logger.critical(message)
-
-    def log_fatal(self, message: str) -> None:
-        """Логирует фатальное сообщение."""
-        self.logger.fatal(message)
-
 
 # Инициализация глобального экземпляра логгера
 logger = CustomLogger()
-
-# Алиасы для удобства использования
-log_request = logger.log_request
-log_response = logger.log_response
-log_error = logger.log_error
-log_info = logger.log_info
-log_debug = logger.log_debug
-log_warning = logger.log_warning
-log_exception = logger.log_exception
-log_critical = logger.log_critical
-log_fatal = logger.log_fatal
-get_caller_info = logger.get_caller_info

@@ -9,7 +9,7 @@ from requests import HTTPError, Response
 from urllib3.exceptions import InsecureRequestWarning
 
 from config import DEFAULT_TIMEOUT, HTTP_METHODS, MAX_SERVER_ERROR_CODE, MIN_CLIENT_ERROR_CODE
-from src.tech.custom_logger import log_request, log_error, log_response, log_info
+from src.tech.custom_logger import logger
 
 
 class CustomRequester:
@@ -24,7 +24,7 @@ class CustomRequester:
 
     def close(self):
         self.session.close()
-        log_info("Session closed")
+        logger.log_info("Session closed")
 
     def _send_request(
         self, method: str, endpoint: str, data=None, headers: dict = None, params=None, use_allure: bool = True, **kwargs
@@ -35,10 +35,11 @@ class CustomRequester:
             raise ValueError(err_msg)
 
         request_id = str(uuid.uuid4())
+        filename, lineno, funcname = logger.get_caller_info()
         url = f"{self.base_url}{endpoint}"
         combined_headers = {**headers}
 
-        log_request(request_id, method, url, headers=combined_headers, params=params, data=data, **kwargs)
+        logger.log_request(request_id, method, url, headers=combined_headers, params=params, data=data, **kwargs)
 
         try:
             response = self.session.request(
@@ -48,10 +49,10 @@ class CustomRequester:
             self._add_request_attachments(method, url, headers, data, params)
             exception_name = e.__class__.__name__
             err_msg = f"исключение при {method.upper()} запросе {endpoint}:\n{e}"
-            log_error(request_id, f"{exception_name} {err_msg}", None, data, combined_headers, url, method)
+            logger.log_error(request_id, f"{exception_name} {err_msg}", None, data, combined_headers, url, method, filename, lineno, funcname)
             raise e.__class__(err_msg) from e
 
-        log_response(request_id, response)
+        logger.log_response(request_id, response)
 
         if use_allure:
             self._add_request_attachments(method, url, response.request.headers, data, params)
@@ -62,7 +63,7 @@ class CustomRequester:
                 response.raise_for_status()
             except HTTPError as e:
                 exception_name = e.__class__.__name__
-                log_error(request_id, f"{exception_name}: {e}", response, data, response.request.headers, url, method)
+                logger.log_error(request_id, f"{exception_name}: {e}", response, data, response.request.headers, url, method, filename, lineno, funcname)
 
         return response
 
@@ -82,16 +83,16 @@ class CustomRequester:
         return self._send_request("DELETE", endpoint, use_allure=use_allure, headers=headers, **kwargs)
 
     def options(self, endpoint: str, headers: dict = None, use_allure=True, **kwargs) -> Response:
-        return self._send_request("OPTIONS", endpoint, use_allure=use_allure, headers=headers, **kwargs)
+        return self._send_request("OPTIONS", endpoint, headers=headers, use_allure=use_allure, **kwargs)
 
     def head(self, endpoint: str, headers: dict = None, use_allure=True, **kwargs) -> Response:
-        return self._send_request("HEAD", endpoint, use_allure=use_allure, headers=headers, **kwargs)
+        return self._send_request("HEAD", endpoint, headers=headers, use_allure=use_allure, **kwargs)
 
     def trace(self, endpoint: str, headers: dict = None, use_allure=True, **kwargs) -> Response:
-        return self._send_request("TRACE", endpoint, use_allure=use_allure, headers=headers, **kwargs)
+        return self._send_request("TRACE", endpoint, headers=headers, use_allure=use_allure, **kwargs)
 
     def connect(self, endpoint: str, headers: dict = None, use_allure=True, **kwargs) -> Response:
-        return self._send_request("CONNECT", endpoint, use_allure=use_allure, headers=headers, **kwargs)
+        return self._send_request("CONNECT", endpoint, headers=headers, use_allure=use_allure, **kwargs)
 
     @staticmethod
     def _add_response_attachments(response):
