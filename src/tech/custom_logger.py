@@ -105,8 +105,7 @@ class CustomLogger:
         else:
             self.logger.info(f"[{request_id}] - Response body: None")
 
-    def log_error(self, request_id: str, err, response: Response | None, data, headers: dict, url: str, method: str,
-                  filename, lineno, funcname ,**kwargs) -> None:
+    def log_error(self, request_id: str, err, response: Response | None, data, headers: dict, url: str, method: str, **kwargs) -> None:
         """Метод для логирования информации об ошибке
         :param request_id: уникальный идентификатор запроса
         :param err: объект ошибки (HTTPError или RequestException)
@@ -115,9 +114,6 @@ class CustomLogger:
         :param headers: заголовки запроса (dict)
         :param url: URL-адрес запроса
         :param method: HTTP-метод
-        :param filename: имя файла, где произошла ошибка
-        :param lineno: номер строки, где произошла ошибка
-        :param funcname: имя функции, где произошла ошибка
         :return: None
         """
         test_name = os.environ.get("PYTEST_CURRENT_TEST", "Unknown test")

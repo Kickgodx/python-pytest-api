@@ -35,7 +35,6 @@ class CustomRequester:
             raise ValueError(err_msg)
 
         request_id = str(uuid.uuid4())
-        filename, lineno, funcname = logger.get_caller_info()
         url = f"{self.base_url}{endpoint}"
         combined_headers = {**headers}
 
@@ -49,7 +48,7 @@ class CustomRequester:
             self._add_request_attachments(method, url, headers, data, params)
             exception_name = e.__class__.__name__
             err_msg = f"исключение при {method.upper()} запросе {endpoint}:\n{e}"
-            logger.log_error(request_id, f"{exception_name} {err_msg}", None, data, combined_headers, url, method, filename, lineno, funcname)
+            logger.log_error(request_id, f"{exception_name} {err_msg}", None, data, combined_headers, url, method)
             raise e.__class__(err_msg) from e
 
         logger.log_response(request_id, response)
@@ -63,7 +62,7 @@ class CustomRequester:
                 response.raise_for_status()
             except HTTPError as e:
                 exception_name = e.__class__.__name__
-                logger.log_error(request_id, f"{exception_name}: {e}", response, data, response.request.headers, url, method, filename, lineno, funcname)
+                logger.log_error(request_id, f"{exception_name}: {e}", response, data, response.request.headers, url, method)
 
         return response
 
