@@ -8,8 +8,9 @@ import urllib3
 from requests import HTTPError, Response
 from urllib3.exceptions import InsecureRequestWarning
 
-from config import DEFAULT_TIMEOUT, HTTP_METHODS, MAX_SERVER_ERROR_CODE, MIN_CLIENT_ERROR_CODE
+from config import DEFAULT_TIMEOUT, MAX_SERVER_ERROR_CODE, MIN_CLIENT_ERROR_CODE
 from src.tech.custom_logger import logger
+from src.tech.decorators import validate_http_method
 
 
 class CustomRequester:
@@ -26,13 +27,11 @@ class CustomRequester:
         self.session.close()
         logger.log_info("Session closed")
 
+    @validate_http_method
     def _send_request(
         self, method: str, endpoint: str, data=None, headers: dict = None, params=None, use_allure: bool = True, **kwargs
     ) -> Response:
         """Универсальный метод для отправки HTTP-запросов."""
-        if method.upper() not in HTTP_METHODS:
-            err_msg = f"Недопустимый HTTP-метод: {method}. Допустимые значения: {HTTP_METHODS}"
-            raise ValueError(err_msg)
 
         request_id = str(uuid.uuid4())
         url = f"{self.base_url}{endpoint}"

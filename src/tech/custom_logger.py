@@ -141,3 +141,4 @@ class CustomLogger:
 
 # Инициализация глобального экземпляра логгера
 logger = CustomLogger()
+log = logger.logger
