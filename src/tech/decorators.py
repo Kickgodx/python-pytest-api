@@ -69,7 +69,7 @@ def handle_request_exceptions(logger: CustomLogger):
 
                 # Логируем ошибку
                 exception_name = e.__class__.__name__
-                err_msg = f"исключение при {method_name.upper()} запросе {endpoint}:\n{e}"
+                err_msg = f"исключение при {method_name.upper()} запросе {endpoint}: {e}"
                 logger.log_error(
                     request_id,
                     f"{exception_name} {err_msg}",
