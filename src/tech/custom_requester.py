@@ -36,7 +36,7 @@ class CustomRequester:
 
         request_id = str(uuid.uuid4())
         url = f"{self.base_url}{endpoint}"
-        combined_headers = {**headers}
+        combined_headers = {**(headers or {})}
 
         logger.log_request(request_id, method, url, headers=combined_headers, params=params, data=data, **kwargs)
 

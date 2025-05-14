@@ -80,7 +80,7 @@ class CustomLogger:
 
     def log_request(self, request_id: str, method: str, url: str, **kwargs) -> None:
         """Логирует информацию о запросе."""
-        self.logger.info(f"[{request_id}] - Request URL: {method} {url}")
+        self.logger.info(f"[{request_id}] - Request: {method.upper()} {url}")
 
         if "headers" in kwargs:
             headers_to_log = self._mask_bearer_tokens(kwargs["headers"])
@@ -121,7 +121,7 @@ class CustomLogger:
 
         # log_lines.append(f"[{request_id}] - Error in: {filename}:{lineno} - {funcname}")
         log_lines.append(f"[{request_id}] - {err}")
-        log_lines.append(f"[{request_id}] - Request URL: {method} {url}")
+        log_lines.append(f"[{request_id}] - Request: {method.upper()} {url}")
 
         headers_to_log = self._mask_bearer_tokens(headers)
         log_lines.append(f"[{request_id}] - Request headers: {headers_to_log}")
