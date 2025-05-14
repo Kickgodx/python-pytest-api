@@ -30,18 +30,18 @@ class CustomRequester:
     @validate_http_method
     @add_allure_attachments
     @handle_request_exceptions(logger)
-    def _send_request(
-        self, method: str, endpoint: str, data=None, headers: dict = None, params=None, use_allure: bool = True,  *args, **kwargs
-    ) -> Response:
+    def _send_request(self, method: str, endpoint: str, use_allure: bool = True, **kwargs) -> Response:
         """Универсальный метод для отправки HTTP-запросов."""
+        kwargs.setdefault('timeout', self.timeout)
+        kwargs.setdefault('verify', False)
+        data = kwargs.get("data", None)
+        request_id = kwargs.get("headers", {}).get("requestId", str(uuid.uuid4()))
 
-        request_id = headers.get("requestId", str(uuid.uuid4()))
         url = f"{self.base_url}{endpoint}"
-        combined_headers = {**(headers or {})}
 
-        logger.log_request(request_id, method, url, headers=combined_headers, params=params, data=data, **kwargs)
+        logger.log_request(request_id, method, url, **kwargs)
 
-        response = self.session.request(method=method, url=url, headers=combined_headers, params=params, data=data, timeout=self.timeout, verify=False, **kwargs)
+        response = self.session.request(method=method, url=url, **kwargs)
 
         logger.log_response(request_id, response)
 
@@ -54,32 +54,32 @@ class CustomRequester:
 
         return response
 
-    def get(self, endpoint: str, headers: dict = None, params=None, use_allure=True, *args, **kwargs) -> Response:
-        return self._send_request("GET", endpoint, use_allure=use_allure, headers=headers, params=params, *args, **kwargs)
+    def get(self, endpoint: str, use_allure=True, *args, **kwargs) -> Response:
+        return self._send_request("GET", endpoint, use_allure, *args, **kwargs)
 
-    def post(self, endpoint: str, data=None, headers: dict = None, use_allure=True, *args, **kwargs) -> Response:
-        return self._send_request("POST", endpoint, use_allure=use_allure, data=data, headers=headers, *args, **kwargs)
+    def post(self, endpoint: str, use_allure=True, *args, **kwargs) -> Response:
+        return self._send_request("POST", endpoint, use_allure, *args, **kwargs)
 
-    def put(self, endpoint: str, data=None, headers: dict = None, use_allure=True, *args, **kwargs) -> Response:
-        return self._send_request("PUT", endpoint, use_allure=use_allure, data=data, headers=headers, *args, **kwargs)
+    def put(self, endpoint: str, use_allure=True, *args, **kwargs) -> Response:
+        return self._send_request("PUT", endpoint, use_allure, *args, **kwargs)
 
-    def patch(self, endpoint: str, data=None, headers: dict = None, use_allure=True, *args, **kwargs) -> Response:
-        return self._send_request("PATCH", endpoint, use_allure=use_allure, data=data, headers=headers, *args, **kwargs)
+    def patch(self, endpoint: str, use_allure=True, *args, **kwargs) -> Response:
+        return self._send_request("PATCH", endpoint, use_allure, *args, **kwargs)
 
-    def delete(self, endpoint: str, headers: dict = None, use_allure=True, *args, **kwargs) -> Response:
-        return self._send_request("DELETE", endpoint, use_allure=use_allure, headers=headers, *args, **kwargs)
+    def delete(self, endpoint: str, use_allure=True, *args, **kwargs) -> Response:
+        return self._send_request("DELETE", endpoint, use_allure, *args, **kwargs)
 
-    def options(self, endpoint: str, headers: dict = None, use_allure=True, *args, **kwargs) -> Response:
-        return self._send_request("OPTIONS", endpoint, headers=headers, use_allure=use_allure, *args, **kwargs)
+    def options(self, endpoint: str, use_allure=True, *args, **kwargs) -> Response:
+        return self._send_request("OPTIONS", endpoint, use_allure, *args, **kwargs)
 
-    def head(self, endpoint: str, headers: dict = None, use_allure=True, *args, **kwargs) -> Response:
-        return self._send_request("HEAD", endpoint, headers=headers, use_allure=use_allure, *args, **kwargs)
+    def head(self, endpoint: str, use_allure=True, *args, **kwargs) -> Response:
+        return self._send_request("HEAD", endpoint, use_allure, *args, **kwargs)
 
-    def trace(self, endpoint: str, headers: dict = None, use_allure=True, *args, **kwargs) -> Response:
-        return self._send_request("TRACE", endpoint, headers=headers, use_allure=use_allure, *args, **kwargs)
+    def trace(self, endpoint: str, use_allure=True, *args, **kwargs) -> Response:
+        return self._send_request("TRACE", endpoint, use_allure, *args, **kwargs)
 
-    def connect(self, endpoint: str, headers: dict = None, use_allure=True, *args, **kwargs) -> Response:
-        return self._send_request("CONNECT", endpoint, headers=headers, use_allure=use_allure, *args, **kwargs)
+    def connect(self, endpoint: str, use_allure=True, *args, **kwargs) -> Response:
+        return self._send_request("CONNECT", endpoint, use_allure, *args, **kwargs)
 
     @staticmethod
     def _add_response_attachments(response):
