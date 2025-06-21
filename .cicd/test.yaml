@@ -32,6 +32,6 @@ run_tests:
       when: always
     - when: manual
   script:
-    - pytest
+    - pytest -n 3
   extends:
     - .common_test
