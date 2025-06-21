@@ -21,8 +21,6 @@
     - echo "Report available at: $REPORT_PATH"
     - echo "Logs available at: $LOG_PATH"
     - echo "REPORT_JOB_STATUS=${CI_JOB_STATUS}" >> report_path.env
-  extends:
-    - .linux-docker-runners
 
 make_allure_report:
   rules:
