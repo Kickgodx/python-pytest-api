@@ -18,8 +18,8 @@
     - npx allure generate --clean -o allure-report
     - echo "REPORT_LINK=$REPORT_PATH" >> report_path.env
   after_script:
-    - echo "Report available at: ${REPORT_PATH}"
-    - echo "Logs available at: ${LOG_PATH}"
+    - echo "Report available at ${REPORT_PATH}"
+    - echo "Logs available at ${LOG_PATH}"
     - echo "REPORT_JOB_STATUS=${CI_JOB_STATUS}" >> report_path.env
 
 make_allure_report:
