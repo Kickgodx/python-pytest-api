@@ -55,8 +55,6 @@
               ]
             }
           }')"
-  extends:
-    - .notifications-common
 
 all_notification_with_env:
   variables:
