@@ -29,7 +29,7 @@ make_allure_report:
       when: on_success
     - if: $CI_COMMIT_BRANCH == "dev" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULED_ALL == "TRUE"
       when: on_success
-    - when: always
+    - when: on_success
   needs:
     - job: run_tests
       artifacts: true
