@@ -2,7 +2,7 @@
   image: node:14.17.0-alpine
   stage: report
   variables:
-    REPORT_PATH: "https://${CI_SERVER_HOST}/-/autotests/${CI_PROJECT_NAME}/-/jobs/${CI_JOB_ID}/artifacts/allure-report/index.html"
+    REPORT_PATH: "https://${CI_SERVER_HOST}/-/python/${CI_PROJECT_NAME}/-/jobs/${CI_JOB_ID}/artifacts/allure-report/index.html"
   artifacts:
     name: "Allure-report"
     when: always
@@ -12,6 +12,7 @@
     reports:
       dotenv: report_path.env
   before_script:
+    - apk add --no-cache openjdk11-jre
     - npm install -g allure-commandline
     - npm install
   script:
