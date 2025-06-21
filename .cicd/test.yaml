@@ -2,7 +2,7 @@
   image: python:3.12.4-alpine
   stage: test
   variables:
-    LOG_PATH: "${CI_PAGES_URL}/-/python/${CI_PROJECT_NAME}/-/jobs/${CI_JOB_ID}/artifacts/logs/log.log"
+    LOG_PATH: "https://${CI_PROJECT_ROOT_NAMESPACE}.gitlab.io/-/python/${CI_PROJECT_NAME}/-/jobs/${CI_JOB_ID}/artifacts/logs/log.log"
   allow_failure: true
   artifacts:
     when: always
