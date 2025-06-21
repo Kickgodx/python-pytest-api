@@ -1,7 +1,7 @@
 include:
   - ".cicd/test.yaml"
   - ".cicd/report.yaml"
-  - ".cicd/notification.yaml"
+  # - ".cicd/notification.yaml"
   - ".cicd/collect.yaml"
 
 cache:
@@ -11,7 +11,7 @@ cache:
 stages:
   - test
   - report
-  - notify
+  # - notify
   - collect
 
 variables:
