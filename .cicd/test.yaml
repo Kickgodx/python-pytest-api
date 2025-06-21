@@ -23,8 +23,6 @@
     - echo "TEST_NAME=${NAME_OF_TEST}" >> test.env
     - echo "TEST_ENVIRONMENT=${ENV}" >> test.env
     - echo "LOG_LINK=$LOG_PATH" >> test.env
-  extends:
-    - .linux-docker-runners
 
 run_tests:
   rules:
