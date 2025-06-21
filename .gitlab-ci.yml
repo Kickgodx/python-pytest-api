@@ -3,12 +3,6 @@ include:
   - ".cicd/report.yaml"
   - ".cicd/notification.yaml"
   - ".cicd/collect.yaml"
-  - project: ${CORE_CICD_TEMPLATES_PATH}
-    ref: ${CORE_CICD_TEMPLATES_BRANCH}
-    file:
-      - "images.yml"
-      - "runners.yml"
-      - "telegram-notifications/notifications-common.yml"
 
 cache:
   paths:
