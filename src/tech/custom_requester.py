@@ -54,6 +54,10 @@ class CustomRequester:
 
         return response
 
+    def clear_cookies(self):
+        """Очищает все куки в текущей сессии"""
+        self.session.cookies.clear()
+
     def get(self, endpoint: str, use_allure=True, **kwargs) -> Response:
         return self._send_request("GET", endpoint, use_allure, **kwargs)
 
@@ -91,7 +95,7 @@ class CustomRequester:
             try:
                 json_data = response.json()
                 allure.attach(name="Response body", body=json.dumps(json_data, indent=2), attachment_type=allure.attachment_type.JSON)
-            except ValueError:
+            except (TypeError, ValueError):
                 allure.attach(name="Response body", body=response.text, attachment_type=allure.attachment_type.TEXT)
 
     @staticmethod
@@ -106,8 +110,8 @@ class CustomRequester:
                 # Пробуем преобразовать в JSON
                 json_data = json.dumps(data, indent=2)
                 allure.attach(name="Request body", body=json_data, attachment_type=allure.attachment_type.JSON)
-            except TypeError:
+            except (TypeError, ValueError):
                 allure.attach(name="Request body", body=str(data), attachment_type=allure.attachment_type.TEXT)
 
-        if params:
+        if params and isinstance(params, dict):
             allure.attach(name="Request params", body=json.dumps(params, indent=2), attachment_type=allure.attachment_type.JSON)
