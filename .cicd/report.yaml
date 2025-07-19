@@ -2,7 +2,7 @@
   image: node:14.17.0-alpine
   stage: report
   variables:
-    REPORT_PATH: "https://${CI_SERVER_HOST}/-/autotests/${CI_PROJECT_NAME}/-/jobs/${CI_JOB_ID}/artifacts/allure-report/index.html"
+    REPORT_PATH: "https://${CI_PROJECT_ROOT_NAMESPACE}.gitlab.io/-/python/${CI_PROJECT_NAME}/-/jobs/${CI_JOB_ID}/artifacts/allure-report/index.html"
   artifacts:
     name: "Allure-report"
     when: always
@@ -12,17 +12,16 @@
     reports:
       dotenv: report_path.env
   before_script:
+    - apk add --no-cache openjdk11-jre
     - npm install -g allure-commandline
     - npm install
   script:
     - npx allure generate --clean -o allure-report
     - echo "REPORT_LINK=$REPORT_PATH" >> report_path.env
   after_script:
-    - echo "Report available at: $REPORT_PATH"
-    - echo "Logs available at: $LOG_PATH"
+    - echo "Report available at ${REPORT_PATH}"
+    - echo "Logs available at ${LOG_PATH}"
     - echo "REPORT_JOB_STATUS=${CI_JOB_STATUS}" >> report_path.env
-  extends:
-    - .linux-docker-runners
 
 make_allure_report:
   rules:
@@ -30,7 +29,7 @@ make_allure_report:
       when: on_success
     - if: $CI_COMMIT_BRANCH == "dev" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULED_ALL == "TRUE"
       when: on_success
-    - when: manual
+    - when: on_success
   needs:
     - job: run_tests
       artifacts: true

@@ -4,8 +4,6 @@
     - python -m venv venv
     - source venv/bin/activate
     - pip install -r requirements.txt
-  extends:
-    - .linux-docker-runners
 
 collect_tests_external:
   stage: collect
@@ -16,6 +14,6 @@ collect_tests_external:
   script:
     - pytest --collect-only
   after_script:
-    - echo "Test collection job completed with status: $?"
+    - echo "Test collection job completed with status $?"
   extends:
     - .common_collect_external

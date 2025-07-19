@@ -2,7 +2,7 @@
   image: python:3.12.4-alpine
   stage: test
   variables:
-    LOG_PATH: "https://${CI_SERVER_HOST}/-/autotests/${CI_PROJECT_NAME}/-/jobs/${CI_JOB_ID}/artifacts/logs/log.log"
+    LOG_PATH: "https://${CI_PROJECT_ROOT_NAMESPACE}.gitlab.io/-/python/${CI_PROJECT_NAME}/-/jobs/${CI_JOB_ID}/artifacts/logs/log.log"
   allow_failure: true
   artifacts:
     when: always
@@ -23,8 +23,6 @@
     - echo "TEST_NAME=${NAME_OF_TEST}" >> test.env
     - echo "TEST_ENVIRONMENT=${ENV}" >> test.env
     - echo "LOG_LINK=$LOG_PATH" >> test.env
-  extends:
-    - .linux-docker-runners
 
 run_tests:
   rules:
@@ -34,6 +32,6 @@ run_tests:
       when: always
     - when: manual
   script:
-    - pytest
+    - pytest -n 3
   extends:
     - .common_test
