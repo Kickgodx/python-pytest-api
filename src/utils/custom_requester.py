@@ -9,7 +9,7 @@ from requests import HTTPError, Response
 from urllib3.exceptions import InsecureRequestWarning
 
 from config import DEFAULT_TIMEOUT, MAX_SERVER_ERROR_CODE, MIN_CLIENT_ERROR_CODE
-from src.utils.custom_logger import logger
+from src.utils.custom_logger import logger, log
 from src.utils.decorators import validate_http_method, add_allure_attachments, handle_request_exceptions
 
 
@@ -54,6 +54,29 @@ class CustomRequester:
 
         return response
 
+    def _check_server_alive(self):
+        """Проверяет, доступен ли сервер по base_url с помощью HEAD-запроса. Если HEAD не поддерживается (405), пробует OPTIONS."""
+        try:
+            response = self.session.head(self.base_url, timeout=self.timeout, verify=False)
+            if response.status_code == 405 or response.status_code == 404:
+                # HEAD не поддерживается, пробуем OPTIONS
+                log.info(f"HEAD не поддерживается, вызываем OPTIONS для {self.base_url}")
+                response = self.session.options(self.base_url, timeout=self.timeout, verify=False)
+            if not (200 <= response.status_code < 400):
+                logger.log_error(
+                    str(uuid.uuid4()),
+                    f"Проверочный запрос к {self.base_url} вернул статус {response.status_code}",
+                    response,
+                    None,
+                    response.request.headers if hasattr(response, 'request') else {},
+                    self.base_url,
+                    response.request.method if hasattr(response, 'request') else "HEAD/OPTIONS"
+                )
+                raise ConnectionError(f"Сервер недоступен: {response.request.method if hasattr(response, 'request') else 'HEAD/OPTIONS'} {self.base_url} -> {response.status_code}")
+        except requests.exceptions.RequestException as e:
+            logger.log_error(str(uuid.uuid4()), f"Ошибка при проверке сервера: {e}", None, None, {}, self.base_url, "HEAD/OPTIONS")
+            raise ConnectionError(f"Сервер недоступен: {e}")
+
     def clear_cookies(self):
         """Очищает все куки в текущей сессии"""
         self.session.cookies.clear()
@@ -69,18 +92,23 @@ class CustomRequester:
             raise TypeError("cookie должен быть словарем или RequestsCookieJar")
 
     def get(self, endpoint: str, use_allure=True, **kwargs) -> Response:
+        self._check_server_alive()
         return self._send_request("GET", endpoint, use_allure, **kwargs)
 
     def post(self, endpoint: str, use_allure=True, **kwargs) -> Response:
+        self._check_server_alive()
         return self._send_request("POST", endpoint, use_allure, **kwargs)
 
     def put(self, endpoint: str, use_allure=True, **kwargs) -> Response:
+        self._check_server_alive()
         return self._send_request("PUT", endpoint, use_allure, **kwargs)
 
     def patch(self, endpoint: str, use_allure=True, **kwargs) -> Response:
+        self._check_server_alive()
         return self._send_request("PATCH", endpoint, use_allure, **kwargs)
 
     def delete(self, endpoint: str, use_allure=True, **kwargs) -> Response:
+        self._check_server_alive()
         return self._send_request("DELETE", endpoint, use_allure, **kwargs)
 
     def options(self, endpoint: str, use_allure=True, **kwargs) -> Response:
