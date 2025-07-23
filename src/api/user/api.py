@@ -1,6 +1,6 @@
-import src.func.user.endpoints as url
+import src.api.user.endpoints as url
 from src.models.client import Client
-from src.tech.custom_requester import CustomRequester
+from src.utils.custom_requester import CustomRequester
 
 
 class UserAPI(CustomRequester):

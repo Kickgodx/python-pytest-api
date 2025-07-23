@@ -1,7 +1,7 @@
 import pytest
 
 from config import BASE_URL
-from src.func.user.helpers import UserHelper
+from src.api.user.helpers import UserHelper
 
 
 @pytest.fixture(scope="session")

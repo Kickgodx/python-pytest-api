@@ -1,6 +1,6 @@
-import src.func.store.endpoints as url
+import src.api.store.endpoints as url
 from src.models.client import Client
-from src.tech.custom_requester import CustomRequester
+from src.utils.custom_requester import CustomRequester
 
 
 class StoreAPI(CustomRequester):

@@ -6,8 +6,8 @@ import pytest
 from faker.generator import random
 
 from src.models.petstore import Order
-from src.tech.custom_asserts import CustomAsserts
-from src.tech.data_generator import DataGenerator
+from src.utils.custom_asserts import CustomAsserts
+from src.utils.data_generator import DataGenerator
 
 
 @pytest.fixture

@@ -9,7 +9,7 @@ from logging.handlers import QueueHandler, QueueListener
 from requests import Response
 
 import config as cfg
-from src.tech.utc_log_formatter import UtcFormatter
+from src.utils.utc_log_formatter import UtcFormatter
 
 
 class CustomLogger:

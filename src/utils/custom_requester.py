@@ -9,8 +9,8 @@ from requests import HTTPError, Response
 from urllib3.exceptions import InsecureRequestWarning
 
 from config import DEFAULT_TIMEOUT, MAX_SERVER_ERROR_CODE, MIN_CLIENT_ERROR_CODE
-from src.tech.custom_logger import logger
-from src.tech.decorators import validate_http_method, add_allure_attachments, handle_request_exceptions
+from src.utils.custom_logger import logger
+from src.utils.decorators import validate_http_method, add_allure_attachments, handle_request_exceptions
 
 
 class CustomRequester:
@@ -58,6 +58,16 @@ class CustomRequester:
         """Очищает все куки в текущей сессии"""
         self.session.cookies.clear()
 
+    def add_cookie(self, cookie):
+        """Добавить куки к существующим"""
+        if isinstance(cookie, dict):
+            for key, value in cookie.items():
+                self.session.cookies.set(key, value)
+        elif isinstance(cookie, requests.cookies.RequestsCookieJar):
+            self.session.cookies.update(cookie)
+        else:
+            raise TypeError("cookie должен быть словарем или RequestsCookieJar")
+
     def get(self, endpoint: str, use_allure=True, **kwargs) -> Response:
         return self._send_request("GET", endpoint, use_allure, **kwargs)
 
@@ -91,6 +101,9 @@ class CustomRequester:
         allure.attach(
             name="Response Headers", body=json.dumps(dict(response.headers), indent=2), attachment_type=allure.attachment_type.JSON
         )
+        if response.cookies:
+            cookies_dict = {cookie.name: cookie.value for cookie in response.cookies}
+            allure.attach(name="Response Cookies", body=json.dumps(cookies_dict, indent=2), attachment_type=allure.attachment_type.JSON)
         if response.text:
             try:
                 json_data = response.json()

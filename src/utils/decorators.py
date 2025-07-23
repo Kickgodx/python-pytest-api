@@ -5,7 +5,7 @@ from typing import TypeVar, Callable
 from requests import Response
 
 from config import HTTP_METHODS
-from src.tech.custom_logger import log, CustomLogger
+from src.utils.custom_logger import log, CustomLogger
 
 T = TypeVar("T", bound="CustomRequester")
 

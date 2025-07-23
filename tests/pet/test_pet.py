@@ -4,8 +4,8 @@ import allure
 import pytest
 
 from src.models.petstore import Category, Pet, PetStatus, Tag
-from src.tech.custom_asserts import CustomAsserts
-from src.tech.data_generator import DataGenerator
+from src.utils.custom_asserts import CustomAsserts
+from src.utils.data_generator import DataGenerator
 
 
 @pytest.fixture

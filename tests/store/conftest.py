@@ -1,7 +1,7 @@
 import pytest
 
 from config import BASE_URL
-from src.func.store.helpers import StoreHelper
+from src.api.store.helpers import StoreHelper
 
 
 @pytest.fixture(scope="session")
