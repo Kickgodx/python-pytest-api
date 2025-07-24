@@ -11,8 +11,8 @@ LOG_FILE_NAME = "log.log"
 # region http
 DEFAULT_TIMEOUT = 30
 MIN_CLIENT_ERROR_CODE = 400  # 4xx errors start at 400
-MAX_SERVER_ERROR_CODE = 599  # 5xx errors end at 599
-HTTP_METHODS = [method.value for method in HTTPMethod]  # ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD']
+MAX_SERVER_ERROR_CODE = 799  # 5xx errors end at 799
+HTTP_METHODS = [method for method in HTTPMethod]  # ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD']
 # endregion
 
 # region paths
