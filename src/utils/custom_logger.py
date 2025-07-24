@@ -131,6 +131,10 @@ class CustomLogger:
 
         if response is not None:
             log_lines.append(f"[{request_id}] - Response headers: {response.headers}")
+
+            if response.cookies:
+                log_lines.append(f"[{request_id}] - Response cookies: {response.cookies.get_dict()}")
+
             log_lines.append(f"[{request_id}] - Response body: {response.text}\n")
         else:
             log_lines.append(f"[{request_id}] - Response body: None\n")
