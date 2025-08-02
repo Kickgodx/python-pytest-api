@@ -4,8 +4,6 @@ from src.utils.custom_requester import CustomRequester
 
 
 class PetAPI(CustomRequester):
-    def __init__(self, base_url: str):
-        super().__init__(base_url)
 
     def get_find_pet_by_id(self, client: Client, pet_id: str):
         return self.get(Router.GET_FIND_BY_ID.format(pet_id=pet_id), headers=client.get_base_headers())

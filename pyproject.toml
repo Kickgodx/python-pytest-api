@@ -35,6 +35,11 @@ lint.ignore = [
     "D415", # Точка в конце docstring
     "D400",
     "D107", # __init__
+    "PLR2004",
+    "EM101",
+    "EM102",
+    "G004",
+
 
 ]
 exclude = [

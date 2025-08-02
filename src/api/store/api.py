@@ -4,8 +4,6 @@ from src.utils.custom_requester import CustomRequester
 
 
 class StoreAPI(CustomRequester):
-    def __init__(self, base_url: str):
-        super().__init__(base_url)
 
     def get_inventory(self, client: Client):
         """Get inventory"""

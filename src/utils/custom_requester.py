@@ -1,92 +1,53 @@
-import uuid
 from urllib.parse import urlparse
 
 import requests
 from requests import Response
+from requests.cookies import RequestsCookieJar
 
 from config import DEFAULT_TIMEOUT
-from src.utils.custom_logger import logger, log
-from src.utils.decorators import send_request_wrapper
+from src.decorators.allure_steps import add_allure_attachments
+from src.decorators.http_wrappers import send_request_wrapper
+from src.utils.custom_logger import log, logger
 
 
 class CustomRequester:
     """Класс-обёртка для работы с HTTP-запросами и логированием"""
-
-    def __init__(self, base_url: str, timeout=DEFAULT_TIMEOUT):
+    def __init__(self, base_url: str, timeout: float = DEFAULT_TIMEOUT, headers: dict[str, str] = None):
         self.base_url = base_url
         self.domain = self.get_base_domain()
         self.timeout = timeout
         self.session = requests.Session()
-        self.session.verify = False
+        self.default_headers = headers or {}
 
-    def close(self):
+        if self.default_headers:
+            self.session.headers.update(self.default_headers)
+
+    def session_close(self):
         self.session.close()
-        logger.log_info("Session closed")
+
+    # Контекстные менеджеры для управления ресурсами
+    def __enter__(self):
+        """Вход в синхронный контекстный менеджер"""
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Выход из синхронного контекстного менеджера"""
+        self.session_close()
+
+    def _build_url(self, endpoint: str) -> str:
+        if endpoint:
+            return f"{self.base_url}{endpoint}" if endpoint.startswith("/") else f"{self.base_url}/{endpoint}"
+        return self.base_url
 
     @send_request_wrapper(logger)
+    @add_allure_attachments
     def _send_request(self, method: str, endpoint: str, use_allure: bool = True, **kwargs) -> Response:
         """Универсальный метод для отправки HTTP-запросов."""
-        kwargs.setdefault('timeout', self.timeout)
+        kwargs.setdefault("timeout", self.timeout)
 
         url = f"{self.base_url}{endpoint}"
 
         return self.session.request(method=method, url=url, **kwargs)
-
-    def check_server_alive(self):
-        """Проверяет, доступен ли сервер по base_url с помощью HEAD-запроса. Если HEAD не поддерживается (405), пробует OPTIONS."""
-        try:
-            response = self.session.head(self.base_url, timeout=self.timeout, verify=False)
-            if response.status_code == 405 or response.status_code == 404:
-                # HEAD не поддерживается, пробуем OPTIONS
-                log.info(f"HEAD не поддерживается, вызываем OPTIONS для {self.base_url}")
-                response = self.session.options(self.base_url, timeout=self.timeout, verify=False)
-            if not (200 <= response.status_code < 400):
-                logger.log_error(
-                    str(uuid.uuid4()),
-                    f"Проверочный запрос к {self.base_url} вернул статус {response.status_code}",
-                    response,
-                    None,
-                    response.request.headers if hasattr(response, 'request') else {},
-                    self.base_url,
-                    response.request.method if hasattr(response, 'request') else "HEAD/OPTIONS"
-                )
-                raise ConnectionError(f"Сервер недоступен: {response.request.method if hasattr(response, 'request') else 'HEAD/OPTIONS'} {self.base_url} -> {response.status_code}")
-        except requests.exceptions.RequestException as e:
-            logger.log_error(str(uuid.uuid4()), f"Ошибка при проверке сервера: {e}", None, None, {}, self.base_url, "HEAD/OPTIONS")
-            raise ConnectionError(f"Сервер недоступен: {e}")
-
-    def clear_cookies(self):
-        """Очищает все куки в текущей сессии"""
-        self.session.cookies.clear()
-
-    def add_cookie(self, cookie):
-        """Добавить куки к существующим"""
-        if isinstance(cookie, dict):
-            for key, value in cookie.items():
-                self.session.cookies.set(key, value)
-        elif isinstance(cookie, requests.cookies.RequestsCookieJar):
-            self.session.cookies.update(cookie)
-        else:
-            raise TypeError("cookie должен быть словарем или RequestsCookieJar")
-
-    def healthcheck(self):
-        """Проверяет, доступен ли сервер по base_url с помощью HEAD-запроса."""
-        try:
-            response = self.session.head(self.base_url, timeout=self.timeout, verify=False)
-            if not (200 <= response.status_code < 400):
-                log.log_error(
-                    str(uuid.uuid4()),
-                    f"HEAD-запрос к {self.base_url} вернул статус {response.status_code}",
-                    response,
-                    None,
-                    response.request.headers if hasattr(response, 'request') else {},
-                    self.base_url,
-                    "HEAD"
-                )
-                # raise ConnectionError(f"Сервер недоступен: HEAD {self.base_url} -> {response.status_code}")
-        except requests.exceptions.RequestException as e:
-            log.log_error(str(uuid.uuid4()), f"Ошибка при проверке сервера {self.base_url}: {e}", None, None, {}, self.base_url, "HEAD")
-            # raise ConnectionError(f"Сервер недоступен: {e}")
 
     def get(self, endpoint: str, use_allure=True, **kwargs) -> Response:
         self.check_server_alive()
@@ -126,3 +87,70 @@ class CustomRequester:
         """
         parsed_url = urlparse(self.base_url)
         return parsed_url.hostname or parsed_url.netloc or self.base_url
+
+    def add_cookie(self, cookies: dict | RequestsCookieJar):
+        """
+        Добавить куки в сессию
+
+        Args:
+            cookies: Куки в виде словаря или RequestsCookieJar
+        """
+        if isinstance(cookies, dict):
+            for key, value in cookies.items():
+                self.session.cookies.set(key, value)
+        elif isinstance(cookies, RequestsCookieJar):
+            self.session.cookies.update(cookies)
+        else:
+            raise TypeError("Куки должны быть словарем или RequestsCookieJar")
+
+    def clear_cookies(self):
+        """Очищает все куки в текущей сессии"""
+        self.session.cookies.clear()
+
+    def get_client_info(self) -> dict:
+        """Получить информацию о клиенте"""
+        return {
+            "base_url": self.base_url,
+            "domain": self.domain,
+            "protocol": urlparse(self.base_url).scheme,
+            "timeout": self.timeout,
+            "default_headers": self.default_headers,
+            "session_cookies": self.session.cookies.get_dict(),
+            "session_headers": self.session.headers
+        }
+
+    def check_server_alive(self):
+        """Проверяет, доступен ли сервер по base_url с помощью HEAD-запроса. Если HEAD не поддерживается (405), пробует OPTIONS."""
+        try:
+            response = self.session.head(self.base_url, timeout=self.timeout, verify=False)
+            if response.status_code in {405, 404}:
+                # HEAD не поддерживается, пробуем OPTIONS
+                log.info(f"HEAD не поддерживается, вызываем OPTIONS для {self.base_url}")
+                response = self.session.options(self.base_url, timeout=self.timeout, verify=False)
+            if not (200 <= response.status_code < 400):
+                log.error(f"Сервер недоступен: {response.status_code} {self.base_url}")
+                raise ConnectionError(
+                    f"Сервер недоступен: {response.request.method if hasattr(response, 'request') else 'HEAD/OPTIONS'} {self.base_url} -> {response.status_code}")
+        except requests.exceptions.RequestException as e:
+            log.error(f"Ошибка при проверке сервера: {e}")
+            raise ConnectionError(f"Сервер недоступен: {e}") from e
+
+    # Хуки сессии (для логирования через session hooks)
+    @staticmethod
+    def request_logging(response: Response, *args, **kwargs) -> Response:
+        """Логирует запрос ПОСЛЕ отправки (из объекта Response)."""
+        log.info(
+            f"Request: {response.request.method} {response.request.url}\n"
+            f"Headers: {response.request.headers}\n"
+            f"Body: {response.request.body}"
+        )
+        return response
+
+    @staticmethod
+    def response_logging(response: Response, *args, **kwargs) -> Response:
+        """Логирует ответ сервера."""
+        log.info(
+            f"Response: {response.status_code} {response.url}\n"
+            f"Content: {response.text if response.text else {response.content}}\n"
+        )
+        return response

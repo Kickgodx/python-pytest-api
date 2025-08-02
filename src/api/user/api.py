@@ -4,8 +4,6 @@ from src.utils.custom_requester import CustomRequester
 
 
 class UserAPI(CustomRequester):
-    def __init__(self, base_url: str):
-        super().__init__(base_url)
 
     def create_user(self, client: Client, data):
         """Create user"""

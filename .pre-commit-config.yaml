@@ -17,6 +17,7 @@ repos:
       - id: detect-private-key
       - id: name-tests-test
         args: [--pytest-test-first]
+        exclude: ^tests/fixtures/
       - id: pretty-format-json
         args: [--autofix, --indent 2, --no-ensure-ascii, --no-sort-keys]
 exclude: |
