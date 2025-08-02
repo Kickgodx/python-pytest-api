@@ -127,7 +127,7 @@ def validate_http_methods(logger: CustomLogger):
 
         @wraps(func)
         def wrapper(self, http_method: str, *args, **kwargs) -> Response:
-            if http_method.upper() not in HTTP_METHODS:
+            if http_method.upper() not in [item.value for item in HTTP_METHODS]:
                 err_msg = f"Недопустимый HTTP-метод: {http_method}. Допустимые значения: {HTTP_METHODS}"
                 logger.logger.error(err_msg)
                 raise ValueError(err_msg)
