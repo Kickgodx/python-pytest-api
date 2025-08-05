@@ -1,0 +1,102 @@
+[
+ {
+  "id": 2133,
+  "username": "laura59",
+  "firstName": "Kelly",
+  "lastName": "Hale",
+  "email": "wisealexis@example.com",
+  "password": "#U2BKcJjXM",
+  "phone": "+1-669-485-5492x313",
+  "userStatus": 2
+ },
+ {
+  "id": 3410,
+  "username": "justinmccarthy",
+  "firstName": "Lauren",
+  "lastName": "Sosa",
+  "email": "johnsonrobert@example.org",
+  "password": "c!P0AWON0x",
+  "phone": "949.234.3713x26006",
+  "userStatus": 2
+ },
+ {
+  "id": 6413,
+  "username": "wcruz",
+  "firstName": "Crystal",
+  "lastName": "Smith",
+  "email": "johnneal@example.net",
+  "password": "54$7zS(pJu",
+  "phone": "001-494-663-3736x992",
+  "userStatus": 0
+ },
+ {
+  "id": 2853,
+  "username": "bmitchell",
+  "firstName": "Natalie",
+  "lastName": "King",
+  "email": "reedjason@example.net",
+  "password": "IY8VvO8zM!",
+  "phone": "001-436-200-8549x1939",
+  "userStatus": 1
+ },
+ {
+  "id": 8378,
+  "username": "robin55",
+  "firstName": "Heather",
+  "lastName": "Torres",
+  "email": "crystalcruz@example.com",
+  "password": "^5^DKBnRSg",
+  "phone": "660.381.1496x976",
+  "userStatus": 2
+ },
+ {
+  "id": 759,
+  "username": "barrydiane",
+  "firstName": "Charles",
+  "lastName": "Watson",
+  "email": "kimberlycastillo@example.net",
+  "password": "+4VYI3zZf7",
+  "phone": "(343)317-8992",
+  "userStatus": 0
+ },
+ {
+  "id": 909,
+  "username": "bryanrichardson",
+  "firstName": "Tom",
+  "lastName": "Morris",
+  "email": "laura78@example.com",
+  "password": "#o@3MmB1@I",
+  "phone": "430-709-7475x403",
+  "userStatus": 2
+ },
+ {
+  "id": 9867,
+  "username": "stephenroberts",
+  "firstName": "Robert",
+  "lastName": "Phillips",
+  "email": "kyoung@example.org",
+  "password": "%4IBl1cJd+",
+  "phone": "(513)899-6469",
+  "userStatus": 2
+ },
+ {
+  "id": 2056,
+  "username": "christopher14",
+  "firstName": "Christopher",
+  "lastName": "Roberts",
+  "email": "john96@example.net",
+  "password": "X+0FjaLCDy",
+  "phone": "+1-206-490-8378x79203",
+  "userStatus": 0
+ },
+ {
+  "id": 9544,
+  "username": "keith64",
+  "firstName": "Daniel",
+  "lastName": "Wilson",
+  "email": "hansenjulia@example.net",
+  "password": "*@h7_LYgW4",
+  "phone": "+1-505-369-8137x5803",
+  "userStatus": 0
+ }
+]

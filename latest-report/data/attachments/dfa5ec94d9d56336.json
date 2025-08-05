@@ -1,0 +1,18 @@
+{
+ "id": 579,
+ "category": {
+  "id": 510,
+  "name": "Amy Perkins"
+ },
+ "name": "Rebecca Bond",
+ "photoUrls": [
+  "https://dummyimage.com/406x654"
+ ],
+ "tags": [
+  {
+   "id": 72,
+   "name": "Fuchsia"
+  }
+ ],
+ "status": "sold"
+}

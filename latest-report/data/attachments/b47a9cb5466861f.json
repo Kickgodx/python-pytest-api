@@ -1,0 +1,18 @@
+{
+ "id": 842,
+ "category": {
+  "id": 256,
+  "name": "Allison Walker"
+ },
+ "name": "John Hawkins",
+ "photoUrls": [
+  "https://dummyimage.com/120x598"
+ ],
+ "tags": [
+  {
+   "id": 690,
+   "name": "Maroon"
+  }
+ ],
+ "status": "available"
+}

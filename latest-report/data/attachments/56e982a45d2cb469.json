@@ -1,0 +1,18 @@
+{
+ "id": 658,
+ "category": {
+  "id": 873,
+  "name": "James Stone"
+ },
+ "name": "Frank Brady",
+ "photoUrls": [
+  "https://picsum.photos/126/474"
+ ],
+ "tags": [
+  {
+   "id": 669,
+   "name": "LawnGreen"
+  }
+ ],
+ "status": "available"
+}

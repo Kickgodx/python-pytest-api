@@ -1,0 +1,17 @@
+{
+ "id": 578,
+ "category": {
+  "id": 725,
+  "name": "Linda Kennedy"
+ },
+ "photoUrls": [
+  "https://dummyimage.com/529x192"
+ ],
+ "tags": [
+  {
+   "id": 878,
+   "name": "MediumAquaMarine"
+  }
+ ],
+ "status": "available"
+}

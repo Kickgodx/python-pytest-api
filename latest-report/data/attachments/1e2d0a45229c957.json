@@ -1,0 +1,18 @@
+{
+ "id": 627,
+ "category": {
+  "id": 702,
+  "name": "Corey Thomas"
+ },
+ "name": "Elizabeth Price",
+ "photoUrls": [
+  "https://picsum.photos/339/304"
+ ],
+ "tags": [
+  {
+   "id": 296,
+   "name": "Moccasin"
+  }
+ ],
+ "status": "available"
+}

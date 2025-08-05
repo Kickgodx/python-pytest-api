@@ -1,0 +1,18 @@
+{
+ "id": 101,
+ "category": {
+  "id": 768,
+  "name": "Karen Ferguson"
+ },
+ "name": "Amy Ramirez",
+ "photoUrls": [
+  "https://placekitten.com/859/275"
+ ],
+ "tags": [
+  {
+   "id": 846,
+   "name": "Gray"
+  }
+ ],
+ "status": "sold"
+}

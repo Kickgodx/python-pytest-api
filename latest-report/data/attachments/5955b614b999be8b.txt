@@ -1,0 +1,1 @@
+GET https://petstore.swagger.io/v2/user/login?username=kevingarcia&password=%2B5_Ke5Aj%2Am

@@ -1,0 +1,56 @@
+[worker_2][02:06:23][ERROR] - Test: tests/pet/test_pet.py::TestPet::test_get_pet 
+[84edd649-d7f9-4c35-a70a-2a97868e6c55-custom_requester] - HTTPError: 404 Client Error: Not Found for url: https://petstore.swagger.io/v2/pet/41
+[84edd649-d7f9-4c35-a70a-2a97868e6c55-custom_requester] - Request: GET https://petstore.swagger.io/v2/pet/41
+[84edd649-d7f9-4c35-a70a-2a97868e6c55-custom_requester] - Request headers: {'User-Agent': 'python-requests/2.32.4', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+[84edd649-d7f9-4c35-a70a-2a97868e6c55-custom_requester] - Request body: None
+[84edd649-d7f9-4c35-a70a-2a97868e6c55-custom_requester] - Response headers: {'Date': 'Tue, 05 Aug 2025 23:06:23 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, DELETE, PUT', 'Access-Control-Allow-Headers': 'Content-Type, api_key, Authorization', 'Server': 'Jetty(9.2.9.v20150224)'}
+[84edd649-d7f9-4c35-a70a-2a97868e6c55-custom_requester] - Response body: {"code":1,"type":"error","message":"Pet not found"}
+
+[worker_0][02:06:35][ERROR] - Test: tests/store/test_store.py::TestStore::test_delete_order_by_nonexistent_id 
+[180aaa80-2d1e-4300-be19-a3d518581412-custom_requester] - HTTPError: 404 Client Error: Not Found for url: https://petstore.swagger.io/v2/store/order/0
+[180aaa80-2d1e-4300-be19-a3d518581412-custom_requester] - Request: DELETE https://petstore.swagger.io/v2/store/order/0
+[180aaa80-2d1e-4300-be19-a3d518581412-custom_requester] - Request headers: {'User-Agent': 'python-requests/2.32.4', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json', 'Content-Length': '0'}
+[180aaa80-2d1e-4300-be19-a3d518581412-custom_requester] - Request body: None
+[180aaa80-2d1e-4300-be19-a3d518581412-custom_requester] - Response headers: {'Date': 'Tue, 05 Aug 2025 23:06:35 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, DELETE, PUT', 'Access-Control-Allow-Headers': 'Content-Type, api_key, Authorization', 'Server': 'Jetty(9.2.9.v20150224)'}
+[180aaa80-2d1e-4300-be19-a3d518581412-custom_requester] - Response body: {"code":404,"type":"unknown","message":"Order Not Found"}
+
+[worker_0][02:06:35][ERROR] - Test: tests/store/test_store.py::TestStore::test_create_order_with_invalid_data 
+[0e0bb837-ad1a-4c2c-b9ef-b9380d7de64b-custom_requester] - HTTPError: 500 Server Error: Server Error for url: https://petstore.swagger.io/v2/store/order
+[0e0bb837-ad1a-4c2c-b9ef-b9380d7de64b-custom_requester] - Request: POST https://petstore.swagger.io/v2/store/order
+[0e0bb837-ad1a-4c2c-b9ef-b9380d7de64b-custom_requester] - Request headers: {'User-Agent': 'python-requests/2.32.4', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json', 'Content-Length': '171'}
+[0e0bb837-ad1a-4c2c-b9ef-b9380d7de64b-custom_requester] - Request body: {"id": 2025008213453549843908439809804398034593454536556445, "petId": 403, "quantity": 1, "shipDate": "2023-03-22T00:16:55.408005", "status": "approved", "complete": true}
+[0e0bb837-ad1a-4c2c-b9ef-b9380d7de64b-custom_requester] - Response headers: {'Date': 'Tue, 05 Aug 2025 23:06:35 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, DELETE, PUT', 'Access-Control-Allow-Headers': 'Content-Type, api_key, Authorization', 'Server': 'Jetty(9.2.9.v20150224)'}
+[0e0bb837-ad1a-4c2c-b9ef-b9380d7de64b-custom_requester] - Response body: {"code":500,"type":"unknown","message":"something bad happened"}
+
+[worker_2][02:06:39][ERROR] - Test: tests/store/test_store.py::TestStore::test_get_order_by_nonexistent_id 
+[06bf297d-20b5-492e-a58b-cbd16bdfef48-custom_requester] - HTTPError: 404 Client Error: Not Found for url: https://petstore.swagger.io/v2/store/order/0
+[06bf297d-20b5-492e-a58b-cbd16bdfef48-custom_requester] - Request: GET https://petstore.swagger.io/v2/store/order/0
+[06bf297d-20b5-492e-a58b-cbd16bdfef48-custom_requester] - Request headers: {'User-Agent': 'python-requests/2.32.4', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+[06bf297d-20b5-492e-a58b-cbd16bdfef48-custom_requester] - Request body: None
+[06bf297d-20b5-492e-a58b-cbd16bdfef48-custom_requester] - Response headers: {'Date': 'Tue, 05 Aug 2025 23:06:39 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, DELETE, PUT', 'Access-Control-Allow-Headers': 'Content-Type, api_key, Authorization', 'Server': 'Jetty(9.2.9.v20150224)'}
+[06bf297d-20b5-492e-a58b-cbd16bdfef48-custom_requester] - Response body: {"code":1,"type":"error","message":"Order not found"}
+
+[worker_0][02:06:42][ERROR] - Test: tests/user/test_user.py::TestUser::test_get_user 
+[694c219e-5485-4aed-9c57-8eac3ed86e62-custom_requester] - HTTPError: 404 Client Error: Not Found for url: https://petstore.swagger.io/v2/user/dannyjimenez
+[694c219e-5485-4aed-9c57-8eac3ed86e62-custom_requester] - Request: GET https://petstore.swagger.io/v2/user/dannyjimenez
+[694c219e-5485-4aed-9c57-8eac3ed86e62-custom_requester] - Request headers: {'User-Agent': 'python-requests/2.32.4', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+[694c219e-5485-4aed-9c57-8eac3ed86e62-custom_requester] - Request body: None
+[694c219e-5485-4aed-9c57-8eac3ed86e62-custom_requester] - Response headers: {'Date': 'Tue, 05 Aug 2025 23:06:42 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, DELETE, PUT', 'Access-Control-Allow-Headers': 'Content-Type, api_key, Authorization', 'Server': 'Jetty(9.2.9.v20150224)'}
+[694c219e-5485-4aed-9c57-8eac3ed86e62-custom_requester] - Response body: {"code":1,"type":"error","message":"User not found"}
+
+[worker_1][02:06:43][ERROR] - Test: tests/pet/test_pet.py::TestPet::test_delete_pet 
+[4db0e99d-319e-4a4b-9a2b-22400de2a810-custom_requester] - HTTPError: 404 Client Error: Not Found for url: https://petstore.swagger.io/v2/pet/627
+[4db0e99d-319e-4a4b-9a2b-22400de2a810-custom_requester] - Request: DELETE https://petstore.swagger.io/v2/pet/627
+[4db0e99d-319e-4a4b-9a2b-22400de2a810-custom_requester] - Request headers: {'User-Agent': 'python-requests/2.32.4', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json', 'Content-Length': '0'}
+[4db0e99d-319e-4a4b-9a2b-22400de2a810-custom_requester] - Request body: None
+[4db0e99d-319e-4a4b-9a2b-22400de2a810-custom_requester] - Response headers: {'Date': 'Tue, 05 Aug 2025 23:06:43 GMT', 'Content-Length': '0', 'Connection': 'keep-alive', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, DELETE, PUT', 'Access-Control-Allow-Headers': 'Content-Type, api_key, Authorization', 'Server': 'Jetty(9.2.9.v20150224)'}
+[4db0e99d-319e-4a4b-9a2b-22400de2a810-custom_requester] - Response body: 
+
+[worker_3][02:06:44][ERROR] - Test: tests/pet/test_pet.py::TestPet::test_delete_pet_category 
+[7dbc8fa6-20ef-40b9-9d4c-ad7bc3b4688a-custom_requester] - HTTPError: 404 Client Error: Not Found for url: https://petstore.swagger.io/v2/pet/793
+[7dbc8fa6-20ef-40b9-9d4c-ad7bc3b4688a-custom_requester] - Request: GET https://petstore.swagger.io/v2/pet/793
+[7dbc8fa6-20ef-40b9-9d4c-ad7bc3b4688a-custom_requester] - Request headers: {'User-Agent': 'python-requests/2.32.4', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json'}
+[7dbc8fa6-20ef-40b9-9d4c-ad7bc3b4688a-custom_requester] - Request body: None
+[7dbc8fa6-20ef-40b9-9d4c-ad7bc3b4688a-custom_requester] - Response headers: {'Date': 'Tue, 05 Aug 2025 23:06:44 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, DELETE, PUT', 'Access-Control-Allow-Headers': 'Content-Type, api_key, Authorization', 'Server': 'Jetty(9.2.9.v20150224)'}
+[7dbc8fa6-20ef-40b9-9d4c-ad7bc3b4688a-custom_requester] - Response body: {"code":1,"type":"error","message":"Pet not found"}
+

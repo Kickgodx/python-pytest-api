@@ -1,0 +1,18 @@
+{
+ "id": 321,
+ "category": {
+  "id": 241,
+  "name": "Christina Lara"
+ },
+ "name": "James Marsh",
+ "photoUrls": [
+  "https://placekitten.com/181/81"
+ ],
+ "tags": [
+  {
+   "id": 417,
+   "name": "White"
+  }
+ ],
+ "status": "sold"
+}

@@ -1,0 +1,18 @@
+{
+ "id": 898,
+ "category": {
+  "id": 644,
+  "name": "Valerie Smith"
+ },
+ "name": "Hannah Reid",
+ "photoUrls": [
+  "https://dummyimage.com/491x797"
+ ],
+ "tags": [
+  {
+   "id": 532,
+   "name": "MediumSeaGreen"
+  }
+ ],
+ "status": "sold"
+}
