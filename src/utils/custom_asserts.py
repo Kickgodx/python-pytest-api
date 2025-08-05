@@ -1,4 +1,5 @@
 from typing import Any, Optional
+
 from allure import step
 
 
@@ -43,7 +44,7 @@ class CustomAsserts:
         """Проверка, что статус код ответа соответствует ожидаемому."""
         @step(f"Статус код = {expected_status_code}")
         def _check_status_code(resp, expected_code):
-            assert hasattr(resp, 'status_code'), "Объект ответа не содержит status_code"
+            assert hasattr(resp, "status_code"), "Объект ответа не содержит status_code"
             assert resp.status_code == expected_code, (
                 f"Статус код {getattr(resp, 'status_code', None)} не равен ожидаемому {expected_code}"
             )

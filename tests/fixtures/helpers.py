@@ -8,14 +8,20 @@ from src.api.user.helpers import UserHelper
 
 @pytest.fixture(scope="session")
 def pet_helper():
-    return PetHelper(BASE_URL)
+    helper = PetHelper(BASE_URL)
+    yield helper
+    helper.api.session_close()
 
 
 @pytest.fixture(scope="session")
 def store_helper():
-    return StoreHelper(BASE_URL)
+    helper = StoreHelper(BASE_URL)
+    yield helper
+    helper.api.session_close()
 
 
 @pytest.fixture(scope="session")
 def user_helper():
-    return UserHelper(BASE_URL)
+    helper = UserHelper(BASE_URL)
+    yield helper
+    helper.api.session_close()

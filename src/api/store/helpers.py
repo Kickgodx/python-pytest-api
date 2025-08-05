@@ -12,7 +12,6 @@ from src.utils.custom_asserts import CustomAsserts
 
 class StoreHelper:
     def __init__(self, base_url: str) -> None:
-        self.base_url = base_url
         self.api = StoreAPI(base_url)
 
     @step("Получение информации о складе")
@@ -33,7 +32,7 @@ class StoreHelper:
     def get_order_by_id(
         self,
         client: Client,
-        order_id: str,
+        order_id: int,
         expected_status_code: int = 200
     ) -> Union[Order, ApiResponse]:
         """Получить заказ по ID. Возвращает Order или ApiResponse при ошибке."""
@@ -59,7 +58,7 @@ class StoreHelper:
     def delete_order_by_id(
         self,
         client: Client,
-        order_id: str,
+        order_id: int,
         expected_status_code: int = 200
     ) -> Union[dict, ApiResponse]:
         """Удалить заказ по ID."""

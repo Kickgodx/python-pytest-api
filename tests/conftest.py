@@ -4,7 +4,11 @@ import pytest
 
 import config as cfg
 
-pytest_plugins = ["tests.fixtures.clients", "tests.fixtures.helpers", "tests.fixtures.envs"]
+pytest_plugins = [
+    "tests.fixtures.clients",
+    "tests.fixtures.helpers",
+    "tests.fixtures.envs"
+]
 
 
 @pytest.hookimpl(tryfirst=True)

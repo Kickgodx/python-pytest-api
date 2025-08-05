@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Any, Union
+from typing import Union
 
 from allure import step
 
@@ -12,7 +12,6 @@ from src.utils.custom_asserts import CustomAsserts
 
 class UserHelper:
     def __init__(self, base_url: str) -> None:
-        self.base_url = base_url
         self.api = UserAPI(base_url)
 
     @step("Создание пользователя")

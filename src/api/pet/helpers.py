@@ -12,7 +12,6 @@ from src.utils.custom_asserts import CustomAsserts
 
 class PetHelper:
     def __init__(self, base_url: str) -> None:
-        self.base_url = base_url
         self.api = PetAPI(base_url)
 
     @step("Создание питомца")
