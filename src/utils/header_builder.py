@@ -4,7 +4,7 @@ import uuid
 class HeaderBuilder:
     """Builder для создания заголовков запроса (device_id, device_type, content_type, auth_token)"""
 
-    def __init__(self, headers: dict = None, content_type: str = "application/json"):
+    def __init__(self, headers: dict | None = None, content_type: str = "application/json"):
         self._headers = {"Content-Type": content_type}
         if headers is not None:
             self._headers = headers.copy()

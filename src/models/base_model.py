@@ -37,7 +37,7 @@ class BaseRequestModel(BaseModel):
         err_msg = f"Object of type {type(obj)} is not JSON serializable"
         raise TypeError(err_msg)
 
-    def to_xml(self, root_tag: str = None) -> str:
+    def to_xml(self, root_tag: str | None = None) -> str:
         """Преобразует модель в XML-строку.
         :param root_tag: Название корневого элемента XML.
         :return: Строка в формате XML.

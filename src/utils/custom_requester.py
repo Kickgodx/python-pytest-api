@@ -14,7 +14,7 @@ class CustomRequester:
     """Класс-обёртка для работы с HTTP-запросами и логированием"""
 
     def __init__(
-        self, base_url: str, timeout: float = DEFAULT_TIMEOUT, headers: dict[str, str]|None = None
+        self, base_url: str, timeout: float = DEFAULT_TIMEOUT, headers: dict[str, str] | None = None
     ):
         self.base_url = base_url
         self.domain = self.get_base_domain()
@@ -49,7 +49,11 @@ class CustomRequester:
     @send_request_wrapper(logger)
     @add_allure_attachments
     def _send_request(
-        self, method: str, endpoint: str, use_allure: bool = True, **kwargs  # noqa: ARG002
+        self,
+        method: str,
+        endpoint: str,
+        use_allure: bool = True,  # noqa: ARG002
+        **kwargs,
     ) -> Response:
         """Универсальный метод для отправки HTTP-запросов."""
         kwargs.setdefault("timeout", self.timeout)
