@@ -25,10 +25,20 @@ class DataGenerator:
         return {
             "id": cls.faker_instance.random_int(1, 1000),
             "name": cls.faker_instance.name(),
-            "category": {"id": cls.faker_instance.random_int(1, 1000), "name": cls.faker_instance.name_nonbinary()},
+            "category": {
+                "id": cls.faker_instance.random_int(1, 1000),
+                "name": cls.faker_instance.name_nonbinary(),
+            },
             "photoUrls": [cls.faker_instance.image_url()],
-            "tags": [{"id": cls.faker_instance.random_int(1, 1000), "name": cls.faker_instance.color_name()}],
-            "status": cls.faker_instance.random_element([PetStatus.AVAILABLE.value, PetStatus.PENDING.value, PetStatus.SOLD.value]),
+            "tags": [
+                {
+                    "id": cls.faker_instance.random_int(1, 1000),
+                    "name": cls.faker_instance.color_name(),
+                }
+            ],
+            "status": cls.faker_instance.random_element(
+                [PetStatus.AVAILABLE.value, PetStatus.PENDING.value, PetStatus.SOLD.value]
+            ),
         }
 
     @classmethod
@@ -40,7 +50,7 @@ class DataGenerator:
             "quantity": cls.faker_instance.random_int(1, 10),
             "shipDate": cls.faker_instance.date_time().isoformat(),
             "status": cls.faker_instance.random_element(
-                [OrderStatus.PLACED.value, OrderStatus.APPROVED.value, OrderStatus.DELIVERED.value]
+                [OrderStatus.PLACED.value, OrderStatus.APPROVED.value, OrderStatus.DELIVERED.value],
             ),
             "complete": cls.faker_instance.boolean(),
         }

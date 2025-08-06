@@ -35,7 +35,7 @@ class CustomLogger:
         formatter = UtcFormatter(
             f"[{worker_id.replace('gw', 'worker_')}]" + cfg.LOG_FORMAT,
             datefmt="[%H:%M:%S]",
-            tz_hours_gap=3
+            tz_hours_gap=3,
         )
 
         self.file_log_handler = FileHandler(str(log_file), "a", encoding="utf-8")
@@ -105,7 +105,17 @@ class CustomLogger:
         else:
             self.logger.info(f"[{request_id}] - Response body: None")
 
-    def log_error(self, request_id: str, err, response: Response | None, data, headers: dict, url: str, method: str, **kwargs) -> None:
+    def log_error(
+        self,
+        request_id: str,
+        err,
+        response: Response | None,
+        data,
+        headers: dict,
+        url: str,
+        method: str,
+        **kwargs,
+    ) -> None:
         """Метод для логирования информации об ошибке
         :param request_id: уникальный идентификатор запроса
         :param err: объект ошибки (HTTPError или RequestException)
@@ -117,7 +127,7 @@ class CustomLogger:
         :return: None
         """
         test_name = os.environ.get("PYTEST_CURRENT_TEST", "Unknown test")
-        log_lines = [f"Test: {test_name.replace("(call)", "")}"]
+        log_lines = [f"Test: {test_name.replace('(call)', '')}"]
 
         # log_lines.append(f"[{request_id}] - Error in: {filename}:{lineno} - {funcname}")
         log_lines.append(f"[{request_id}] - {err}")
@@ -133,7 +143,9 @@ class CustomLogger:
             log_lines.append(f"[{request_id}] - Response headers: {response.headers}")
 
             if response.cookies:
-                log_lines.append(f"[{request_id}] - Response cookies: {response.cookies.get_dict()}")
+                log_lines.append(
+                    f"[{request_id}] - Response cookies: {response.cookies.get_dict()}"
+                )
 
             log_lines.append(f"[{request_id}] - Response body: {response.text}\n")
         else:

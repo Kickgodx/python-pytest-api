@@ -22,7 +22,6 @@ pets_data = [Pet(**DataGenerator().generate_pet_body()) for _ in range(10)]
 @allure.epic("Petstore API")
 @allure.feature("Pet")
 class TestPet:
-
     @allure.story("Создание питомцев")
     @allure.title("Создание питомца")
     @pytest.mark.parametrize("pet_data_m", pets_data)
@@ -155,7 +154,9 @@ class TestPet:
 
         with allure.step("Проверка добавления тега питомцу"):
             response = pet_helper.get_pet(admin, pet_data.id)
-            CustomAsserts.check_item_in_list(tag, response.tags, "Тег не добавлен к питомцу или не найден")
+            CustomAsserts.check_item_in_list(
+                tag, response.tags, "Тег не добавлен к питомцу или не найден"
+            )
 
     @allure.story("Обновление информации о питомцах")
     @allure.title("Создание и удаление тега у питомца")

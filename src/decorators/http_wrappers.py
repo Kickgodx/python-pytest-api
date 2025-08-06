@@ -44,7 +44,14 @@ def log_request(logger: CustomLogger):
             response = func(self, *args, **kwargs)
             if isinstance(response, Response):
                 request = response.request
-                logger.log_request(request_id, method, url, headers=request.headers, params=params, data=request.body)
+                logger.log_request(
+                    request_id,
+                    method,
+                    url,
+                    headers=request.headers,
+                    params=params,
+                    data=request.body,
+                )
             return response
 
         return wrapper
@@ -80,10 +87,14 @@ def request_exception_handler(logger: CustomLogger):
 
                 exception_name = e.__class__.__name__
                 err_msg = f"исключение при {method.upper()} запросе: {e}"
-                logger.log_error(request_id, f"{exception_name} {err_msg}", None, data, headers, url, method)
+                logger.log_error(
+                    request_id, f"{exception_name} {err_msg}", None, data, headers, url, method
+                )
                 # Собираем Response.request из существующей информации (метод, URL, заголовки и т.д.)
                 res = Response()
-                res.request = type("Request", (), {"method": method, "url": url, "headers": headers, "body": data})()
+                res.request = type(
+                    "Request", (), {"method": method, "url": url, "headers": headers, "body": data}
+                )()
                 raise e.__class__(err_msg) from e
 
         return wrapper
@@ -95,7 +106,6 @@ def check_status_code_400_799(logger: CustomLogger):
     """Декоратор для проверки кода состояния ответа HTTP (requests.Response) в диапазоне 400-799."""
 
     def decorator(func: Callable) -> Callable:
-
         @wraps(func)
         def wrapper(*args, **kwargs):
             response = func(*args, **kwargs)
@@ -109,9 +119,15 @@ def check_status_code_400_799(logger: CustomLogger):
                 except HTTPError as e:
                     exception_name = e.__class__.__name__
                     response_request_id = request.headers.get("requestId", request_id)
-                    logger.log_error(response_request_id, f"{exception_name}: {e}", response, request.body,
-                                     request.headers, request.url,
-                                     request.method)
+                    logger.log_error(
+                        response_request_id,
+                        f"{exception_name}: {e}",
+                        response,
+                        request.body,
+                        request.headers,
+                        request.url,
+                        request.method,
+                    )
             return response
 
         return wrapper
@@ -128,7 +144,9 @@ def validate_http_methods(logger: CustomLogger):
         @wraps(func)
         def wrapper(self, http_method: str, *args, **kwargs) -> Response:
             if http_method.upper() not in [item.value for item in HTTP_METHODS]:
-                err_msg = f"Недопустимый HTTP-метод: {http_method}. Допустимые значения: {HTTP_METHODS}"
+                err_msg = (
+                    f"Недопустимый HTTP-метод: {http_method}. Допустимые значения: {HTTP_METHODS}"
+                )
                 logger.logger.error(err_msg)
                 raise ValueError(err_msg)
             return func(self, http_method, *args, **kwargs)
@@ -145,7 +163,9 @@ def check_status_code(expected=200):
             response = func(*args, **kwargs)
             if not isinstance(response, Response):
                 raise TypeError(f"Expected a Response object, got {type(response).__name__}")
-            assert response.status_code == expected, f"Expected {expected}, got {response.status_code}"
+            assert response.status_code == expected, (
+                f"Expected {expected}, got {response.status_code}"
+            )
             return response
 
         return wrapper

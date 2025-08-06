@@ -28,7 +28,6 @@ users_datas = [User(**DataGenerator().generate_user_body()) for _ in range(10)]
 @allure.feature("User")
 @pytest.mark.user
 class TestUser:
-
     @allure.title("Создание пользователя")
     def test_create_user(self, user_helper, user_data, admin):
         """Создание пользователя."""

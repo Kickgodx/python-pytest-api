@@ -21,7 +21,6 @@ def order_data():
 @allure.epic("Petstore API")
 @allure.feature("Store")
 class TestStore:
-
     @allure.title("Создание заказа")
     def test_create_order(self, store_helper, order_data, admin):
         """Создание заказа"""

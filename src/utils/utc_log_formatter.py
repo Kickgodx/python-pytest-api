@@ -3,7 +3,6 @@ from datetime import datetime, timedelta, timezone
 
 
 class UtcFormatter(logging.Formatter):
-
     def __init__(self, fmt=None, datefmt=None, style="%", validate=True, tz_hours_gap: int = 3):
         super().__init__(fmt=fmt, datefmt=datefmt, style=style, validate=validate)
         self.tz = timezone(timedelta(hours=tz_hours_gap))

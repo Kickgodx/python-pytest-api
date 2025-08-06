@@ -81,7 +81,9 @@ def generate_models():
                 try:
                     replace_reserved_names(output_file)
                 except Exception as e:
-                    print(f"Ошибка при замене зарезервированных имен в файле {output_filename}\n:{e}")
+                    print(
+                        f"Ошибка при замене зарезервированных имен в файле {output_filename}\n:{e}"
+                    )
 
                 try:
                     replace_regex(output_file)

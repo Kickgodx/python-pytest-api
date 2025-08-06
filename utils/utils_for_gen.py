@@ -67,7 +67,7 @@ def get_description_from_yaml(file_path: str) -> Optional[str]:
             yaml_content = yaml.safe_load(file)
         return yaml_content.get("info", {}).get("description", None)
     except (OSError, yaml.YAMLError, UnicodeDecodeError) as e:
-        print(f"Error reading YAML file {file_path}: {str(e)}")
+        print(f"Error reading YAML file {file_path}: {e!s}")
         return None
 
 
@@ -87,4 +87,4 @@ def add_description_to_file(file_path: str, description: str, ms: str):
         with open(file_path, "w", encoding="utf-8") as file:
             file.write(description_comment + content)
     except OSError as e:
-        print(f"Error processing file {file_path}: {str(e)}")
+        print(f"Error processing file {file_path}: {e!s}")

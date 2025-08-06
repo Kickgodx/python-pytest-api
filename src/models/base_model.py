@@ -23,7 +23,11 @@ class BaseRequestModel(BaseModel):
         """Сериализует модель в JSON-строку, исключая поля с None.
         :return: JSON-строка.
         """
-        return json.dumps(self.model_dump(exclude_none=True, by_alias=True), ensure_ascii=False, default=self.custom_serializer)
+        return json.dumps(
+            self.model_dump(exclude_none=True, by_alias=True),
+            ensure_ascii=False,
+            default=self.custom_serializer,
+        )
 
     @staticmethod
     def custom_serializer(obj):
@@ -42,7 +46,11 @@ class BaseRequestModel(BaseModel):
         data_dict = self.model_dump(exclude_none=True)
 
         # Конвертируем словарь в XML
-        xml_bytes = dicttoxml(data_dict, custom_root=root_tag, attr_type=False) if root_tag else dicttoxml(data_dict, attr_type=False)
+        xml_bytes = (
+            dicttoxml(data_dict, custom_root=root_tag, attr_type=False)
+            if root_tag
+            else dicttoxml(data_dict, attr_type=False)
+        )
 
         # Декодируем из bytes в строку
         return xml_bytes.decode("utf-8")
@@ -69,4 +77,6 @@ class BaseRequestModel(BaseModel):
         :param data: Массив объектов.
         :return: JSON-строка.
         """
-        return json.dumps([item.model_dump(exclude_none=True, by_alias=True) for item in data], ensure_ascii=False)
+        return json.dumps(
+            [item.model_dump(exclude_none=True, by_alias=True) for item in data], ensure_ascii=False
+        )

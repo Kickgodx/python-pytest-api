@@ -3,7 +3,7 @@ name = "petstore"
 version = "1.0.0"
 
 [tool.ruff]
-line-length = 140
+line-length = 100
 lint.select = [
     "E", # Pycodestyle (PEP 8)
     "F", # Pyflakes (ошибки)
@@ -23,6 +23,18 @@ lint.select = [
     "N", # Неправильные имена
     "RET", # Возврат значений
     "S", # Сложные конструкции
+    "RUF", # Ruff-специфичные правила
+    "A", # Builtins
+    "COM", # commas
+    "DTZ", # datetime
+    "LOG", # logging
+    "G", # logging format
+    "RET", # return statements
+    "SLF", # self
+    "TC", # type checking
+    "ARG", # unused arguments
+    "PTH", # pathlib
+    "PERF", # perflint
 #    "D", # Docstrings
 ]
 lint.ignore = [
@@ -39,7 +51,10 @@ lint.ignore = [
     "EM101",
     "EM102",
     "G004",
-
+    "RUF001",
+    "RUF002",
+    "RUF003",
+    "COM812",
 
 ]
 exclude = [
@@ -49,11 +64,12 @@ exclude = [
     "migrations",
     "*.sqlite3",
     "allure-results",
-    "allure-report"
+    "allure-report",
+    "venv",
 ]
 
 [tool.black]
-line-length = 140
+line-length = 100
 target-version = ["py312"]
 #skip-string-normalization = false
 exclude = '''
@@ -70,7 +86,7 @@ exclude = '''
 
 [tool.isort]
 profile = "black"
-line_length = 140
+line_length = 100
 known_first_party = ["petstore"]  # Замените на имя вашего пакета
 sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
 default_section = "THIRDPARTY"

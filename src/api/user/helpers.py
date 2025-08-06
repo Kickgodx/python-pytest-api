@@ -19,7 +19,7 @@ class UserHelper:
         self,
         client: Client,
         data: BaseRequestModel,
-        expected_status_code: int = 200
+        expected_status_code: int = 200,
     ) -> ApiResponse:
         """Создать пользователя и вернуть ApiResponse."""
         response = self.api.create_user(client, data.serialize_payload_by_alias())
@@ -31,7 +31,7 @@ class UserHelper:
         self,
         client: Client,
         username: str,
-        expected_status_code: int = 200
+        expected_status_code: int = 200,
     ) -> Union[ApiResponse, User]:
         """Получить пользователя по username. Возвращает User или ApiResponse при ошибке."""
         response = self.api.get_user_by_username(client, username)
@@ -46,7 +46,7 @@ class UserHelper:
         client: Client,
         username: str,
         data: BaseRequestModel,
-        expected_status_code: int = 200
+        expected_status_code: int = 200,
     ) -> ApiResponse:
         """Обновить пользователя и вернуть ApiResponse."""
         response = self.api.update_user(client, username, data.serialize_payload_by_alias())
@@ -58,7 +58,7 @@ class UserHelper:
         self,
         client: Client,
         username: str,
-        expected_status_code: int = 200
+        expected_status_code: int = 200,
     ) -> Union[ApiResponse, dict]:
         """Удалить пользователя по username."""
         response = self.api.delete_user(client, username)
@@ -76,7 +76,7 @@ class UserHelper:
         client: Client,
         username: str,
         password: str,
-        expected_status_code: int = 200
+        expected_status_code: int = 200,
     ) -> ApiResponse:
         """Авторизация пользователя."""
         response = self.api.login_user(client, username, password)
@@ -87,7 +87,7 @@ class UserHelper:
     def logout_user(
         self,
         client: Client,
-        expected_status_code: int = 200
+        expected_status_code: int = 200,
     ) -> ApiResponse:
         """Выход пользователя из аккаунта."""
         response = self.api.logout_user(client)
@@ -99,10 +99,12 @@ class UserHelper:
         self,
         client: Client,
         data: list[User],
-        expected_status_code: int = 200
+        expected_status_code: int = 200,
     ) -> ApiResponse:
         """Создать пользователей из массива."""
-        response = self.api.create_user_with_array(client, BaseRequestModel.serialize_array_by_alias(data))
+        response = self.api.create_user_with_array(
+            client, BaseRequestModel.serialize_array_by_alias(data)
+        )
         CustomAsserts.check_status_code(response, expected_status_code)
         return ApiResponse(**response.json())
 
@@ -111,7 +113,7 @@ class UserHelper:
         self,
         client: Client,
         data: list,
-        expected_status_code: int = 200
+        expected_status_code: int = 200,
     ) -> dict:
         """Создать список пользователей."""
         response = self.api.create_user_list(client, data)

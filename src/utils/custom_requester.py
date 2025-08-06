@@ -12,7 +12,10 @@ from src.utils.custom_logger import log, logger
 
 class CustomRequester:
     """Класс-обёртка для работы с HTTP-запросами и логированием"""
-    def __init__(self, base_url: str, timeout: float = DEFAULT_TIMEOUT, headers: dict[str, str] = None):
+
+    def __init__(
+        self, base_url: str, timeout: float = DEFAULT_TIMEOUT, headers: dict[str, str]|None = None
+    ):
         self.base_url = base_url
         self.domain = self.get_base_domain()
         self.timeout = timeout
@@ -36,12 +39,18 @@ class CustomRequester:
 
     def _build_url(self, endpoint: str) -> str:
         if endpoint:
-            return f"{self.base_url}{endpoint}" if endpoint.startswith("/") else f"{self.base_url}/{endpoint}"
+            return (
+                f"{self.base_url}{endpoint}"
+                if endpoint.startswith("/")
+                else f"{self.base_url}/{endpoint}"
+            )
         return self.base_url
 
     @send_request_wrapper(logger)
     @add_allure_attachments
-    def _send_request(self, method: str, endpoint: str, use_allure: bool = True, **kwargs) -> Response:
+    def _send_request(
+        self, method: str, endpoint: str, use_allure: bool = True, **kwargs  # noqa: ARG002
+    ) -> Response:
         """Универсальный метод для отправки HTTP-запросов."""
         kwargs.setdefault("timeout", self.timeout)
 
@@ -116,7 +125,7 @@ class CustomRequester:
             "timeout": self.timeout,
             "default_headers": self.default_headers,
             "session_cookies": self.session.cookies.get_dict(),
-            "session_headers": self.session.headers
+            "session_headers": self.session.headers,
         }
 
     def check_server_alive(self):
@@ -130,7 +139,8 @@ class CustomRequester:
             if not (200 <= response.status_code < 400):
                 log.error(f"Сервер недоступен: {response.status_code} {self.base_url}")
                 raise ConnectionError(
-                    f"Сервер недоступен: {response.request.method if hasattr(response, 'request') else 'HEAD/OPTIONS'} {self.base_url} -> {response.status_code}")
+                    f"Сервер недоступен: {response.request.method if hasattr(response, 'request') else 'HEAD/OPTIONS'} {self.base_url} -> {response.status_code}"
+                )
         except requests.exceptions.RequestException as e:
             log.error(f"Ошибка при проверке сервера: {e}")
             raise ConnectionError(f"Сервер недоступен: {e}") from e
@@ -142,7 +152,7 @@ class CustomRequester:
         log.info(
             f"Request: {response.request.method} {response.request.url}\n"
             f"Headers: {response.request.headers}\n"
-            f"Body: {response.request.body}"
+            f"Body: {response.request.body}",
         )
         return response
 
@@ -151,6 +161,6 @@ class CustomRequester:
         """Логирует ответ сервера."""
         log.info(
             f"Response: {response.status_code} {response.url}\n"
-            f"Content: {response.text if response.text else {response.content}}\n"
+            f"Content: {response.text if response.text else {response.content}}\n",
         )
         return response

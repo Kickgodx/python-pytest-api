@@ -19,7 +19,7 @@ class PetHelper:
         self,
         client: Client,
         data: BaseRequestModel,
-        expected_status_code: int = 200
+        expected_status_code: int = 200,
     ) -> Pet:
         """Создать питомца и вернуть объект Pet."""
         response = self.api.post_pet(client, data.serialize_payload_by_alias())
@@ -31,7 +31,7 @@ class PetHelper:
         self,
         client: Client,
         pet_id: str,
-        expected_status_code: int = 200
+        expected_status_code: int = 200,
     ) -> Union[Pet, ApiResponse]:
         """Получить питомца по ID. Возвращает Pet или ApiResponse при ошибке."""
         response = self.api.get_find_pet_by_id(client, pet_id)
@@ -45,7 +45,7 @@ class PetHelper:
         self,
         client: Client,
         pet_status: list[str],
-        expected_status_code: int = 200
+        expected_status_code: int = 200,
     ) -> list[Pet]:
         """Получить список питомцев по статусу."""
         response = self.api.get_find_pet_by_status(client, pet_status)
@@ -60,7 +60,7 @@ class PetHelper:
         self,
         client: Client,
         data: BaseRequestModel,
-        expected_status_code: int = 200
+        expected_status_code: int = 200,
     ) -> Pet:
         """Обновить данные питомца."""
         response = self.api.put_pet(client, data.serialize_payload_by_alias())
@@ -72,7 +72,7 @@ class PetHelper:
         self,
         client: Client,
         pet_id: str,
-        expected_status_code: int = 200
+        expected_status_code: int = 200,
     ) -> dict:
         """Удалить питомца по ID."""
         response = self.api.delete_pet(client, pet_id)
@@ -89,7 +89,7 @@ class PetHelper:
         pet_id: str,
         additional_metadata: str,
         file: Any,
-        expected_status_code: int = 200
+        expected_status_code: int = 200,
     ) -> dict:
         """Загрузить изображение для питомца."""
         response = self.api.post_upload_image(client, pet_id, additional_metadata, file)
@@ -106,7 +106,7 @@ class PetHelper:
         pet_id: str,
         name: str,
         status: str,
-        expected_status_code: int = 200
+        expected_status_code: int = 200,
     ) -> dict:
         """Обновить статус и имя питомца."""
         response = self.api.post_update_status_and_name(client, pet_id, name, status)

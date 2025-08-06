@@ -26,7 +26,9 @@ def step_assert(step_text: str = ""):
             bound_args.apply_defaults()
             format_args = {k: repr(v) for k, v in bound_args.arguments.items()}
 
-            step_name = step_text.format(**format_args) if step_text else f"Проверка: {func.__name__}()"
+            step_name = (
+                step_text.format(**format_args) if step_text else f"Проверка: {func.__name__}()"
+            )
 
             with allure.step(step_name):
                 return func(*args, **kwargs)
@@ -141,7 +143,9 @@ def allure_request_attachments(func):
         response = func(*args, **kwargs)
         if isinstance(response, Response) and kwargs.get("use_allure"):
             request = response.request
-            add_request_attachments(request.method, request.url, request.headers, request.body, params)
+            add_request_attachments(
+                request.method, request.url, request.headers, request.body, params
+            )
         return response
 
     return wrapper

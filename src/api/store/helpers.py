@@ -18,7 +18,7 @@ class StoreHelper:
     def get_inventory(
         self,
         client: Client,
-        expected_status_code: int = 200
+        expected_status_code: int = 200,
     ) -> dict:
         """Получить информацию о складе."""
         response = self.api.get_inventory(client)
@@ -33,7 +33,7 @@ class StoreHelper:
         self,
         client: Client,
         order_id: int,
-        expected_status_code: int = 200
+        expected_status_code: int = 200,
     ) -> Union[Order, ApiResponse]:
         """Получить заказ по ID. Возвращает Order или ApiResponse при ошибке."""
         response = self.api.get_order_by_id(client, order_id)
@@ -47,7 +47,7 @@ class StoreHelper:
         self,
         client: Client,
         data: BaseRequestModel,
-        expected_status_code: int = 200
+        expected_status_code: int = 200,
     ) -> Order:
         """Создать заказ и вернуть объект Order."""
         response = self.api.place_order(client, data.serialize_payload_by_alias())
@@ -59,7 +59,7 @@ class StoreHelper:
         self,
         client: Client,
         order_id: int,
-        expected_status_code: int = 200
+        expected_status_code: int = 200,
     ) -> Union[dict, ApiResponse]:
         """Удалить заказ по ID."""
         response = self.api.delete_order_by_id(client, order_id)
