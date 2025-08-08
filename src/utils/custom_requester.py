@@ -2,7 +2,9 @@ from urllib.parse import urlparse
 
 import requests
 from requests import Response
+from requests.adapters import HTTPAdapter
 from requests.cookies import RequestsCookieJar
+from urllib3.util.retry import Retry
 
 from config import DEFAULT_TIMEOUT
 from src.decorators.allure_steps import add_allure_attachments
@@ -14,12 +16,48 @@ class CustomRequester:
     """Класс-обёртка для работы с HTTP-запросами и логированием"""
 
     def __init__(
-        self, base_url: str, timeout: float = DEFAULT_TIMEOUT, headers: dict[str, str] | None = None
+        self,
+        base_url: str,
+        timeout: float = DEFAULT_TIMEOUT,
+        headers: dict[str, str] | None = None,
+        use_env_proxies: bool = False,
+        retries: int | None = None,
+        backoff_factor: float = 0.1,
+        status_forcelist: tuple[int, ...] = (500, 502, 503, 504),
     ):
+        """Создает HTTP-клиент.
+
+        Args:
+            base_url: базовый URL сервиса.
+            timeout: таймаут запросов.
+            headers: заголовки, добавляемые ко всем запросам.
+            use_env_proxies: использовать ли прокси из переменных окружения.
+                По умолчанию прокси отключены, что предотвращает неожиданные
+                ошибки при запуске тестов в окружениях с ограниченным доступом
+                к внешней сети.
+        """
+
         self.base_url = base_url
         self.domain = self.get_base_domain()
         self.timeout = timeout
         self.session = requests.Session()
+        # По умолчанию отключаем использование системных прокси, чтобы
+        # избежать ошибок вроде 403 при попытке соединения через недоступный
+        # прокси-сервер. Поведение можно изменить через параметр
+        # ``use_env_proxies``.
+        self.session.trust_env = use_env_proxies
+
+        if retries:
+            retry = Retry(
+                total=retries,
+                backoff_factor=backoff_factor,
+                status_forcelist=status_forcelist,
+                allowed_methods=("HEAD", "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"),
+            )
+            adapter = HTTPAdapter(max_retries=retry)
+            self.session.mount("http://", adapter)
+            self.session.mount("https://", adapter)
+
         self.default_headers = headers or {}
 
         if self.default_headers:
@@ -58,7 +96,7 @@ class CustomRequester:
         """Универсальный метод для отправки HTTP-запросов."""
         kwargs.setdefault("timeout", self.timeout)
 
-        url = f"{self.base_url}{endpoint}"
+        url = self._build_url(endpoint)
 
         return self.session.request(method=method, url=url, **kwargs)
 
