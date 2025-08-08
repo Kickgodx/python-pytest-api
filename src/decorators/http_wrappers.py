@@ -1,6 +1,6 @@
 import uuid
 from functools import wraps
-from typing import Callable, TypeVar
+from typing import TYPE_CHECKING, Callable, TypeVar
 
 from requests import Response
 from requests.exceptions import HTTPError
@@ -8,6 +8,9 @@ from requests.exceptions import HTTPError
 from config import HTTP_METHODS
 from src.utils.allure_utils import add_request_attachments
 from src.utils.custom_logger import CustomLogger
+
+if TYPE_CHECKING:
+    from src.utils.custom_requester import CustomRequester
 
 T = TypeVar("T", bound="CustomRequester")
 

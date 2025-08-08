@@ -7,6 +7,6 @@ class UtcFormatter(logging.Formatter):
         super().__init__(fmt=fmt, datefmt=datefmt, style=style, validate=validate)
         self.tz = timezone(timedelta(hours=tz_hours_gap))
 
-    def formatTime(self, record, datefmt=None):
+    def formatTime(self, record, datefmt=None):  # noqa: N802
         dt = datetime.fromtimestamp(record.created, tz=self.tz)
         return dt.strftime(datefmt) if datefmt else dt.isoformat()

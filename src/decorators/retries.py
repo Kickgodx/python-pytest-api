@@ -17,7 +17,7 @@ def retry_on_exception(max_attempts=3, delay=1, exceptions=(Exception,)):
             for attempt in range(1, max_attempts + 1):
                 try:
                     return func(*args, **kwargs)
-                except exceptions:
+                except exceptions:  # noqa: PERF203
                     if attempt == max_attempts:
                         raise
                     time.sleep(delay)

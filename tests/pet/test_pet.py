@@ -120,21 +120,23 @@ class TestPet:
 
     @allure.story("Обновление информации о питомцах")
     @allure.title("Создание и загрузка фото питомца")
-    def test_upload_pet_photo(self, admin, pet_helper, pet_data):
+    def test_upload_pet_photo(self):
         """Загрузка фото питомца"""
-        pytest.skip("Доделать загрузку файла (доразместить фото и проверить, что фото загружено)")
+        pytest.skip(
+            "Доделать загрузку файла (доразместить фото и проверить, что фото загружено)"
+        )
         # TODO: доделать загрузку файла (доразместить фото)
         # Сначала создаём питомца
-        response = pet_helper.create_pet(client, pet_data)
-        CustomAsserts.assert_equal(response.name, pet_data.name)
+        # response = pet_helper.create_pet(client, pet_data)
+        # CustomAsserts.assert_equal(response.name, pet_data.name)
 
-        # Загружаем фото питомца
-        photo_url = "https://example.com/dog2.jpg"
-        response = pet_helper.upload_image(client, pet_data.id, "dog2", photo_url)
+        # # Загружаем фото питомца
+        # photo_url = "https://example.com/dog2.jpg"
+        # response = pet_helper.upload_image(client, pet_data.id, "dog2", photo_url)
 
-        # Проверяем, что фото загружено
-        response = pet_helper.get_pet(client, pet_data.id)
-        assert photo_url in response.photoUrls
+        # # Проверяем, что фото загружено
+        # response = pet_helper.get_pet(client, pet_data.id)
+        # assert photo_url in response.photoUrls
 
     @allure.story("Обновление информации о питомцах")
     @allure.title("Создание и добавление тега питомцу")

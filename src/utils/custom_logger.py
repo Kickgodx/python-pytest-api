@@ -21,11 +21,11 @@ class CustomLogger:
 
     def _initialize_logger(self) -> None:
         """Инициализирует логгер с настройками из конфига."""
-        os.makedirs(cfg.LOGS_PATH, exist_ok=True)
+        cfg.LOGS_PATH.mkdir(parents=True, exist_ok=True)
 
         # Очищаем или создаем файл лога
-        log_file = os.path.join(cfg.LOGS_PATH, cfg.LOG_FILE_NAME)
-        with open(log_file, "w", encoding="utf-8") as f:
+        log_file = cfg.LOGS_PATH / cfg.LOG_FILE_NAME
+        with log_file.open("w", encoding="utf-8") as f:
             f.write("")
 
         self.logger = logging.getLogger(__name__)

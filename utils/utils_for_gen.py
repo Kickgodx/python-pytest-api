@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Optional
 
 import chardet
@@ -6,12 +7,13 @@ import yaml
 CONFIDENCE_THRESHOLD = 0.7
 
 
-def detect_encoding(file_path: str) -> str:
+def detect_encoding(file_path: Path | str) -> str:
     """Detect the encoding of a file with a fallback to utf-8.
 
     @param file_path: Path to the file whose encoding is to be detected.
     """
-    with open(file_path, "rb") as file:
+    path = Path(file_path)
+    with path.open("rb") as file:
         raw_data = file.read(10000)  # Read first 10k bytes for efficiency
 
     result = chardet.detect(raw_data)
@@ -24,7 +26,7 @@ def detect_encoding(file_path: str) -> str:
     return encoding or "utf-8"  # Default to utf-8 if encoding is None
 
 
-def convert_to_utf8(file_path: str):
+def convert_to_utf8(file_path: Path | str):
     """Convert a file to UTF-8 encoding.
 
     Handles cases where the detected encoding might fail.
@@ -34,36 +36,37 @@ def convert_to_utf8(file_path: str):
     try:
         # First try with detected encoding
         encoding = detect_encoding(file_path)
-        with open(file_path, encoding=encoding, errors="replace") as file:
+        path = Path(file_path)
+        with path.open(encoding=encoding, errors="replace") as file:
             content = file.read()
     except UnicodeDecodeError:
         # If detection fails, try common encodings with error handling
         encodings_to_try = ["utf-8", "cp1252", "iso-8859-1", "cp437"]
         for enc in encodings_to_try:
             try:
-                with open(file_path, encoding=enc, errors="strict") as file:
+                with Path(file_path).open(encoding=enc, errors="strict") as file:
                     content = file.read()
                 break
             except UnicodeDecodeError:
                 continue
         else:
             # If all encodings fail, use replace mode to handle invalid chars
-            with open(file_path, encoding="utf-8", errors="replace") as file:
+            with Path(file_path).open(encoding="utf-8", errors="replace") as file:
                 content = file.read()
 
     # Write back as UTF-8
-    with open(file_path, "w", encoding="utf-8") as file:
+    with Path(file_path).open("w", encoding="utf-8") as file:
         file.write(content)
 
 
-def get_description_from_yaml(file_path: str) -> Optional[str]:
+def get_description_from_yaml(file_path: Path | str) -> Optional[str]:
     """Extract the description from a YAML file.
 
     @param file_path: Path to the YAML file.
     @return: The description string or None.
     """
     try:
-        with open(file_path, encoding="utf-8") as file:
+        with Path(file_path).open(encoding="utf-8") as file:
             yaml_content = yaml.safe_load(file)
         return yaml_content.get("info", {}).get("description", None)
     except (OSError, yaml.YAMLError, UnicodeDecodeError) as e:
@@ -71,7 +74,7 @@ def get_description_from_yaml(file_path: str) -> Optional[str]:
         return None
 
 
-def add_description_to_file(file_path: str, description: str, ms: str):
+def add_description_to_file(file_path: Path | str, description: str, ms: str):
     """Add a description comment to the beginning of a file.
 
     @param file_path: Path to the file where the description will be added.
@@ -79,12 +82,13 @@ def add_description_to_file(file_path: str, description: str, ms: str):
     @param ms: The message to be added.
     """
     try:
-        with open(file_path, encoding="utf-8") as file:
+        path = Path(file_path)
+        with path.open(encoding="utf-8") as file:
             content = file.read()
 
         description_comment = f"# {ms}: {description}\n" if description else ""
 
-        with open(file_path, "w", encoding="utf-8") as file:
+        with path.open("w", encoding="utf-8") as file:
             file.write(description_comment + content)
     except OSError as e:
         print(f"Error processing file {file_path}: {e!s}")

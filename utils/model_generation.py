@@ -1,4 +1,5 @@
 import os
+import shlex
 import subprocess
 from pathlib import Path
 
@@ -6,8 +7,8 @@ from postprocessing import replace_regex, replace_reserved_names
 from utils_for_gen import add_description_to_file, convert_to_utf8, get_description_from_yaml
 
 # Пути к папкам
-SPECS_DIR = "./src/resources/"  # Папка с файлами схем
-MODELS_DIR = "./src/models"  # Папка для сохранения сгенерированных моделей
+SPECS_DIR = Path("./src/resources/")  # Папка с файлами схем
+MODELS_DIR = Path("./src/models")  # Папка для сохранения сгенерированных моделей
 
 # Команда для datamodel-codegen
 GENERATOR_CMD = (
@@ -39,14 +40,14 @@ GENERATOR_CMD = (
 def generate_models():
     """Генерация моделей из файлов OpenAPI схем с использованием datamodel-codegen."""
     # Создаем папку models, если она не существует
-    Path(MODELS_DIR).mkdir(parents=True, exist_ok=True)
+    MODELS_DIR.mkdir(parents=True, exist_ok=True)
 
     # Рекурсивно обходим папку specs
     for root, _, files in os.walk(SPECS_DIR):
         for file in files:
             if "OpenAPI.yml" in file:
                 # Полный путь к файлу схемы
-                input_file = os.path.join(root, file)
+                input_file = Path(root) / file
 
                 # Конвертируем входной файл в utf-8
                 convert_to_utf8(input_file)
@@ -56,7 +57,7 @@ def generate_models():
 
                 # Создаем корректное имя для выходного файла
                 output_filename = f"{service_name}.py"
-                output_file = os.path.join(MODELS_DIR, output_filename)
+                output_file = MODELS_DIR / output_filename
 
                 # Формируем команду для datamodel-codegen
                 cmd = GENERATOR_CMD.format(
@@ -67,7 +68,7 @@ def generate_models():
 
                 print(f"Генерация моделей для {input_file} -> {output_file}")
                 try:
-                    subprocess.run(cmd, shell=True, check=True)
+                    subprocess.run(shlex.split(cmd), check=True)  # noqa: S603
                 except subprocess.CalledProcessError as e:
                     print(f"Ошибка при генерации {output_filename}\n:{e}")
                     continue  # Пропускаем обработку этого файла при ошибке
