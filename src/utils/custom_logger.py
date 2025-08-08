@@ -64,7 +64,13 @@ class CustomLogger:
         self.queue_handler = QueueHandler(self.queue)
         self.logger.addHandler(self.queue_handler)
 
-        self.queue_listener = QueueListener(self.queue, *handlers)
+        # Ensure each handler processes only records at or above its level.
+        # Without ``respect_handler_level=True``, ``QueueListener`` dispatches
+        # every log record to all handlers, causing INFO messages to appear
+        # in ``error.log`` despite the handler's ERROR level.
+        self.queue_listener = QueueListener(
+            self.queue, *handlers, respect_handler_level=True
+        )
         self.queue_listener.start()
 
     def shutdown(self) -> None:
