@@ -28,7 +28,8 @@ class CustomLogger:
         log_file.write_text("", encoding="utf-8")
 
         self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(cfg.FILE_LOG_LEVEL)
+        self.logger.propagate = False
+        self.logger.setLevel(min(cfg.FILE_LOG_LEVEL, cfg.CONSOLE_LOG_LEVEL))
 
         worker_id = os.environ.get("PYTEST_XDIST_WORKER", "master")
         formatter = UtcFormatter(
@@ -41,11 +42,21 @@ class CustomLogger:
         self.file_log_handler.setLevel(cfg.FILE_LOG_LEVEL)
         self.file_log_handler.setFormatter(formatter)
 
+        handlers = [self.file_log_handler]
+
+        if cfg.ENABLE_CONSOLE_LOG:
+            self.console_handler = logging.StreamHandler()
+            self.console_handler.setLevel(cfg.CONSOLE_LOG_LEVEL)
+            self.console_handler.setFormatter(formatter)
+            handlers.append(self.console_handler)
+        else:
+            self.console_handler = None
+
         self.queue = multiprocessing.Queue(-1)
         self.queue_handler = QueueHandler(self.queue)
         self.logger.addHandler(self.queue_handler)
 
-        self.queue_listener = QueueListener(self.queue, self.file_log_handler)
+        self.queue_listener = QueueListener(self.queue, *handlers)
         self.queue_listener.start()
 
     def shutdown(self) -> None:
@@ -55,6 +66,8 @@ class CustomLogger:
         self.queue.close()
         self.queue.join_thread()
         self.file_log_handler.close()
+        if self.console_handler:
+            self.console_handler.close()
 
     @staticmethod
     def get_caller_info() -> tuple[str, int, str]:
@@ -128,7 +141,8 @@ class CustomLogger:
         test_name = os.environ.get("PYTEST_CURRENT_TEST", "Unknown test")
         log_lines = [f"Test: {test_name.replace('(call)', '')}"]
 
-        # log_lines.append(f"[{request_id}] - Error in: {filename}:{lineno} - {funcname}")
+        filename, lineno, funcname = self.get_caller_info()
+        log_lines.append(f"[{request_id}] - Error in: {filename}:{lineno} - {funcname}")
         log_lines.append(f"[{request_id}] - {err}")
         log_lines.append(f"[{request_id}] - Request: {method.upper()} {url}")
 

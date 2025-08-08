@@ -2,9 +2,11 @@ from urllib.parse import urlparse
 
 import requests
 from requests import Response
+from requests.adapters import HTTPAdapter
 from requests.cookies import RequestsCookieJar
+from urllib3.util.retry import Retry
 
-from config import DEFAULT_TIMEOUT
+from config import DEFAULT_RETRIES, DEFAULT_TIMEOUT
 from src.decorators.allure_steps import add_allure_attachments
 from src.decorators.http_wrappers import send_request_wrapper
 from src.utils.custom_logger import log, logger
@@ -14,19 +16,38 @@ class CustomRequester:
     """Класс-обёртка для работы с HTTP-запросами и логированием"""
 
     def __init__(
-        self, base_url: str, timeout: float = DEFAULT_TIMEOUT, headers: dict[str, str] | None = None
+        self,
+        base_url: str,
+        timeout: float = DEFAULT_TIMEOUT,
+        headers: dict[str, str] | None = None,
+        retries: int = DEFAULT_RETRIES,
     ):
         self.base_url = base_url
         self.domain = self.get_base_domain()
         self.timeout = timeout
         self.session = requests.Session()
         self.default_headers = headers or {}
+        self.last_response: Response | None = None
+
+        if retries > 0:
+            retry_strategy = Retry(
+                total=retries,
+                status_forcelist=(500, 502, 503, 504),
+                backoff_factor=0.1,
+                allowed_methods=False,
+            )
+            adapter = HTTPAdapter(max_retries=retry_strategy)
+            self.session.mount("http://", adapter)
+            self.session.mount("https://", adapter)
 
         if self.default_headers:
             self.session.headers.update(self.default_headers)
 
     def session_close(self):
         self.session.close()
+
+    def close(self):
+        self.session_close()
 
     # Контекстные менеджеры для управления ресурсами
     def __enter__(self):
@@ -58,9 +79,11 @@ class CustomRequester:
         """Универсальный метод для отправки HTTP-запросов."""
         kwargs.setdefault("timeout", self.timeout)
 
-        url = f"{self.base_url}{endpoint}"
+        url = self._build_url(endpoint)
 
-        return self.session.request(method=method, url=url, **kwargs)
+        response = self.session.request(method=method, url=url, **kwargs)
+        self.last_response = response
+        return response
 
     def get(self, endpoint: str, use_allure=True, **kwargs) -> Response:
         self.check_server_alive()
@@ -93,6 +116,10 @@ class CustomRequester:
 
     def connect(self, endpoint: str, use_allure=True, **kwargs) -> Response:
         return self._send_request("CONNECT", endpoint, use_allure=use_allure, **kwargs)
+
+    def update_headers(self, headers: dict[str, str]) -> None:
+        """Обновляет заголовки сессии."""
+        self.session.headers.update(headers)
 
     def get_base_domain(self) -> str:
         """
