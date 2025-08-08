@@ -122,9 +122,7 @@ class TestPet:
     @allure.title("Создание и загрузка фото питомца")
     def test_upload_pet_photo(self, admin, pet_helper, pet_data):
         """Загрузка фото питомца"""
-        pytest.skip(
-            "Доделать загрузку файла (доразместить фото и проверить, что фото загружено)"
-        )
+        pytest.skip("Доделать загрузку файла (доразместить фото и проверить, что фото загружено)")
         # TODO: доделать загрузку файла (доразместить фото)
         # Сначала создаём питомца
         response = pet_helper.create_pet(admin, pet_data)
