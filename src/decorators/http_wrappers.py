@@ -1,6 +1,6 @@
 import uuid
 from functools import wraps
-from typing import Callable, TypeVar
+from typing import TYPE_CHECKING, Callable
 
 from requests import Response
 from requests.exceptions import HTTPError
@@ -9,7 +9,8 @@ from config import HTTP_METHODS
 from src.utils.allure_utils import add_request_attachments
 from src.utils.custom_logger import CustomLogger
 
-T = TypeVar("T", bound="CustomRequester")
+if TYPE_CHECKING:  # pragma: no cover - only for type checkers
+    from src.utils.custom_requester import CustomRequester
 
 
 def log_response(logger: CustomLogger):
@@ -34,7 +35,7 @@ def log_request(logger: CustomLogger):
 
     def decorator(func: Callable) -> Callable:
         @wraps(func)
-        def wrapper(self: T, *args, **kwargs):
+        def wrapper(self: "CustomRequester", *args, **kwargs):
             request_id = kwargs.get("request_id", str(uuid.uuid4()))
             method = kwargs.get("method", "No HTTP method provided decorated")
             endpoint = kwargs.get("endpoint", "No endpoint provided decorated")
@@ -183,7 +184,7 @@ def send_request_wrapper(logger: CustomLogger):
         @log_response(logger)
         @log_request(logger)
         @check_status_code_400_799(logger)
-        def wrapper(self: T, *args, **kwargs):
+        def wrapper(self: "CustomRequester", *args, **kwargs):
             return func(self, *args, **kwargs)
 
         return wrapper
