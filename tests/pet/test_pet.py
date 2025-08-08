@@ -231,6 +231,14 @@ class TestPet:
             response = pet_helper.get_pet(admin, pet_data.id)
             CustomAsserts.assert_equal(response.category, None)
 
+    @allure.story("Поиск питомцев")
+    @allure.title("Получение информации по несуществующему ID")
+    @pytest.mark.parametrize("pet_id", [0, -1, 999999999999])
+    def test_get_pet_not_found(self, admin, pet_helper, pet_id):
+        """Запрос информации о питомце по несуществующему ID"""
+        response = pet_helper.get_pet(admin, pet_id, 404)
+        CustomAsserts.assert_equal(response.message, "Pet not found")
+
     @allure.story("Создание питомцев")
     @allure.title("Создание питомца без обязательного поля name")
     def test_create_pet_without_name(self, admin, pet_helper, pet_data):
