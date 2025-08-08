@@ -1,4 +1,4 @@
-import os
+import shlex
 import subprocess
 from pathlib import Path
 
@@ -6,8 +6,8 @@ from postprocessing import replace_regex, replace_reserved_names
 from utils_for_gen import add_description_to_file, convert_to_utf8, get_description_from_yaml
 
 # Пути к папкам
-SPECS_DIR = "./src/resources/"  # Папка с файлами схем
-MODELS_DIR = "./src/models"  # Папка для сохранения сгенерированных моделей
+SPECS_DIR = Path("./src/resources/")  # Папка с файлами схем
+MODELS_DIR = Path("./src/models")  # Папка для сохранения сгенерированных моделей
 
 # Команда для datamodel-codegen
 GENERATOR_CMD = (
@@ -39,56 +39,51 @@ GENERATOR_CMD = (
 def generate_models():
     """Генерация моделей из файлов OpenAPI схем с использованием datamodel-codegen."""
     # Создаем папку models, если она не существует
-    Path(MODELS_DIR).mkdir(parents=True, exist_ok=True)
+    MODELS_DIR.mkdir(parents=True, exist_ok=True)
 
     # Рекурсивно обходим папку specs
-    for root, _, files in os.walk(SPECS_DIR):
-        for file in files:
-            if "OpenAPI.yml" in file:
-                # Полный путь к файлу схемы
-                input_file = os.path.join(root, file)
+    for input_file in SPECS_DIR.rglob("*OpenAPI.yml"):
+        # Конвертируем входной файл в utf-8
+        convert_to_utf8(input_file)
 
-                # Конвертируем входной файл в utf-8
-                convert_to_utf8(input_file)
+        # Извлекаем название микросервиса из имени файла
+        service_name = input_file.name.replace("OpenAPI.yml", "").strip()
 
-                # Извлекаем название микросервиса из имени файла
-                service_name = file.replace("OpenAPI.yml", "").strip()
+        # Создаем корректное имя для выходного файла
+        output_filename = f"{service_name}.py"
+        output_file = MODELS_DIR / output_filename
 
-                # Создаем корректное имя для выходного файла
-                output_filename = f"{service_name}.py"
-                output_file = os.path.join(MODELS_DIR, output_filename)
+        # Формируем команду для datamodel-codegen
+        cmd = GENERATOR_CMD.format(
+            input_file=input_file,
+            output_file=output_file,
+            input_file_type="openapi",
+        )
 
-                # Формируем команду для datamodel-codegen
-                cmd = GENERATOR_CMD.format(
-                    input_file=input_file,
-                    output_file=output_file,
-                    input_file_type="openapi",
-                )
+        print(f"Генерация моделей для {input_file} -> {output_file}")
+        try:
+            subprocess.run(shlex.split(cmd), check=True)  # noqa: S603
+        except subprocess.CalledProcessError as e:
+            print(f"Ошибка при генерации {output_filename}\n:{e}")
+            continue  # Пропускаем обработку этого файла при ошибке
 
-                print(f"Генерация моделей для {input_file} -> {output_file}")
-                try:
-                    subprocess.run(cmd, shell=True, check=True)
-                except subprocess.CalledProcessError as e:
-                    print(f"Ошибка при генерации {output_filename}\n:{e}")
-                    continue  # Пропускаем обработку этого файла при ошибке
+        try:
+            description = get_description_from_yaml(input_file)
+            add_description_to_file(output_file, description, service_name)
+        except Exception as e:
+            print(f"Ошибка при добавлении описания в файл {output_filename}\n:{e}")
 
-                try:
-                    description = get_description_from_yaml(input_file)
-                    add_description_to_file(output_file, description, service_name)
-                except Exception as e:
-                    print(f"Ошибка при добавлении описания в файл {output_filename}\n:{e}")
+        try:
+            replace_reserved_names(output_file)
+        except Exception as e:
+            print(
+                f"Ошибка при замене зарезервированных имен в файле {output_filename}\n:{e}"
+            )
 
-                try:
-                    replace_reserved_names(output_file)
-                except Exception as e:
-                    print(
-                        f"Ошибка при замене зарезервированных имен в файле {output_filename}\n:{e}"
-                    )
-
-                try:
-                    replace_regex(output_file)
-                except Exception as e:
-                    print(f"Ошибка при постобработке файла модели {output_filename}\n:{e}")
+        try:
+            replace_regex(output_file)
+        except Exception as e:
+            print(f"Ошибка при постобработке файла модели {output_filename}\n:{e}")
 
 
 if __name__ == "__main__":
