@@ -36,9 +36,9 @@ def log_request(logger: CustomLogger):
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(self: "CustomRequester", *args, **kwargs):
+            method = args[0] if len(args) > 0 else kwargs.get("method")
+            endpoint = args[1] if len(args) > 1 else kwargs.get("endpoint")
             request_id = kwargs.get("request_id", str(uuid.uuid4()))
-            method = kwargs.get("method", "No HTTP method provided decorated")
-            endpoint = kwargs.get("endpoint", "No endpoint provided decorated")
             url = f"{self.base_url}{endpoint}"
             params = kwargs.get("params")
 

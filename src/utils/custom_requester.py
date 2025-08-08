@@ -34,7 +34,7 @@ class CustomRequester:
                 total=retries,
                 status_forcelist=(500, 502, 503, 504),
                 backoff_factor=0.1,
-                allowed_methods=False,
+                allowed_methods=None,
             )
             adapter = HTTPAdapter(max_retries=retry_strategy)
             self.session.mount("http://", adapter)
@@ -45,9 +45,6 @@ class CustomRequester:
 
     def session_close(self):
         self.session.close()
-
-    def close(self):
-        self.session_close()
 
     # Контекстные менеджеры для управления ресурсами
     def __enter__(self):
