@@ -3,11 +3,17 @@ from http import HTTPMethod
 from pathlib import Path
 
 # region logging
-FILE_LOG_LEVEL = logging.ERROR
+# Логируем все уровни в основной лог-файл
+FILE_LOG_LEVEL = logging.DEBUG
+# Отдельный лог-файл только для ошибок
+ERROR_FILE_LOG_LEVEL = logging.ERROR
 CONSOLE_LOG_LEVEL = logging.INFO
 ENABLE_CONSOLE_LOG = True
 LOG_FORMAT = "%(asctime)s[%(levelname)s] - %(message)s"
+# Файл для полного лога
 LOG_FILE_NAME = "log.log"
+# Файл для логов ошибок
+ERROR_LOG_FILE_NAME = "error.log"
 # endregion
 
 # region http

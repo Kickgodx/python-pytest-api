@@ -9,6 +9,7 @@
 
 - 📊 [View Allure Report](https://Kickgodx.github.io/python-pytest/latest-report/index.html)
 - 📝 [Download Log File](https://Kickgodx.github.io/python-pytest/latest-report/logs/log.log)
+- ❗ [Download Error Log](https://Kickgodx.github.io/python-pytest/latest-report/logs/error.log)
 
 ## Installation
 

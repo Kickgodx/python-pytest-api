@@ -23,13 +23,17 @@ class CustomLogger:
         """Инициализирует логгер с настройками из конфига."""
         cfg.LOGS_PATH.mkdir(parents=True, exist_ok=True)
 
-        # Очищаем или создаем файл лога
+        # Очищаем или создаем файлы логов
         log_file = cfg.LOGS_PATH / cfg.LOG_FILE_NAME
+        error_log_file = cfg.LOGS_PATH / cfg.ERROR_LOG_FILE_NAME
         log_file.write_text("", encoding="utf-8")
+        error_log_file.write_text("", encoding="utf-8")
 
         self.logger = logging.getLogger(__name__)
         self.logger.propagate = False
-        self.logger.setLevel(min(cfg.FILE_LOG_LEVEL, cfg.CONSOLE_LOG_LEVEL))
+        self.logger.setLevel(
+            min(cfg.FILE_LOG_LEVEL, cfg.ERROR_FILE_LOG_LEVEL, cfg.CONSOLE_LOG_LEVEL)
+        )
 
         worker_id = os.environ.get("PYTEST_XDIST_WORKER", "master")
         formatter = UtcFormatter(
@@ -42,7 +46,11 @@ class CustomLogger:
         self.file_log_handler.setLevel(cfg.FILE_LOG_LEVEL)
         self.file_log_handler.setFormatter(formatter)
 
-        handlers = [self.file_log_handler]
+        self.error_file_handler = FileHandler(error_log_file, "a", encoding="utf-8")
+        self.error_file_handler.setLevel(cfg.ERROR_FILE_LOG_LEVEL)
+        self.error_file_handler.setFormatter(formatter)
+
+        handlers = [self.file_log_handler, self.error_file_handler]
 
         if cfg.ENABLE_CONSOLE_LOG:
             self.console_handler = logging.StreamHandler()
@@ -66,6 +74,7 @@ class CustomLogger:
         self.queue.close()
         self.queue.join_thread()
         self.file_log_handler.close()
+        self.error_file_handler.close()
         if self.console_handler:
             self.console_handler.close()
 
