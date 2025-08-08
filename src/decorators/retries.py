@@ -1,4 +1,5 @@
 import time
+from contextlib import suppress
 from functools import wraps
 
 
@@ -14,14 +15,11 @@ def retry_on_exception(max_attempts=3, delay=1, exceptions=(Exception,)):
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            for attempt in range(1, max_attempts + 1):
-                try:
+            for _ in range(max_attempts - 1):
+                with suppress(*exceptions):
                     return func(*args, **kwargs)
-                except exceptions:
-                    if attempt == max_attempts:
-                        raise
-                    time.sleep(delay)
-            return None
+                time.sleep(delay)
+            return func(*args, **kwargs)
 
         return wrapper
 

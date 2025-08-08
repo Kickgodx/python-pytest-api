@@ -122,18 +122,20 @@ class TestPet:
     @allure.title("Создание и загрузка фото питомца")
     def test_upload_pet_photo(self, admin, pet_helper, pet_data):
         """Загрузка фото питомца"""
-        pytest.skip("Доделать загрузку файла (доразместить фото и проверить, что фото загружено)")
+        pytest.skip(
+            "Доделать загрузку файла (доразместить фото и проверить, что фото загружено)"
+        )
         # TODO: доделать загрузку файла (доразместить фото)
         # Сначала создаём питомца
-        response = pet_helper.create_pet(client, pet_data)
+        response = pet_helper.create_pet(admin, pet_data)
         CustomAsserts.assert_equal(response.name, pet_data.name)
 
         # Загружаем фото питомца
         photo_url = "https://example.com/dog2.jpg"
-        response = pet_helper.upload_image(client, pet_data.id, "dog2", photo_url)
+        response = pet_helper.upload_image(admin, pet_data.id, "dog2", photo_url)
 
         # Проверяем, что фото загружено
-        response = pet_helper.get_pet(client, pet_data.id)
+        response = pet_helper.get_pet(admin, pet_data.id)
         assert photo_url in response.photoUrls
 
     @allure.story("Обновление информации о питомцах")
@@ -228,6 +230,14 @@ class TestPet:
         with allure.step("Проверка удаления категории у питомца"):
             response = pet_helper.get_pet(admin, pet_data.id)
             CustomAsserts.assert_equal(response.category, None)
+
+    @allure.story("Поиск питомцев")
+    @allure.title("Получение информации по несуществующему ID")
+    @pytest.mark.parametrize("pet_id", [0, -1, 999999999999])
+    def test_get_pet_not_found(self, admin, pet_helper, pet_id):
+        """Запрос информации о питомце по несуществующему ID"""
+        response = pet_helper.get_pet(admin, pet_id, 404)
+        CustomAsserts.assert_equal(response.message, "Pet not found")
 
     @allure.story("Создание питомцев")
     @allure.title("Создание питомца без обязательного поля name")

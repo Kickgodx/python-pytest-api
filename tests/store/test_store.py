@@ -60,16 +60,18 @@ class TestStore:
         assert isinstance(response, dict), "Unexpected response type (expected dict)"
 
     @allure.title("Получение информации о заказе по несуществующему ID")
-    def test_get_order_by_nonexistent_id(self, admin, store_helper):
+    @pytest.mark.parametrize("order_id", [0, -1, 999999])
+    def test_get_order_by_nonexistent_id(self, admin, store_helper, order_id):
         """Получение информации о заказе по несуществующему ID"""
-        response = store_helper.get_order_by_id(admin, 0, expected_status_code=404)
+        response = store_helper.get_order_by_id(admin, order_id, expected_status_code=404)
         assert response.code == 1, "Unexpected error code"
         assert response.message == "Order not found", "Unexpected error message"
 
     @allure.title("Удаление заказа по несуществующему ID")
-    def test_delete_order_by_nonexistent_id(self, admin, store_helper):
+    @pytest.mark.parametrize("order_id", [0, -1, 999999])
+    def test_delete_order_by_nonexistent_id(self, admin, store_helper, order_id):
         """Удаление заказа по несуществующему ID"""
-        response = store_helper.delete_order_by_id(admin, 0, expected_status_code=404)
+        response = store_helper.delete_order_by_id(admin, order_id, expected_status_code=404)
         assert response.code == HTTPStatus.NOT_FOUND.value, "Unexpected error code"
         assert response.message == "Order Not Found", "Unexpected error message"
 

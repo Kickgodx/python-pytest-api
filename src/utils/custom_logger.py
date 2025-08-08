@@ -21,12 +21,11 @@ class CustomLogger:
 
     def _initialize_logger(self) -> None:
         """Инициализирует логгер с настройками из конфига."""
-        os.makedirs(cfg.LOGS_PATH, exist_ok=True)
+        cfg.LOGS_PATH.mkdir(parents=True, exist_ok=True)
 
         # Очищаем или создаем файл лога
-        log_file = os.path.join(cfg.LOGS_PATH, cfg.LOG_FILE_NAME)
-        with open(log_file, "w", encoding="utf-8") as f:
-            f.write("")
+        log_file = cfg.LOGS_PATH / cfg.LOG_FILE_NAME
+        log_file.write_text("", encoding="utf-8")
 
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(cfg.FILE_LOG_LEVEL)
@@ -38,7 +37,7 @@ class CustomLogger:
             tz_hours_gap=3,
         )
 
-        self.file_log_handler = FileHandler(str(log_file), "a", encoding="utf-8")
+        self.file_log_handler = FileHandler(log_file, "a", encoding="utf-8")
         self.file_log_handler.setLevel(cfg.FILE_LOG_LEVEL)
         self.file_log_handler.setFormatter(formatter)
 

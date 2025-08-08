@@ -99,3 +99,10 @@ class TestUser:
         response = user_helper.create_user_with_array(admin, users_data)
         CustomAsserts.assert_equal(response.code, 200)
         CustomAsserts.assert_equal(response.message, "ok")
+
+    @allure.title("Получение информации о несуществующем пользователе")
+    @pytest.mark.parametrize("username", ["nonexistentuser", "ghost_user"])
+    def test_get_nonexistent_user(self, admin, user_helper, username):
+        """Получение информации о несуществующем пользователе."""
+        response = user_helper.get_user(admin, username, 404)
+        CustomAsserts.assert_equal(response.message, "User not found")

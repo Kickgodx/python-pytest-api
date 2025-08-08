@@ -151,7 +151,7 @@ class CustomRequester:
 
     # Хуки сессии (для логирования через session hooks)
     @staticmethod
-    def request_logging(response: Response, *args, **kwargs) -> Response:
+    def request_logging(response: Response, *_: object, **__: object) -> Response:
         """Логирует запрос ПОСЛЕ отправки (из объекта Response)."""
         log.info(
             f"Request: {response.request.method} {response.request.url}\n"
@@ -161,10 +161,10 @@ class CustomRequester:
         return response
 
     @staticmethod
-    def response_logging(response: Response, *args, **kwargs) -> Response:
+    def response_logging(response: Response, *_: object, **__: object) -> Response:
         """Логирует ответ сервера."""
         log.info(
             f"Response: {response.status_code} {response.url}\n"
-            f"Content: {response.text if response.text else {response.content}}\n",
+            f"Content: {response.text if response.text else response.content}\n",
         )
         return response

@@ -1,6 +1,6 @@
 import logging
-import os
 from http import HTTPMethod
+from pathlib import Path
 
 # region logging
 FILE_LOG_LEVEL = logging.ERROR
@@ -16,10 +16,10 @@ HTTP_METHODS = list(HTTPMethod)  # ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OP
 # endregion
 
 # region paths
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = Path(__file__).resolve().parent
 
-LOGS_PATH = os.path.join(ROOT_DIR, "logs")
-ALLURE_RESULTS_PATH = os.path.join(ROOT_DIR, "allure-results")
+LOGS_PATH = ROOT_DIR / "logs"
+ALLURE_RESULTS_PATH = ROOT_DIR / "allure-results"
 # endregion
 
 # region hosts
